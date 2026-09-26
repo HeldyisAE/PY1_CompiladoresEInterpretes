@@ -77,7 +77,7 @@ Comentarios
 Digitos
     "0" "1" "2" "3" "4" "5" "6" "7" "8" "9"
 Letras
-    "a" "b" "c" "d" "e" "f" "g" "h" "i" "j" "k" "l" "m" "n" "o" "p" "q" "r" "s" "t" "u" "v" "w" "x" "y" "z""A" "B" "C" "D" "E" "F" "G" "H" "I" "J" "K" "L" "M""N" "O" "P" "Q" "R" "S" "T" "U" "V" "W" "X" "Y" "Z"
+    "a" "b" "c" "d" "e" "f" "g" "h" "i" "j" "k" "l" "m" "n" "o" "p" "q" "r" "s" "t" "u" "v" "w" "x" "y" "z" "A" "B" "C" "D" "E" "F" "G" "H" "I" "J" "K" "L" "M""N" "O" "P" "Q" "R" "S" "T" "U" "V" "W" "X" "Y" "Z"
 
 ------------------- No Terminales -------------------
 
@@ -388,7 +388,7 @@ Comentarios
     <comentario_multilinea> ::= <simboloInicioComentario> <texto> <simboloFinComentario>
     <comentario> ::= <comentario_linea> | <comentario_multilinea>
 
-Operaciones aritmeticas --------REVISAR SECCION---------
+Operaciones aritmeticas
     <operador_suma> ::= <simboloSuma> | <simboloResta>
     <operador_multiplicacion> ::= <simboloMultiplicacion> | <simboloDivision> | <simboloDivisionEntera>
     <valor_aritmetico> ::= <valor_numerico> | <negativo> | <identificador> | <acceso_arreglo> | <llamada_funcion> | <abrir_parentesis> <expresion_aritmetica> <cerrar_parentesis>
