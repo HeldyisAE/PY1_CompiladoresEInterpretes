@@ -4,6 +4,7 @@
 %unicode
 %line
 %column
+%state COMENTARIO_MULTILINEA
 %type java_cup.runtime.Symbol
 
 /*MACROS*/
@@ -20,74 +21,78 @@ LITERAL_CHAR = \'{CARACTER}\'
 LITERAL_STRING = \"{CARACTER}*\"
 
 /*Operadores aritméticos*/
-"++"    {...}
-"+"     {...}
-"--"    {...}
-"-"     {...}
-"*"     {...}
-"//"    {...}
-"/"     {...}
-"mod"   {...}
-"pot"   {...}
+"++"    { return new java_cup.runtime.Symbol(sym.INCREMENT); }
+"+"     { return new java_cup.runtime.Symbol(sym.PLUS); }
+"--"    { return new java_cup.runtime.Symbol(sym.DECREMENT); }
+"-"     { return new java_cup.runtime.Symbol(sym.MINUS); }
+"*"     { return new java_cup.runtime.Symbol(sym.MULTIPLY); }
+"//"    { return new java_cup.runtime.Symbol(sym.ENTIREDIV); }
+"/"     { return new java_cup.runtime.Symbol(sym.FLOATDIV); }
+"mod"   { return new java_cup.runtime.Symbol(sym.MOD); }
+"pot"   { return new java_cup.runtime.Symbol(sym.POT); }
 
 /*Operadores relacionales*/
-"<="    {...}
-">="    {...}
-"=="    {...}
-"!="    {...}
-"<"     {...}
-">"     {...}
+"<="    { return new java_cup.runtime.Symbol(sym.LTE); }
+">="    { return new java_cup.runtime.Symbol(sym.GTE); }
+"=="    { return new java_cup.runtime.Symbol(sym.EQUAL); }
+"!="    { return new java_cup.runtime.Symbol(sym.NEQ); }
+"<"     { return new java_cup.runtime.Symbol(sym.LT); }
+">"     { return new java_cup.runtime.Symbol(sym.GT); }
 
 /*Operadores logicos*/
-"λ"     {...}
-"θ"     {...}
-"Σ"     {...}
+"λ"     { return new java_cup.runtime.Symbol(sym.AND); }
+"θ"     { return new java_cup.runtime.Symbol(sym.OR); }
+"Σ"     { return new java_cup.runtime.Symbol(sym.NOT); }
 
 /* --- Delimitadores y Bloques --- */
-"¿:"    {...}
-":?"    {...}
-"є:"    {...}
-":э"    {...}
-"ʃ:"    {...}
-":ʅ"    {...}
-"»"     {...}
+"¿:"    { return new java_cup.runtime.Symbol(sym.OPBLOCK); }
+":?"    { return new java_cup.runtime.Symbol(sym.CLBLOCK); }
+"є:"    { return new java_cup.runtime.Symbol(sym.PARENOP); }
+":э"    { return new java_cup.runtime.Symbol(sym.PARENCL); }
+"ʃ:"    { return new java_cup.runtime.Symbol(sym.OPBRACKET); }
+":ʅ"    { return new java_cup.runtime.Symbol(sym.CLBRACKET); }
+"»"     { return new java_cup.runtime.Symbol(sym.TERMINATOR); }
 
 /*Asignacion y puntuacion*/
-"Ͱ"     {...}
-","     {...}
-"."     {...}
+"Ͱ"     { return new java_cup.runtime.Symbol(sym.ASIGN); }
+","     { return new java_cup.runtime.Symbol(sym.COMA); }
+"."     { return new java_cup.runtime.Symbol(sym.DOT); }
 
 /* Espacios y saltos de línea */
 [ \t\r\n]+   { }
 
 /*Palabras reservadas*/
-"val"
-"principal"
-"defun"
-"int"          
-"float"       
-"bool"         
-"char"         
-"string"       
-"void"         
-"true"         
-"false"
-"dg"
-"dl"
-"if"
-"elif"
-"else"
-"while"
-"for"
-"return"
-"break"
-"read"
-"write"
+"val"       { return new java_cup.runtime.Symbol(sym.VAL); }
+"principal" { return new java_cup.runtime.Symbol(sym.PRINCIPAL); }
+"defun"     { return new java_cup.runtime.Symbol(sym.DEFUN); }
+"int"       { return new java_cup.runtime.Symbol(sym.INT); }
+"float"     { return new java_cup.runtime.Symbol(sym.FLOAT); }  
+"bool"      { return new java_cup.runtime.Symbol(sym.BOOL); }   
+"char"      { return new java_cup.runtime.Symbol(sym.CHAR); }   
+"string"    { return new java_cup.runtime.Symbol(sym.STRING); }   
+"void"      { return new java_cup.runtime.Symbol(sym.VOID); }   
+"true"      { return new java_cup.runtime.Symbol(sym.TRUE); }   
+"false"     { return new java_cup.runtime.Symbol(sym.FALSE); }
+"dg"        { return new java_cup.runtime.Symbol(sym.GLOBAL); }
+"dl"        { return new java_cup.runtime.Symbol(sym.LOCAL); }
+"if"        { return new java_cup.runtime.Symbol(sym.IF); }
+"elif"      { return new java_cup.runtime.Symbol(sym.ELIF); }
+"else"      { return new java_cup.runtime.Symbol(sym.ELSE); }
+"while"     { return new java_cup.runtime.Symbol(sym.WHILE); }
+"for"       { return new java_cup.runtime.Symbol(sym.FOR); }
+"return"    { return new java_cup.runtime.Symbol(sym.RETURN); }
+"break"     { return new java_cup.runtime.Symbol(sym.BREAK); }
+"read"      { return new java_cup.runtime.Symbol(sym.READ); }
+"write"     { return new java_cup.runtime.Symbol(sym.WRITE); }
 
 /*Comentarios*/
-"|"
-"!"
-"¡"
+"|" [^\r\n]* { }
+"¡" { yybegin(COMENTARIO_MULTILINEA); }
+
+<COMENTARIO_MULTILINEA> {
+    "!"       { yybegin(YYINITIAL); }
+    .|\r|\n   { }
+}
 %%
 
 . {

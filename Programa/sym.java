@@ -6,61 +6,63 @@
 /** CUP generated class containing symbol constants. */
 public class sym {
   /* terminals */
-  public static final int OPBRACKET = 44;
+  public static final int OPBRACKET = 46;
   public static final int VAL = 2;
   public static final int DEFUN = 4;
-  public static final int LTE = 33;
-  public static final int POT = 30;
-  public static final int TERMINATOR = 46;
+  public static final int LTE = 35;
+  public static final int POT = 32;
+  public static final int TERMINATOR = 48;
+  public static final int INCREMENT = 24;
   public static final int CHAR = 8;
   public static final int INT = 5;
   public static final int FOR = 19;
-  public static final int MINUS = 25;
+  public static final int MINUS = 27;
+  public static final int DECREMENT = 26;
   public static final int WRITE = 23;
   public static final int PRINCIPAL = 3;
-  public static final int NOT = 39;
-  public static final int AND = 37;
-  public static final int LT = 31;
-  public static final int OR = 38;
+  public static final int NOT = 41;
+  public static final int AND = 39;
+  public static final int LT = 33;
+  public static final int OR = 40;
   public static final int BOOL = 7;
-  public static final int PLUS = 24;
-  public static final int MULTIPLY = 26;
+  public static final int PLUS = 25;
+  public static final int MULTIPLY = 28;
   public static final int IF = 15;
-  public static final int ID = 55;
-  public static final int DOT = 49;
+  public static final int ID = 57;
+  public static final int DOT = 51;
   public static final int EOF = 0;
   public static final int RETURN = 20;
-  public static final int EQUAL = 35;
+  public static final int EQUAL = 37;
   public static final int TRUE = 11;
-  public static final int FLOATDIV = 27;
+  public static final int FLOATDIV = 29;
   public static final int error = 1;
-  public static final int COMA = 48;
-  public static final int LITERAL_CHAR = 53;
-  public static final int MOD = 29;
-  public static final int CLBRACKET = 45;
-  public static final int NEQ = 36;
+  public static final int COMA = 50;
+  public static final int LITERAL_CHAR = 55;
+  public static final int MOD = 31;
+  public static final int CLBRACKET = 47;
+  public static final int NEQ = 38;
   public static final int GLOBAL = 13;
   public static final int BREAK = 21;
   public static final int VOID = 10;
-  public static final int LITERAL_FLOAT = 51;
-  public static final int GTE = 34;
-  public static final int ENTIREDIV = 28;
-  public static final int LITERAL_INT = 50;
-  public static final int CLBLOCK = 41;
+  public static final int LITERAL_FLOAT = 53;
+  public static final int GTE = 36;
+  public static final int ENTIREDIV = 30;
+  public static final int LITERAL_INT = 52;
+  public static final int CLBLOCK = 43;
   public static final int ELSE = 17;
   public static final int READ = 22;
-  public static final int LITERAL_STRING = 54;
+  public static final int LITERAL_STRING = 56;
   public static final int WHILE = 18;
   public static final int FLOAT = 6;
-  public static final int OPBLOCK = 40;
-  public static final int ASIGN = 47;
+  public static final int OPBLOCK = 42;
+  public static final int ASIGN = 49;
   public static final int STRING = 9;
   public static final int LOCAL = 14;
-  public static final int PARENCL = 43;
+  public static final int PARENCL = 45;
   public static final int FALSE = 12;
-  public static final int LITERAL_EXP = 52;
-  public static final int GT = 32;
-  public static final int PARENOP = 42;
+  public static final int LITERAL_EXP = 54;
+  public static final int GT = 34;
+  public static final int PARENOP = 44;
   public static final int ELIF = 16;
   public static final String[] terminalNames = new String[] {
   "EOF",
@@ -87,7 +89,9 @@ public class sym {
   "BREAK",
   "READ",
   "WRITE",
+  "INCREMENT",
   "PLUS",
+  "DECREMENT",
   "MINUS",
   "MULTIPLY",
   "FLOATDIV",
