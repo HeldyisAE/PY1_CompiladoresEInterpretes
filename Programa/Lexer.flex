@@ -18,7 +18,9 @@ LITERAL_EXP = (0|{NOCERODIGITO}{DIGITO}*)[eE](0|{NOCERODIGITO}{DIGITO}*)
 SIMBOLO = "@"|"#"|"$"|"%"|"^"|"&"|"*"|"("|")"|"-"|"_"|"="|"+"|"["|"]"|"{"|"}"|";"|":"|"'"|"<"|">"|","|"."|"/"|"?"|"\""|"\\"|"`"|"~"
 CARACTER = {LETRA}|{DIGITO}|{SIMBOLO}
 LITERAL_CHAR = \'{CARACTER}\'
-LITERAL_STRING = \"{CARACTER}*\"
+LITERAL_STRING = \"{CARACTER}*\" 
+
+%%
 
 /*Operadores aritméticos*/
 "++"    { return new java_cup.runtime.Symbol(sym.INCREMENT); }
@@ -84,6 +86,14 @@ LITERAL_STRING = \"{CARACTER}*\"
 "break"     { return new java_cup.runtime.Symbol(sym.BREAK); }
 "read"      { return new java_cup.runtime.Symbol(sym.READ); }
 "write"     { return new java_cup.runtime.Symbol(sym.WRITE); }
+
+/* Reglas para patrones que conservan lexema */
+{LITERAL_INT}       {return new java_cup.runtime.Symbol(sym.LITERAL_INT, yytext());}
+{LITERAL_FLOAT}     {return new java_cup.runtime.Symbol(sym.LITERAL_FLOAT, yytext());}
+{LITERAL_EXP}       {return new java_cup.runtime.Symbol(sym.LITERAL_EXP, yytext());}
+{LITERAL_CHAR}      {return new java_cup.runtime.Symbol(sym.LITERAL_CHAR, yytext());}
+{LITERAL_STRING}    {return new java_cup.runtime.Symbol(sym.LITERAL_STRING, yytext());}
+{IDENTIFICADOR}     {return new java_cup.runtime.Symbol(sym.ID, yytext());}
 
 /*Comentarios*/
 "|" [^\r\n]* { }
