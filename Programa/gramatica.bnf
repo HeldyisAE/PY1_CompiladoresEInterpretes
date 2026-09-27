@@ -337,13 +337,13 @@ Palabras y operadores
     <modulo> ::= "mod"
 
 Literales
-    <entero> ::= <cero> | <digito_no_cero> <lista_digitos>
+    <entero> ::= <digito> | <digito_no_cero> <lista_digitos>
     <lista_digitos_no_cero_final> ::= <digito_no_cero> | <digito> <lista_digitos_no_cero_final>
     <flotante> ::= <cero> <punto> <cero> | <cero> <punto> <lista_digitos_no_cero_final> | <digito_no_cero> <lista_digitos> <punto> <lista_digitos_no_cero_final>
     <exponencial> ::= <entero> <operadorExponencial> <entero>
     <bool> ::= <true> | <false>
-    <cadena_texto> ::= <comillaDoble> <texto> <comillaDoble> 
-    <caracter_literal> ::= <comillaSimple> <caracter> <comillaSimple> | <simbolo>
+    <cadena_texto> ::= <comillaDoble> (<vacio>|<texto>) <comillaDoble> 
+    <caracter_literal> ::= <comillaSimple> <caracter> <comillaSimple>
     <valor_numerico> ::= <entero> | <flotante>
     <valor> ::= <valor_numerico> | <exponencial> | <bool> | <cadena_texto> | <identificador> | <caracter_literal>
     <tipo> ::= <tipoInt> | <tipoFloat> | <tipoBool> | <tipoChar> | <tipoString> | <tipoVoid>
