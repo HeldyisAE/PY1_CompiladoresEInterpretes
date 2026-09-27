@@ -31,7 +31,9 @@ terminal READ;
 terminal WRITE;
 
 /*Operadores aritméticos*/
+terminal INCREMENT;
 terminal PLUS;
+terminal DECREMENT;
 terminal MINUS;
 terminal MULTIPLY;
 terminal FLOATDIV;
