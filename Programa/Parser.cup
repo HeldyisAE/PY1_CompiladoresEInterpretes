@@ -1,0 +1,82 @@
+import java_cup.runtime.Symbol;
+
+parser code {:
+:};
+/*Palabras reservadas*/
+terminal VAL;
+terminal PRINCIPAL;
+terminal DEFUN;
+
+terminal INT;
+terminal FLOAT;
+terminal BOOL;
+terminal CHAR;
+terminal STRING;
+terminal VOID;
+
+terminal TRUE;
+terminal FALSE;
+
+terminal GLOBAL;
+terminal LOCAL;
+
+terminal IF;
+terminal ELIF;
+terminal ELSE;
+terminal WHILE;
+terminal FOR;
+terminal RETURN;
+terminal BREAK;
+terminal READ;
+terminal WRITE;
+
+/*Operadores aritméticos*/
+terminal PLUS;
+terminal MINUS;
+terminal MULTIPLY;
+terminal FLOATDIV;
+terminal ENTIREDIV;
+terminal MOD;
+terminal POT;
+
+/*Operadores relacionales*/
+terminal LT;
+terminal GT;
+terminal LTE;
+terminal GTE;
+terminal EQUAL;
+terminal NEQ;
+
+/*Operadores lógicos*/
+terminal AND;
+terminal OR;
+terminal NOT;
+
+/*Delimitadores y bloques*/
+terminal OPBLOCK;
+terminal CLBLOCK;
+
+terminal PARENOP;
+terminal PARENCL;
+
+terminal OPBRACKET;
+terminal CLBRACKET;
+
+terminal TERMINATOR;
+
+/*Asignación y puntuacion*/
+terminal ASIGN;
+terminal COMA;
+terminal DOT;
+
+/*Tokens que conservan lexema*/
+terminal String LITERAL_INT;
+terminal String LITERAL_FLOAT;
+terminal String LITERAL_EXP;
+terminal String LITERAL_CHAR;
+terminal String LITERAL_STRING;
+terminal String ID;
+
+non terminal inicio;
+
+inicio ::= ;
