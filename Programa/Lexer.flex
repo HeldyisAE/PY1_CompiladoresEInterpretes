@@ -136,6 +136,9 @@ _+{LETRA}({LETRA}|{DIGITO}|_)* {
     );
 }
 
+//Está aquí para evitar conflicto con las reglas de errores
+{LITERAL_CHAR} {return new java_cup.runtime.Symbol(sym.LITERAL_CHAR, yytext());}
+
 /* Literal char con más de un carácter */
 \'{CARACTER}{CARACTER}+\' {
     System.out.println(
@@ -327,8 +330,6 @@ _+{LETRA}({LETRA}|{DIGITO}|_)* {
 {LITERAL_INT} {return new java_cup.runtime.Symbol(sym.LITERAL_INT, yytext());}
 
 {LITERAL_FLOAT} {return new java_cup.runtime.Symbol(sym.LITERAL_FLOAT, yytext());}
-
-{LITERAL_CHAR} {return new java_cup.runtime.Symbol(sym.LITERAL_CHAR, yytext());}
 
 {LITERAL_STRING} {return new java_cup.runtime.Symbol(sym.LITERAL_STRING, yytext());}
 
