@@ -1,8 +1,9 @@
 defun int Prueba є: :э ¿:
-    val int counter Ͱ 5e05»
-    return x + 030»
+    val int counter Ͱ 5»
+    return x + 30»
 :?
 
 void principal є: :э ¿:
     Prueba є: :э»
 :?»
+
