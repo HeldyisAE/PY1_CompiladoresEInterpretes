@@ -5,4 +5,4 @@ Se requiere la implementación del analizador léxico y sintáctico para una gra
 Compilación y ejecución del Main.java:
 
 * Compilación: javac -cp ".;librerias\java-cup-11b.jar" Main.java
-* Ejecución: **java**-**cp**".;librerias\java-cup-11b.jar"**Main**
+* Ejecución: java -cp ".;librerias\java-cup-11b.jar" Main
