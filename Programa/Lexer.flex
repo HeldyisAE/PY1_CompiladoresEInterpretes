@@ -13,7 +13,7 @@ DIGITO = [0-9]
 NOCERODIGITO = [1-9]
 IDENTIFICADOR = {LETRA}({LETRA}|{DIGITO}|_)*
 LITERAL_INT = 0|{NOCERODIGITO}{DIGITO}*
-LITERAL_FLOAT = 0\.0|0\.{DIGITO}*{NOCERODIGITO}|{NOCERODIGITO}{DIGITO}*\.{DIGITO}*{NOCERODIGITO}
+LITERAL_FLOAT = 0\.0|{NOCERODIGITO}{DIGITO}*\.{DIGITO}|0\.{DIGITO}*{NOCERODIGITO}|{NOCERODIGITO}{DIGITO}*\.{DIGITO}*{NOCERODIGITO}
 LITERAL_EXP = (0|{NOCERODIGITO}{DIGITO}*)[eE](0|{NOCERODIGITO}{DIGITO}*)
 SIMBOLO = "@"|"#"|"$"|"%"|"^"|"&"|"*"|"("|")"|"-"|"_"|"="|"+"|"["|"]"|"{"|"}"|";"|":"|"'"|"<"|">"|","|"."|"/"|"?"|"\""|"\\"|"`"|"~"
 CARACTER = {LETRA}|{DIGITO}|{SIMBOLO}
@@ -21,6 +21,54 @@ LITERAL_CHAR = \'{CARACTER}\'
 LITERAL_STRING = \"{CARACTER}*\" 
 
 %%
+
+/*Reglas de errores*/
+
+//Regla para enteros que empiezan con 0
+0(0|{NOCERODIGITO}{DIGITO}*) { //0031231
+    System.out.println(
+        "Error léxico en línea " + (yyline + 1) +
+        ", columna " + (yycolumn + 1) +
+        ": entero inválido '" + yytext() + "'"
+    );
+}
+
+//Esta está aquí para evitar conflictos con la siguiente regla
+{LITERAL_EXP}       {return new java_cup.runtime.Symbol(sym.LITERAL_EXP, yytext());} 
+
+//Reglas para identificadores inválidos
+{DIGITO}+{LETRA}({LETRA}|{DIGITO}|_)* { //1x
+    System.out.println(
+        "Error léxico en línea " + (yyline + 1) +
+        ", columna " + (yycolumn + 1) +
+        ": identificador inválido '" + yytext() + "'"
+    );
+}
+
+_+{LETRA}({LETRA}|{DIGITO}|_)* { //_counter
+    System.out.println(
+        "Error léxico en línea " + (yyline + 1) +
+        ", columna " + (yycolumn + 1) +
+        ": identificador inválido '" + yytext() + "'"
+    );
+}
+
+//Reglas para flotantes
+0{DIGITO}+\.{DIGITO}+ { //05.1
+    System.out.println(
+        "Error léxico en línea " + (yyline + 1) +
+        ", columna " + (yycolumn + 1) +
+        ": literal float inválido '" + yytext() + "'"
+    );
+}
+
+({NOCERODIGITO}{DIGITO}*|0)\.{DIGITO}+0 { //131.8940 o 0.8090
+    System.out.println(
+        "Error léxico en línea " + (yyline + 1) +
+        ", columna " + (yycolumn + 1) +
+        ": literal float inválido '" + yytext() + "'"
+    );
+}
 
 /*Operadores aritméticos*/
 "++"    { return new java_cup.runtime.Symbol(sym.INCREMENT); }
@@ -90,7 +138,7 @@ LITERAL_STRING = \"{CARACTER}*\"
 /* Reglas para patrones que conservan lexema */
 {LITERAL_INT}       {return new java_cup.runtime.Symbol(sym.LITERAL_INT, yytext());}
 {LITERAL_FLOAT}     {return new java_cup.runtime.Symbol(sym.LITERAL_FLOAT, yytext());}
-{LITERAL_EXP}       {return new java_cup.runtime.Symbol(sym.LITERAL_EXP, yytext());}
+
 {LITERAL_CHAR}      {return new java_cup.runtime.Symbol(sym.LITERAL_CHAR, yytext());}
 {LITERAL_STRING}    {return new java_cup.runtime.Symbol(sym.LITERAL_STRING, yytext());}
 {IDENTIFICADOR}     {return new java_cup.runtime.Symbol(sym.ID, yytext());}
@@ -103,10 +151,13 @@ LITERAL_STRING = \"{CARACTER}*\"
     "!"       { yybegin(YYINITIAL); }
     .|\r|\n   { }
 }
-%%
 
 . {
-    System.out.println("Caracter encontrado: " + yytext());
+    System.out.println(
+        "Error léxico en la línea " + (yyline + 1) + 
+        ", columna " + (yycolumn + 1) + 
+        ": carácter no reconocido '" + yytext() + "'"
+    );
 }
 
 

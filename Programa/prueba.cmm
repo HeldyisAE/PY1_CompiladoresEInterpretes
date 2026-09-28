@@ -1,6 +1,6 @@
 defun int Prueba є: :э ¿:
-    val int x Ͱ 25»
-    return x + 30»
+    val int counter Ͱ 5e05»
+    return x + 030»
 :?
 
 void principal є: :э ¿:
