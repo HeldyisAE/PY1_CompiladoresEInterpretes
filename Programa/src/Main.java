@@ -1,5 +1,9 @@
+import java.io.File;
+import java.io.FileDescriptor;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.InputStreamReader;
+import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.io.Reader;
 import java.lang.reflect.Field;
@@ -8,809 +12,451 @@ import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import java_cup.runtime.Symbol;
 
-
 /* ============================================================
-                    ANALIZADOR DEL LENGUAJE
-   ============================================================ */
-
-/*
-Descripción:
-Programa principal del compilador.
-El análisis se realiza en dos fases:
-FASE 1: Análisis léxico.
-FASE 2: Análisis sintáctico.
-
-Primero se lee el archivo .cmm, se reconocen sus tokens
-y se genera un archivo tokens.txt.
-
-Posteriormente se vuelve a leer el archivo fuente para
-realizar el análisis sintáctico utilizando el parser
-generado por Java CUP.
-
-Entrada:Archivo fuente con extensión .cmm.
-
-Salida:
-Tokens reconocidos.
-Archivo tokens.txt.
-Errores léxicos.
-Errores sintácticos.
-
-
+ *                    ANALIZADOR DEL LENGUAJE
+ * ============================================================
+ *
+ * Programa principal del compilador.
+ *
+ * FASE 1: Análisis léxico     (genera tokens.txt).
+ * FASE 2: Análisis sintáctico (parser generado con Java CUP).
+ *
+ * Uso: java Main <archivo_fuente> [archivo_tokens]
+ * ============================================================
  */
-
 
 public class Main {
 
+    /* ========================================================
+     *                    CONFIGURACIÓN
+     * ========================================================
+     */
+
+    private static final int ANCHO = 60;
+
+    private static final String LINEA = "=".repeat(ANCHO);
+
+    private static final String SEPARADOR = "-".repeat(ANCHO);
+
+    /* "Error léxico en línea 59, columna 10: detalle" */
+    private static final Pattern PATRON_ERROR = Pattern.compile(
+            "Error léxico en línea (\\d+), columna (\\d+): (.*)");
+
+    private static int totalTokens = 0;
+
+
+    /* ========================================================
+     *                 MÉTODOS DE PRESENTACIÓN
+     * ========================================================
+     */
+
+    private static String centrar(String texto) {
+        int espacios = Math.max(0, (ANCHO - texto.length()) / 2);
+        return " ".repeat(espacios) + texto;
+    }
+
+    /** Título grande centrado entre líneas dobles. */
+    private static void titulo(String texto) {
+        System.out.println();
+        System.out.println(LINEA);
+        System.out.println(centrar(texto));
+        System.out.println(LINEA);
+    }
+
+    /** Encabezado de sección centrado con separador. */
+    private static void encabezado(String texto) {
+        System.out.println();
+        System.out.println(centrar(texto));
+        System.out.println(SEPARADOR);
+    }
+
+    /** Línea de resumen alineada: "  Etiqueta ........ : valor". */
+    private static void resumen(String etiqueta, Object valor) {
+        System.out.printf("  %-22s : %s%n", etiqueta, valor);
+    }
+
+    /** Muestra una ruta en su propia línea, indentada. */
+    private static void ruta(String etiqueta, String valor) {
+        System.out.println("  " + etiqueta);
+        System.out.println("    " + valor);
+    }
+
+    /**
+     * Campo alineado con ajuste de línea automático:
+     *
+     *     Ubicación : Línea 34, Columna 16
+     *     Detalle   : Texto largo que se acomoda
+     *                 con sangría bajo el valor.
+     */
+    private static void campo(String etiqueta, String valor) {
+        String prefijo = String.format("    %-10s : ", etiqueta);
+        String sangria = " ".repeat(prefijo.length());
+        int ancho = ANCHO - prefijo.length();
+
+        StringBuilder linea = new StringBuilder();
+        boolean primera = true;
+
+        for (String palabra : valor.split(" ")) {
+            if (linea.length() > 0
+                    && linea.length() + 1 + palabra.length() > ancho) {
+                System.out.println((primera ? prefijo : sangria) + linea);
+                primera = false;
+                linea.setLength(0);
+            }
+            if (linea.length() > 0) {
+                linea.append(' ');
+            }
+            linea.append(palabra);
+        }
+        System.out.println((primera ? prefijo : sangria) + linea);
+    }
+
+    private static void mostrarEstado(boolean correcto, String mensaje) {
+        System.out.println();
+        System.out.println("  Estado : " + (correcto ? "✓ " : "✗ ") + mensaje);
+    }
+
+
+    /* ========================================================
+     *                         MAIN
+     * ========================================================
+     */
 
     public static void main(String[] args) throws Exception {
 
-
-        /* ========================================================
-                        VALIDAR ARGUMENTOS
-           ======================================================== */
-
-        /*
-         * Descripción:
-         * Verifica que se haya proporcionado al menos un argumento.
-         *
-         * Entrada:
-         * - Ruta del archivo fuente.
-         * - Opcionalmente, ruta del archivo de tokens.
-         *
-         * Salida:
-         * Mensaje de uso si no se proporciona el archivo fuente.
-         *
-         * Objetivo:
-         * Evitar ejecutar el programa sin un archivo de entrada.
-         */
+        /* Salida en UTF-8 (tildes, ✓, ✗). */
+        System.setOut(new PrintStream(
+                new FileOutputStream(FileDescriptor.out), true, "UTF-8"));
 
         if (args.length < 1) {
-
+            titulo("USO DEL ANALIZADOR");
+            System.out.println();
             System.out.println(
-                    "Uso: java Main <archivo_fuente> [archivo_tokens]"
-            );
-
+                    "  java Main <archivo_fuente> [archivo_tokens]");
+            System.out.println();
             return;
         }
 
+        File archivoFuente = new File(args[0]);
+        File archivoTokens = new File(args.length > 1 ? args[1] : "tokens.txt");
 
-        String rutaFuente = args[0];
-
-        String rutaTokens = args.length > 1
-                ? args[1]
-                : "tokens.txt";
-
-
-        /* ========================================================
-                        MAPA DE TOKENS
-           ======================================================== */
-
-        /*
-         * Descripción:
-         * CUP genera los tokens utilizando números enteros.
-         *
-         * Este mapa permite convertir esos números en nombres
-         * comprensibles para mostrar los tokens.
-         *
-         * Ejemplo:
-         *
-         * 52 -> ID
-         * 53 -> LITERAL_INT
-         *
-         * Entrada:
-         * Clase sym generada por CUP.
-         *
-         * Salida:
-         * Mapa número -> nombre del token.
-         */
+        String rutaFuente = archivoFuente.getCanonicalPath();
+        String rutaTokens = archivoTokens.getCanonicalPath();
 
         Map<Integer, String> nombres = nombresDeTokens();
 
 
-        /* ========================================================
-                    VARIABLES DEL ANÁLISIS
-           ======================================================== */
+        /* ----------------- ENCABEZADO ----------------- */
 
-        /*
-         * Cantidad total de tokens reconocidos durante el
-         * análisis léxico.
-         */
-
-        int totalTokens = 0;
-
-        Lexer lexer;
-
-
-        /* ========================================================
-                    FASE 1: ANÁLISIS LÉXICO
-           ======================================================== */
-
-        /*
-         * Descripción:
-         * Esta fase analiza el archivo fuente carácter por carácter
-         * utilizando el lexer generado por JFlex.
-         *
-         * Entrada:
-         * Archivo fuente .cmm.
-         *
-         * Salida:
-         * - Tokens reconocidos.
-         * - Errores léxicos.
-         * - Archivo tokens.txt.
-         *
-         * Objetivo:
-         * Identificar las unidades léxicas del lenguaje.
-         */
-
+        titulo("ANÁLISIS DEL ARCHIVO");
         System.out.println();
-
-        System.out.println(
-                "============================================================"
-        );
-
-        System.out.println(
-                "                    ANALISIS LEXICO"
-        );
-
-        System.out.println(
-                "============================================================"
-        );
-
+        ruta("Archivo fuente:", rutaFuente);
         System.out.println();
+        ruta("Archivo tokens:", rutaTokens);
 
 
-        /*
-         * --------------------------------------------------------
-         *          LECTURA DEL ARCHIVO EN UTF-8
-         * --------------------------------------------------------
-         *
-         * UTF-8 es necesario porque utilizaMOA caracteres
-         * especiales como:
-         *
-         * ¿: :?
-         * є: :э
-         * ʃ: :ʅ
-         * λ
-         * θ
-         * Σ
-         * Ͱ
-         * »
-         */
+        /* ----------------- FASE 1: LÉXICO ----------------- */
 
-        try (
-                Reader lector = new InputStreamReader(
-                        new FileInputStream(rutaFuente),
-                        StandardCharsets.UTF_8
-                );
+        titulo("ANÁLISIS LÉXICO");
 
-                PrintWriter salida = new PrintWriter(
-                        rutaTokens,
-                        "UTF-8"
-                )
-        ) {
+        List<String> erroresLexicos =
+                analisisLexico(archivoFuente, archivoTokens, nombres);
 
+        encabezado("RESUMEN LÉXICO");
+        resumen("Tokens reconocidos", totalTokens);
+        resumen("Errores léxicos", erroresLexicos.size());
 
-            lexer = new Lexer(lector);
-
-
-            /* ----------------------------------------------------
-                        ENCABEZADO DE TOKENS
-               ---------------------------------------------------- */
-
-            /*
-             * Descripción:
-             * Escribe el encabezado del archivo tokens.txt.
-             *
-             * Salida:
-             * Columnas para línea, columna, token y lexema.
-             */
-
-            salida.printf(
-                    "%-8s %-8s %-18s %s%n",
-                    "LINEA",
-                    "COLUMNA",
-                    "TOKEN",
-                    "LEXEMA"
-            );
-
-            salida.println("-".repeat(60));
-
-
-            /* ----------------------------------------------------
-                        OBTENER TODOS LOS TOKENS
-               ---------------------------------------------------- */
-
-            /*
-             * Descripción:
-             * Solicita tokens al lexer hasta encontrar EOF.
-             *
-             * Entrada:
-             * Archivo fuente procesado por JFlex.
-             *
-             * Salida:
-             * Cada token se almacena en tokens.txt.
-             */
-
-            Symbol token = lexer.next_token();
-
-
-            while (token.sym != sym.EOF) {
-
-
-                /*
-                 * Busca el nombre del token a partir del número
-                 * generado por CUP.
-                 */
-
-                String nombre = nombres.getOrDefault(
-                        token.sym,
-                        "DESCONOCIDO"
-                );
-
-
-                /*
-                 * Escribe el token reconocido en tokens.txt.
-                 */
-
-                salida.printf(
-                        "%-8d %-8d %-18s %s%n",
-                        token.left,
-                        token.right,
-                        nombre,
-                        token.value
-                );
-
-                totalTokens++;
-
-                /*
-                 * Solicita el siguiente token al lexer.
-                 */
-
-                token = lexer.next_token();
-            }
-
-
-            /* ----------------------------------------------------
-                    GUARDAR ERRORES LÉXICOS
-               ---------------------------------------------------- */
-
-            /*
-             * Descripción:
-             * Obtiene los errores encontrados durante el análisis
-             * léxico y los escribe al final de tokens.txt.
-             *
-             * Entrada:
-             * Lista de errores almacenada por el Lexer.
-             *
-             * Salida:
-             * Errores léxicos dentro de tokens.txt.
-             */
-
-            List<String> errores = lexer.getErrores();
-
-
-            if (!errores.isEmpty()) {
-
-                salida.println();
-
-                salida.println(
-                        "ERRORES LEXICOS (" +
-                                errores.size() +
-                                ")"
-                );
-
-                salida.println("-".repeat(60));
-
-
-                for (String error : errores) {
-
-                    salida.println(error);
-                }
-            }
-        }
-
-
-        /* ========================================================
-                    RESUMEN DEL ANÁLISIS LÉXICO
-           ======================================================== */
-
-        System.out.println(
-                "Tokens reconocidos : " + totalTokens
-        );
-
-        System.out.println(
-                "Errores léxicos    : " +
-                        lexer.getErrores().size()
-        );
-
-        System.out.println(
-                "Archivo de tokens  : " + rutaTokens
-        );
-
-
-        if (lexer.getErrores().isEmpty()) {
-
-            System.out.println(
-                    "Resultado léxico   : sin errores"
-            );
-
+        if (erroresLexicos.isEmpty()) {
+            mostrarEstado(true, "ANÁLISIS LÉXICO CORRECTO");
         } else {
-
-            System.out.println(
-                    "Resultado léxico   : el archivo tiene errores léxicos"
-            );
+            mostrarTablaErrores(erroresLexicos);
+            mostrarEstado(false, "EL ARCHIVO CONTIENE ERRORES LÉXICOS");
         }
 
 
-        /* ========================================================
-                    FASE 2: ANÁLISIS SINTÁCTICO
-           ======================================================== */
+        /* ----------------- FASE 2: SINTÁCTICO ----------------- */
 
-        /*
-         * Descripción:
-         * Esta fase analiza la estructura del programa utilizando
-         * el parser generado por Java CUP.
-         *
-         * Entrada:
-         * Archivo fuente .cmm.
-         *
-         * Salida:
-         * Errores sintácticos encontrados.
-         *
-         * Objetivo:
-         * Verificar que los tokens estén organizados de acuerdo
-         * con las reglas definidas en Parser.cup.
-         */
+        titulo("ANÁLISIS SINTÁCTICO");
 
+        int erroresSintacticos = analisisSintactico(archivoFuente);
+
+        encabezado("RESUMEN SINTÁCTICO");
+        resumen("Errores sintácticos", erroresSintacticos);
+
+        if (erroresSintacticos == 0) {
+            mostrarEstado(true, "ANÁLISIS SINTÁCTICO CORRECTO");
+        } else {
+            mostrarEstado(false, "EL ARCHIVO CONTIENE ERRORES SINTÁCTICOS");
+        }
+
+
+        /* ----------------- RESULTADO FINAL ----------------- */
+
+        titulo("RESULTADO FINAL");
+        System.out.println();
+        resumen("Errores léxicos", erroresLexicos.size());
+        resumen("Errores sintácticos", erroresSintacticos);
         System.out.println();
 
-        System.out.println(
-                "============================================================"
-        );
-
-        System.out.println(
-                "                   ANALISIS SINTACTICO"
-        );
-
-        System.out.println(
-                "============================================================"
-        );
-
-        System.out.println();
-
-
-        /*
-         * --------------------------------------------------------
-         * CREAR NUEVO LEXER
-         * --------------------------------------------------------
-         *
-         * El primer Lexer ya llegó hasta EOF durante el análisis
-         * léxico.
-         *
-         * Por eso se vuelve a abrir el archivo para que el parser
-         * pueda recibir nuevamente los tokens desde el principio.
-         */
-
-        Lexer lexerParser;
-
-
-        try (
-                Reader lectorParser = new InputStreamReader(
-                        new FileInputStream(rutaFuente),
-                        StandardCharsets.UTF_8
-                )
-        ) {
-
-
-            lexerParser = new Lexer(lectorParser);
-
-
-            /* ----------------------------------------------------
-                            CREAR PARSER
-               ---------------------------------------------------- */
-
-            /*
-             * Descripción:
-             * Crea una instancia del parser generado por CUP.
-             *
-             * Entrada:
-             * Lexer encargado de proporcionar los tokens.
-             *
-             * Salida:
-             * Parser listo para realizar el análisis sintáctico.
-             */
-
-            ParserConErrores parser =
-                    new ParserConErrores(lexerParser);
-
-
-            /* ----------------------------------------------------
-                    EJECUTAR ANÁLISIS SINTÁCTICO
-               ---------------------------------------------------- */
-
-            try {
-
-                parser.parse();
-
-            } catch (Exception e) {
-
-                /*
-                 * Algunos errores pueden provocar una excepción
-                 * dependiendo de cómo se comporte el parser.
-                 *
-                 * No se muestra un stack trace completo para
-                 * mantener limpia la salida del compilador.
-                 */
-
-                System.out.println();
-
-                System.out.println(
-                        "El análisis sintáctico terminó debido a un error."
-                );
-            }
-
-
-            /* ----------------------------------------------------
-                        RESULTADO DEL PARSER
-               ---------------------------------------------------- */
-
+        if (erroresLexicos.isEmpty() && erroresSintacticos == 0) {
+            System.out.println("  ✓ ARCHIVO CORRECTO");
             System.out.println();
-
-            System.out.println(
-                    "Errores sintácticos : " +
-                            parser.getErroresSintacticos()
-            );
-
-
-            if (parser.getErroresSintacticos() == 0) {
-
-                System.out.println(
-                        "Resultado sintáctico: sin errores"
-                );
-
-            } else {
-
-                System.out.println(
-                        "Resultado sintáctico: el archivo tiene errores sintácticos"
-                );
-            }
+            System.out.println("  No se encontraron errores léxicos");
+            System.out.println("  ni sintácticos.");
+        } else {
+            System.out.println("  ✗ ARCHIVO CON ERRORES");
+            System.out.println();
+            System.out.println("  Corrige los errores indicados antes de");
+            System.out.println("  considerar válido el archivo.");
         }
 
-
-        /* ========================================================
-                        RESULTADO FINAL
-           ======================================================== */
-
-        /*
-         * Muestra un resumen general del análisis realizado.
-         */
-
         System.out.println();
-
-        System.out.println(
-                "============================================================"
-        );
-
-        System.out.println(
-                "                    RESULTADO FINAL"
-        );
-
-        System.out.println(
-                "============================================================"
-        );
-
+        System.out.println(LINEA);
         System.out.println();
-
-
-        System.out.println(
-                "Errores léxicos    : " +
-                        lexer.getErrores().size()
-        );
-
-        System.out.println();
-
-        System.out.println(
-                "Análisis terminado."
-        );
     }
 
 
-    /* ============================================================
-                    PARSER CON CONTROL DE ERRORES
-       ============================================================ */
+    /* ========================================================
+     *                    FASE 1: LÉXICO
+     * ========================================================
+     */
 
-    /*
-     * Descripción:
-     * Esta clase extiende el parser generado automáticamente
-     * por Java CUP.
+    private static List<String> analisisLexico(
+            File fuente,
+            File tokens,
+            Map<Integer, String> nombres) throws Exception {
+
+        try (
+                Reader lector = new InputStreamReader(
+                        new FileInputStream(fuente),
+                        StandardCharsets.UTF_8);
+
+                PrintWriter salida = new PrintWriter(tokens, "UTF-8")
+        ) {
+
+            Lexer lexer = new Lexer(lector);
+
+            salida.printf("%-8s %-8s %-18s %s%n",
+                    "LINEA", "COLUMNA", "TOKEN", "LEXEMA");
+            salida.println("-".repeat(ANCHO));
+
+            totalTokens = 0;
+
+            Symbol token = lexer.next_token();
+
+            while (token.sym != sym.EOF) {
+
+                salida.printf("%-8d %-8d %-18s %s%n",
+                        token.left,
+                        token.right,
+                        nombres.getOrDefault(token.sym, "DESCONOCIDO"),
+                        token.value);
+
+                totalTokens++;
+                token = lexer.next_token();
+            }
+
+            List<String> errores = lexer.getErrores();
+
+            if (!errores.isEmpty()) {
+                salida.println();
+                salida.println("ERRORES LEXICOS (" + errores.size() + ")");
+                salida.println("-".repeat(ANCHO));
+
+                for (String error : errores) {
+                    salida.println(error);
+                }
+            }
+
+            return errores;
+        }
+    }
+
+
+    /**
+     * Muestra los errores léxicos en una tabla alineada:
      *
-     * Su objetivo es controlar y contar los errores sintácticos
-     * encontrados durante el análisis.
-     *
-     * La recuperación sintáctica se realiza mediante la producción:
-     *
-     * error fin_sentencia
-     *
-     * definida en Parser.cup.
-     *
-     * Cuando CUP encuentra un error, utiliza dicha producción
-     * para intentar continuar el análisis.
+     *    #    LÍNEA   COL   DESCRIPCIÓN
+     */
+    private static void mostrarTablaErrores(List<String> errores) {
+
+        System.out.println();
+        System.out.printf("  %-4s %6s %5s   %s%n",
+                "#", "LÍNEA", "COL", "DESCRIPCIÓN");
+        System.out.println("  " + "-".repeat(ANCHO - 2));
+
+        int numero = 1;
+
+        for (String error : errores) {
+
+            String texto = error == null
+                    ? ""
+                    : error.trim().replace("\r", " ").replace("\n", " ");
+
+            Matcher m = PATRON_ERROR.matcher(texto);
+
+            if (m.matches()) {
+                System.out.printf("  %-4s %6s %5s   %s%n",
+                        String.format("%02d", numero),
+                        m.group(1),
+                        m.group(2),
+                        m.group(3));
+            } else {
+                System.out.printf("  %-4s %6s %5s   %s%n",
+                        String.format("%02d", numero), "-", "-", texto);
+            }
+
+            numero++;
+        }
+    }
+
+
+    /* ========================================================
+     *                  FASE 2: SINTÁCTICO
+     * ========================================================
+     */
+
+    private static int analisisSintactico(File fuente) throws Exception {
+
+        try (Reader lector = new InputStreamReader(
+                new FileInputStream(fuente), StandardCharsets.UTF_8)) {
+
+            ParserConErrores parser =
+                    new ParserConErrores(new Lexer(lector));
+
+            try {
+                parser.parse();
+            } catch (Exception e) {
+                if (!parser.errorFatalMostrado) {
+                    System.out.println();
+                    System.out.println(
+                            "  El análisis terminó por un problema");
+                    System.out.println("  durante el procesamiento.");
+                }
+            }
+
+            return parser.erroresSintacticos;
+        }
+    }
+
+
+    /* ========================================================
+     *              PARSER CON CONTROL DE ERRORES
+     * ========================================================
      */
 
     private static class ParserConErrores extends parser {
 
-
         private int erroresSintacticos = 0;
 
+        private Symbol ultimoToken = null;
 
-        /* --------------------------------------------------------
-                            CONSTRUCTOR
-           -------------------------------------------------------- */
-
-        /*
-         * Entrada:
-         * Lexer que proporciona los tokens al parser.
-         *
-         * Objetivo:
-         * Inicializar el parser generado por CUP.
-         */
+        private boolean errorFatalMostrado = false;
 
         public ParserConErrores(Lexer lexer) {
-
             super(lexer);
         }
-
-
-        /* --------------------------------------------------------
-                        ERROR SINTÁCTICO
-           -------------------------------------------------------- */
-
-        /*
-         * Descripción:
-         * CUP llama este método cuando encuentra un token que
-         * no esperaba según la gramática.
-         *
-         * Entrada:
-         * Token que provocó el error.
-         *
-         * Salida:
-         * Información sobre el error sintáctico.
-         *
-         * La recuperación se realiza mediante la producción
-         * "error fin_sentencia" definida en Parser.cup.
-         */
 
         @Override
         public void syntax_error(Symbol cur_token) {
 
-
             erroresSintacticos++;
+            ultimoToken = cur_token;
 
+            System.out.println();
+            System.out.println("  [Error sintáctico #"
+                    + String.format("%02d", erroresSintacticos) + "]");
 
-            System.out.println(
-                    "Error sintáctico #" +
-                            erroresSintacticos
-            );
-
-
-            if (cur_token != null) {
-
-
-                System.out.println(
-                        "  Línea  : " +
-                                (cur_token.left + 1)
-                );
-
-
-                System.out.println(
-                        "  Columna: " +
-                                (cur_token.right + 1)
-                );
-
-
-                String nombreToken =
-                        nombreToken(cur_token.sym);
-
-
-                System.out.println(
-                        "  Token  : " +
-                                nombreToken
-                );
-
-
-                /*
-                 * El lexema solamente se muestra cuando el token
-                 * contiene un valor asociado.
-                 */
-
-                if (cur_token.value != null) {
-
-                    System.out.println(
-                            "  Lexema : " +
-                                    cur_token.value
-                    );
-                }
+            if (cur_token == null) {
+                return;
             }
 
+            /*
+             * El Lexer ya entrega línea y columna con base 1,
+             * por eso aquí NO se les suma 1.
+             */
+            String ubicacion = cur_token.left > 0
+                    ? "Línea " + cur_token.left
+                            + ", Columna " + cur_token.right
+                    : "Final del archivo";
 
-            System.out.println();
+            campo("Ubicación", ubicacion);
+
+            if (cur_token.sym == sym.EOF) {
+
+                campo("Detalle",
+                        "Se llegó al final del archivo y aún se esperaban "
+                        + "más elementos. Puede faltar un cierre o una "
+                        + "sentencia.");
+
+            } else {
+
+                campo("Token", nombreToken(cur_token.sym));
+
+                if (cur_token.value != null) {
+                    campo("Lexema", String.valueOf(cur_token.value));
+                }
+
+                campo("Detalle",
+                        "Elemento inesperado en esta posición según "
+                        + "las reglas de la gramática.");
+            }
         }
 
-
-        /* --------------------------------------------------------
-                    ERROR REPORTADO POR CUP
-           -------------------------------------------------------- */
-
-        /*
-         * Descripción:
-         * CUP puede utilizar este método para reportar errores.
-         *
-         * El método syntax_error() ya se encarga de mostrar y
-         * contar los errores sintácticos.
-         *
-         * Por eso no se realiza ninguna acción aquí para evitar
-         * mostrar o contar dos veces el mismo error.
-         */
+        /* El error ya se muestra en syntax_error(). */
+        @Override
+        public void report_error(String message, Object info) {
+        }
 
         @Override
-        public void report_error(
-                String message,
-                Object info
-        ) {
+        public void report_fatal_error(String message, Object info) {
 
-            // El error ya fue mostrado por syntax_error().
-        }
-
-
-        /* --------------------------------------------------------
-                            ERROR FATAL
-           -------------------------------------------------------- */
-
-        /*
-         * Descripción:
-         * Un error fatal ocurre cuando CUP no puede recuperarse
-         * y continuar con el análisis.
-         *
-         * Salida:
-         * Mensaje indicando que el parser no pudo continuar.
-         *
-         * Objetivo:
-         * Informar al usuario sin mostrar un stack trace completo.
-         */
-
-        @Override
-        public void report_fatal_error(
-                String message,
-                Object info
-        ) {
-
-            System.out.println(
-                    "ERROR SINTACTICO FATAL"
-            );
-
-            System.out.println(
-                    "  " + message
-            );
-
-            System.out.println(
-                    "  El parser no pudo continuar."
-            );
+            errorFatalMostrado = true;
 
             System.out.println();
+            System.out.println("  " + SEPARADOR.substring(2));
+            System.out.println("  ✗ ERROR FATAL: el análisis se detuvo,");
+            System.out.println("    no fue posible recuperarse del error.");
         }
 
-
-        /* --------------------------------------------------------
-                    OBTENER CANTIDAD DE ERRORES
-           -------------------------------------------------------- */
-
-        /*
-         * Devuelve la cantidad total de errores sintácticos
-         * encontrados durante el análisis.
-         */
-
-        public int getErroresSintacticos() {
-
-            return erroresSintacticos;
-        }
-
-
-        /* --------------------------------------------------------
-                    CONVERTIR TOKEN A NOMBRE
-           -------------------------------------------------------- */
-
-        /*
-         * Descripción:
-         * Convierte el número entero asociado a un token de CUP
-         * en el nombre correspondiente definido en la clase sym.
-         *
-         * Entrada:
-         * Número del token.
-         *
-         * Salida:
-         * Nombre del token.
-         *
-         * Ejemplo:
-         *
-         * 52 -> ID
-         */
-
-        private String nombreToken(int numero) {
-
-
+        private static String nombreToken(int numero) {
             try {
-
                 for (Field campo : sym.class.getFields()) {
-
-
                     if (campo.getType() == int.class
-                            && Modifier.isStatic(
-                                    campo.getModifiers())
+                            && Modifier.isStatic(campo.getModifiers())
                             && campo.getInt(null) == numero) {
-
                         return campo.getName();
                     }
                 }
-
             } catch (Exception e) {
-
                 return "DESCONOCIDO";
             }
-
-
             return "DESCONOCIDO";
         }
     }
 
 
-    /* ============================================================
-                        MAPA DE TOKENS
-       ============================================================ */
-
-    /*
-     * Descripción:
-     * Recorre la clase sym generada por CUP y construye un mapa
-     * que relaciona el número de cada token con su nombre.
-     *
-     * Entrada:
-     * Constantes enteras generadas por Java CUP en sym.java.
-     *
-     * Salida:
-     * Mapa con la siguiente estructura:
-     *
-     * número -> nombre del token
-     *
-     * Ejemplo:
-     *
-     * 52 -> ID
-     * 53 -> LITERAL_INT
+    /* ========================================================
+     *                    MAPA DE TOKENS
+     * ========================================================
      */
 
     private static Map<Integer, String> nombresDeTokens()
             throws IllegalAccessException {
 
-
         Map<Integer, String> mapa = new HashMap<>();
 
-
         for (Field campo : sym.class.getFields()) {
-
-
             if (campo.getType() == int.class
-                    && Modifier.isStatic(
-                            campo.getModifiers())) {
-
-
-                mapa.put(
-                        campo.getInt(null),
-                        campo.getName()
-                );
+                    && Modifier.isStatic(campo.getModifiers())) {
+                mapa.put(campo.getInt(null), campo.getName());
             }
         }
-
 
         return mapa;
     }

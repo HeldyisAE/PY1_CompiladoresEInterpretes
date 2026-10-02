@@ -474,17 +474,6 @@ sentencia_simple ::=
     | break fin_sentencia
     | return
     | error fin_sentencia
-        {:
-            System.out.println(
-                "---------------------------------------"
-            );
-            System.out.println(
-                "Recuperación: hasta fin de sentencia »"
-            );
-            System.out.println(
-                "---------------------------------------"
-            );
-        :}
     ;
 
 lista_instrucciones ::= instruccion | instruccion lista_instrucciones ;

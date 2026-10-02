@@ -2468,17 +2468,7 @@ class CUP$parser$actions {
           case 168: // sentencia_simple ::= error fin_sentencia 
             {
               Object RESULT =null;
-		
-            System.out.println(
-                "---------------------------------------"
-            );
-            System.out.println(
-                "Recuperación: hasta fin de sentencia »"
-            );
-            System.out.println(
-                "---------------------------------------"
-            );
-        
+
               CUP$parser$result = parser.getSymbolFactory().newSymbol("sentencia_simple",85, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
