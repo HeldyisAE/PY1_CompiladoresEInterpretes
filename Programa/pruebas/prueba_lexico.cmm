@@ -1,0 +1,342 @@
+
+| ============================================================
+| VARIABLES
+| ============================================================
+
+val int entero1 Ͱ 0»
+val int entero2 Ͱ 1»
+val int entero3 Ͱ 10»
+val int entero4 Ͱ 123456789»
+val float decimal1 Ͱ 0.5»
+val float decimal2 Ͱ 1.25»
+val float decimal3 Ͱ 123.456»
+val bool booleano1 Ͱ true»
+val bool booleano2 Ͱ false»
+val char caracter1 Ͱ 'A'»
+val char caracter2 Ͱ 'z'»
+val string cadena1 Ͱ "Hola"»
+val string cadena2 Ͱ "Este es un texto bastante largo"»
+
+
+| ============================================================
+| OPERADORES ARITMETICOS
+| ============================================================
+
+val int op1 Ͱ 1 + 2»
+val int op2 Ͱ 10 - 5»
+val int op3 Ͱ 4 * 8»
+val int op4 Ͱ 100 / 5»
+val int op5 Ͱ 100 // 5»
+val int op6 Ͱ 100 mod 3»
+val int op7 Ͱ 2 pot 10»
+val int op8 Ͱ -10»
+val int op9 Ͱ +10»
+
+
+| ============================================================
+| OPERADORES RELACIONALES
+| ============================================================
+
+val bool r1 Ͱ true»
+val bool r2 Ͱ false»
+
+
+| ============================================================
+| IDENTIFICADORES
+| ============================================================
+
+val int contador Ͱ 10»
+val int contador1 Ͱ 20»
+val int contador_2 Ͱ 30»
+val int variable_larga_123 Ͱ 40»
+val string nombrePersona Ͱ "Alice"»
+
+
+| ============================================================
+| CARACTERES ESPECIALES
+| ============================================================
+
+print є: "¿Qué pasa con los caracteres?" :э
+print є: "λ θ Σ" :э
+print є: "Texto con numeros 12345" :э
+print є: "Texto con simbolos + - * /" :э
+
+
+| ============================================================
+| FUNCIONES
+| ============================================================
+
+int suma є: int a, int b :э ¿:
+
+    return a + b»
+
+:?
+
+
+float calcular є: float a, float b :э ¿:
+
+    return a + b»
+
+:?
+
+
+bool verificar є: int numero :э ¿:
+
+    if є: numero > 0 :э ¿:
+
+        return true»
+
+    :? else ¿:
+
+        return false»
+
+    :?
+
+:?
+
+
+void mostrar є: string texto :э ¿:
+
+    print є: texto :э
+
+:? 
+
+
+| ============================================================
+| LLAMADAS ANIDADAS
+| ============================================================
+
+val int resultado1 Ͱ suma є: 10, 20 :э»
+
+val int resultado2 Ͱ suma є: suma є: 1, 2 :э, suma є: 3, 4 :э :э»
+
+val int resultado3 Ͱ suma є: suma є: suma є: 1, 2 :э, 3 :э, 4 :э»
+
+
+| ============================================================
+| EXPRESIONES ANIDADAS
+| ============================================================
+
+val int expresion1 Ͱ є: 1 + 2 :э * є: 3 + 4 :э»
+
+val int expresion2 Ͱ є: є: 1 + 2 :э * є: 3 + 4 :э :э»
+
+val int expresion3 Ͱ є: є: є: 1 + 2 :э * 3 :э + 4 :э»
+
+val int expresion4 Ͱ suma є: є: 1 + 2 :э, є: 3 * 4 :э :э»
+
+val int expresion5 Ͱ suma є: suma є: 1, 2 :э, є: 3 + 4 :э :э»
+
+
+| ============================================================
+| PRINCIPAL
+| ============================================================
+
+void principal є: :э ¿:
+
+    val int a Ͱ 10»
+    val int b Ͱ 20»
+    val int c Ͱ 30»
+
+
+    | --------------------------------------------------------
+    | OPERACIONES PROFUNDAS
+    | --------------------------------------------------------
+
+    val int profunda1 Ͱ є: a + є: b * є: c - 5 :э :э»
+
+    val int profunda2 Ͱ є: є: a + b :э * є: c - 10 :э :э»
+
+    val int profunda3 Ͱ є: є: є: a + b :э * c :э - 5 :э»
+
+    val int profunda4 Ͱ suma є:
+        suma є: a, b :э,
+        suma є: b, c :э
+    :э»
+
+
+    | --------------------------------------------------------
+    | POTENCIAS ANIDADAS
+    | --------------------------------------------------------
+
+    val int potencia1 Ͱ 2 pot 3»
+
+    val int potencia2 Ͱ 2 pot є: 3 pot 2 :э»
+
+    val int potencia3 Ͱ є: 2 pot 3 :э + 10»
+
+    val int potencia4 Ͱ є: є: 2 pot 3 :э + є: 4 pot 2 :э :э»
+
+
+    | --------------------------------------------------------
+    | FUNCIONES EN FUNCIONES
+    | --------------------------------------------------------
+
+    val int funcion1 Ͱ suma є:
+        suma є: 1, 2 :э,
+        suma є: 3, 4 :э
+    :э»
+
+    val int funcion2 Ͱ suma є:
+        suma є:
+            suma є: 1, 2 :э,
+            suma є: 3, 4 :э
+        :э,
+        suma є: 5, 6 :э
+    :э»
+
+
+    | --------------------------------------------------------
+    | LOGICA
+    | --------------------------------------------------------
+
+    if є: a > 0 λ b > 0 :э ¿:
+
+        print є: "AND" :э
+
+    :?
+
+
+    if є: a > 100 θ b > 0 :э ¿:
+
+        print є: "OR" :э
+
+    :?
+
+
+    if Σ є: a < 0 :э :э ¿:
+
+        print є: "NOT" :э
+
+    :?
+
+
+    | --------------------------------------------------------
+    | ESTRUCTURAS ANIDADAS
+    | --------------------------------------------------------
+
+    if є: a > 0 :э ¿:
+
+        while є: b > 0 :э ¿:
+
+            if є: c > 0 :э ¿:
+
+                for є: i Ͱ 0» i < 10» i++ :э ¿:
+
+                    print є: i :э
+
+                :?
+
+            :?
+
+            b Ͱ b - 1»
+
+        :?
+
+    :?
+
+
+    | --------------------------------------------------------
+    | INCREMENTOS
+    | --------------------------------------------------------
+
+    a++
+    b--
+    c++
+    a--
+    a++
+    a++
+
+
+    | --------------------------------------------------------
+    | READ / WRITE
+    | --------------------------------------------------------
+
+    read є: a :э
+    read є: b :э
+    write є: a :э
+    write є: b :э
+
+
+    | ========================================================
+    | ERRORES LEXICOS INTENCIONALES
+    | ========================================================
+
+
+    | ERROR: decimal terminado en cero
+
+    val float errorFloat1 Ͱ 125.50»
+
+
+    | ERROR: decimal terminado en cero
+
+    val float errorFloat2 Ͱ 10.0»
+
+
+    | ERROR: numero con formato extraño
+
+    val float errorFloat3 Ͱ 10.25.5»
+
+
+    | ERROR: numero demasiado extraño
+
+    val int errorInt1 Ͱ 12.34.56»
+
+
+    | ERROR: identificador comenzando con _
+
+    val int _errorIdentificador Ͱ 10»
+
+
+    | ERROR: identificador comenzando con numero
+
+    val int 123variable Ͱ 10»
+
+
+    | ERROR: string sin cerrar
+
+    print є: "Esta cadena no termina :э
+
+
+    | ERROR: char con varios caracteres
+
+    val char errorChar1 Ͱ 'AB'»
+
+
+    | ERROR: char vacio
+
+    val char errorChar2 Ͱ ''»
+
+
+    | ERROR: simbolo desconocido
+
+    val int errorSimbolo1 Ͱ 10 @ 20»
+
+
+    | ERROR: simbolo desconocido
+
+    val int errorSimbolo2 Ͱ 10 # 20»
+
+
+    | ERROR: simbolo desconocido
+
+    val int errorSimbolo3 Ͱ 10 $ 20»
+
+
+    | ERROR: identificador invalido
+
+    val int _otraVariable Ͱ 100»
+
+
+    | ERROR: caracteres extraños
+
+    val int errorExtraño Ͱ 10 § 20»
+
+
+    | ========================================================
+    | FIN
+    | ========================================================
+
+    print є: "Fin de prueba lexica" :э
+
+:? 

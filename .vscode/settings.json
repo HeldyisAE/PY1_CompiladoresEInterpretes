@@ -1,0 +1,8 @@
+{
+    "java.project.sourcePaths": [
+        "Programa/src"
+    ],
+    "java.project.referencedLibraries": [
+        "Programa/librerias/java-cup-11b.jar"
+    ]
+}
