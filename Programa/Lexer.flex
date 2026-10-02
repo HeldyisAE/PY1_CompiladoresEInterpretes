@@ -1,362 +1,647 @@
+import java_cup.runtime.Symbol;
+
 %%
+
+/*
+============================================================
+            ANALIZADOR LÉXICO - LEXER
+============================================================
+
+DESCRIPCIÓN:
+Este archivo define las reglas del analizador léxico utilizando
+JFlex. Su función es leer el código fuente carácter por carácter,
+reconocer palabras reservadas, identificadores, números, cadenas,
+caracteres, operadores y delimitadores, y convertirlos en tokens
+que posteriormente serán utilizados por el analizador sintáctico
+generado con CUP.
+
+ENTRADA: Un archivo de código fuente
+
+SALIDA: Tokens reconocidos por CUP.
+Errores léxicos almacenados en una lista y mostrados en consola.
+Cada token conserva su línea, columna y lexema.
+
+RESTRICCIONES:
+Los identificadores deben cumplir la estructura definida por la expresión IDENTIFICADOR.
+Los números deben cumplir las reglas establecidas para enteros y números flotantes.
+Las palabras reservadas no pueden utilizarse como identificadores.
+Los caracteres, cadenas, operadores y delimitadores deben respetar
+la sintaxis definida por el lenguaje.
+
+OBJETIVO:
+Separar el código fuente en unidades léxicas válidas y detectar
+caracteres o estructuras que no pertenecen al lenguaje antes de
+realizar el análisis sintáctico.
+
+ */
+
 %class Lexer
 %public
 %unicode
 %line
 %column
-%state COMENTARIO_MULTILINEA
-%state STRING_INCOMPLETO
-%type java_cup.runtime.Symbol
+%cup
 
-/* MACROS */
-LETRA = [a-zA-Z]
-DIGITO = [0-9]
-NOCERODIGITO = [1-9]
-IDENTIFICADOR = {LETRA}({LETRA}|{DIGITO}|_)*
-LITERAL_INT = 0|{NOCERODIGITO}{DIGITO}*
-LITERAL_FLOAT = 0\.0|{NOCERODIGITO}{DIGITO}*\.{DIGITO}|0\.{DIGITO}*{NOCERODIGITO}|{NOCERODIGITO}{DIGITO}*\.{DIGITO}*{NOCERODIGITO}
-PARTE_ENTERA = 0|{NOCERODIGITO}{DIGITO}*
-LITERAL_EXP_INVALIDO = {LITERAL_FLOAT}[eE]{PARTE_ENTERA}|{PARTE_ENTERA}[eE]{LITERAL_FLOAT}|{LITERAL_FLOAT}[eE]{LITERAL_FLOAT}
-LITERAL_EXP = (0|{NOCERODIGITO}{DIGITO}*)[eE](0|{NOCERODIGITO}{DIGITO}*)
-SIMBOLO = "@"|"#"|"$"|"%"|"^"|"&"|"*"|"("|")"|"-"|"-"|"_"|"="|"+"|"["|"]"|"{"|"}"|";"|":"|"'"|"<"|">"|","|"."|"/"|"?"|"\""|"\\"|"`"|"~"
-CARACTER = {LETRA}|{DIGITO}|{SIMBOLO}
-LITERAL_CHAR = \'{CARACTER}?\'
-LITERAL_STRING = \"{CARACTER}*\"
+
+/*
+============================================================
+            ESTADOS DEL ANALIZADOR
+============================================================
+
+DESCRIPCIÓN:
+Los estados permiten cambiar temporalmente las reglas que utiliza
+JFlex. Se utilizan para procesar comentarios multilínea y cadenas
+que quedaron abiertas.
+
+ENTRADA: El inicio de un comentario multilínea o una cadena incompleta.
+
+SALIDA: El analizador cambia temporalmente de estado y procesa el contenido correspondiente.
+
+RESTRICCIONES: Mientras se encuentra dentro de uno de estos estados, las reglas
+normales del analizador no se aplican.
+
+OBJETIVO:
+Evitar que el contenido de comentarios o cadenas incompletas sea interpretado como código normal.
+
+ */
+
+%xstate COMENTARIO_MULTILINEA
+%xstate STRING_INCOMPLETO
+
+
+%{
+    /*
+    ========================================================
+            VARIABLES Y MÉTODOS AUXILIARES
+    ========================================================
+     */
+
+    /*
+    Guarda la posición donde comenzó un string o comentario
+    multilínea que posteriormente puede generar un error.
+     */
+    private int lineaInicio;
+    private int columnaInicio;
+
+
+    /*
+    Lista donde se almacenan todos los errores léxicos
+    encontrados durante el análisis.
+     */
+    private final java.util.List<String> errores =
+        new java.util.ArrayList<>();
+
+
+    /*
+    Permite obtener desde otras clases la lista de errores
+    encontrados por el lexer.
+     */
+    public java.util.List<String> getErrores() {
+        return errores;
+    }
+
+
+    /*
+    -------------------------------------------------------
+                    MÉTODO: symbol
+    --------------------------------------------------------
+
+    DESCRIPCIÓN:
+    Crea un objeto Symbol de CUP para representar un token.
+
+    ENTRADAS:
+    tipo: código numérico del token definido en sym.java.
+
+    SALIDA:
+    Un objeto Symbol que contiene:
+    tipo del token
+    línea donde aparece
+    columna donde aparece
+    lexema reconocido
+
+    OBJETIVO:
+    Entregar al parser de CUP la información necesaria sobre
+    cada token reconocido.
+     */
+    private Symbol symbol(int tipo) {
+        return new Symbol(
+            tipo,
+            yyline + 1,
+            yycolumn + 1,
+            yytext()
+        );
+    }
+
+
+    /*
+    --------------------------------------------------------
+                MÉTODO: errorLexico
+    -------------------------------------------------------
+
+    DESCRIPCIÓN:
+    Registra un error léxico utilizando la posición actual
+    del analizador.
+
+    ENTRADA:
+    detalle: descripción del error encontrado.
+    
+    SALIDA:
+    El error se agrega a la lista de errores y se muestra
+    en consola.
+    
+    OBJETIVO:
+    Centralizar el reporte de errores léxicos.
+     */
+    private void errorLexico(String detalle) {
+        errorLexico(
+            detalle,
+            yyline + 1,
+            yycolumn + 1
+        );
+    }
+
+
+    /*
+    --------------------------------------------------------
+            MÉTODO: errorLexico CON POSICIÓN
+    --------------------------------------------------------
+    
+    DESCRIPCIÓN:
+    Registra un error léxico indicando explícitamente la línea
+    y columna donde comenzó el elemento incorrecto.
+    
+    ENTRADAS:
+    detalle: descripción del error.
+    linea: número de línea del error.
+    columna: número de columna del error.
+    
+    SALIDA:
+    El mensaje se almacena y se muestra en consola.
+    
+    OBJETIVO:
+    Permitir reportar correctamente errores que abarcan varias
+    líneas, como strings o comentarios sin cerrar.
+     */
+    private void errorLexico(
+        String detalle,
+        int linea,
+        int columna
+    ) {
+        String msg =
+            "Error léxico en línea " +
+            linea +
+            ", columna " +
+            columna +
+            ": " +
+            detalle;
+
+        errores.add(msg);
+        System.out.println(msg);
+    }
+%}
+
+
+/*
+============================================================
+                    MACROS
+============================================================
+
+DESCRIPCIÓN:son expresiones reutilizables que permiten definir
+de forma clara los elementos que forman el lenguaje.
+
+ENTRADA: Caracteres leídos por JFlex.
+
+SALIDA: Patrones que pueden utilizarse posteriormente en las reglas.
+
+OBJETIVO: Evitar repetir expresiones regulares y facilitar el mantenimiento
+del analizador léxico.
+
+ */
+
+LETRA  = [a-zA-Z]
+DIGITO   = [0-9]
+NOCERODIGITO  = [1-9]
+IDENTIFICADOR = {LETRA}( {LETRA}|{DIGITO}| \_({LETRA}|{DIGITO}) )*
+ENTERO =  0| {NOCERODIGITO}{DIGITO}*
+/*
+ * Define la parte decimal de un número flotante.
+ */
+FRACCION = 0|  {DIGITO}*{NOCERODIGITO}
+FLOTANTE ={ENTERO}\.{FRACCION}
+SIMBOLO_SC = "@"|"#"|"$"|"%"|"^"|"&"|  "\*"|"("|")"|"-"|"\_"|"="|"+"|  "["|"]"|"{"|"}"|";"|":"|  "<"|">"|","|"."|"/"|"?"|"\\"|"\`"|"\~"|"!"|"|"
+SIMBOLO = {SIMBOLO_SC}|"'"
+CARACTER = {LETRA}|{DIGITO}|{SIMBOLO}|" "
+CARACTER_SC = {LETRA}|{DIGITO}|{SIMBOLO_SC}|" "
+LITERAL_CHAR = \'{CARACTER}\'
+LITERAL_STRING =  \"{CARACTER}*\"
 
 %%
 
-/* REGLAS DE ERRORES */
+/*
+============================================================
+            ERRORES: NÚMEROS
+============================================================
 
-/* Regla para enteros que empiezan con 0 */
-0(0|{NOCERODIGITO}{DIGITO}*) {
-    System.out.println(
-        "Error léxico en línea " + (yyline + 1) +
-        ", columna " + (yycolumn + 1) +
-        ": entero inválido '" + yytext() + "'"
+DESCRIPCIÓN:
+Detecta números que tienen una estructura no permitida por
+las reglas del lenguaje.
+
+ENTRADA: Números escritos incorrectamente.
+
+SALIDA:
+Un mensaje de error léxico.
+
+RESTRICCIONES:
+No se permiten enteros con ceros a la izquierda.
+No se permiten flotantes con cero a la izquierda.
+No se permiten flotantes terminados en cero, excepto x.0.
+Un punto decimal debe ir acompañado de una parte decimal válida.
+
+OBJETIVO:
+Detectar errores en los números antes de entregarlos al parser.
+ */
+
+
+/* Enteros con ceros a la izquierda: 00, 05, 007 */
+0{DIGITO}+ {
+    errorLexico(
+        "entero inválido '" + yytext() + "'"
     );
 }
 
-/* Reglas para literales de exponente inválidos */
 
-/* Exponente sin número */
-[eE] {
-    System.out.println(
-        "Error léxico en línea " + (yyline + 1) +
-        ", columna " + (yycolumn + 1) +
-        ": literal exp inválido '" + yytext() + "'"
-    );
-}
-
-/* 0e */
-0[eE](0|{NOCERODIGITO}{DIGITO}*) {
-    System.out.println(
-        "Error léxico en línea " + (yyline + 1) +
-        ", columna " + (yycolumn + 1) +
-        ": literal exp inválido '" + yytext() + "'"
-    );
-}
-
-/* Número inválido seguido de e */
-0(0|{NOCERODIGITO}{DIGITO}*)[eE] {
-    System.out.println(
-        "Error léxico en línea " + (yyline + 1) +
-        ", columna " + (yycolumn + 1) +
-        ": literal exp inválido '" + yytext() + "'"
-    );
-}
-
-/* e seguido de número */
-
-[eE](0|{NOCERODIGITO}{DIGITO}*) {
-    System.out.println(
-        "Error léxico en línea " + (yyline + 1) +
-        ", columna " + (yycolumn + 1) +
-        ": literal exp inválido '" + yytext() + "'"
-    );
-}
-
-/* Número seguido de e */
-(0|{NOCERODIGITO}{DIGITO}*)[eE] {
-    System.out.println(
-        "Error léxico en línea " + (yyline + 1) +
-        ", columna " + (yycolumn + 1) +
-        ": literal exp inválido '" + yytext() + "'"
-    );
-}
-
-/*Sin flotantes en las partes del exponencial*/
-{LITERAL_EXP_INVALIDO} {
-    System.out.println(
-        "Error léxico en línea " + (yyline + 1) +
-        ", columna " + (yycolumn + 1) +
-        ": literal exp inválido '" + yytext() + "'"
-    );
-}
-
-//Regla base de exponenciales, está acá para evitar conflictos ccon la regla de su error
-{LITERAL_EXP} {return new java_cup.runtime.Symbol(sym.LITERAL_EXP, yytext());}
-
-/* Reglas para identificadores inválidos */
-
-/* 1x, 123abc, 4g5, etc */
-{DIGITO}+{LETRA}({LETRA}|{DIGITO}|_)* {
-    System.out.println(
-        "Error léxico en línea " + (yyline + 1) +
-        ", columna " + (yycolumn + 1) +
-        ": identificador inválido '" + yytext() + "'"
-    );
-}
-
-/* _counter, __variable, etc */
-_+{LETRA}({LETRA}|{DIGITO}|_)* {
-    System.out.println(
-        "Error léxico en línea " + (yyline + 1) +
-        ", columna " + (yycolumn + 1) +
-        ": identificador inválido '" + yytext() + "'"
-    );
-}
-
-/* Reglas para flotantes inválidos */
-
-/* 05.1, 012.45, etc. */
+/* Flotante con cero a la izquierda: 05.1, 012.45 */
 0{DIGITO}+\.{DIGITO}+ {
-    System.out.println(
-        "Error léxico en línea " + (yyline + 1) +
-        ", columna " + (yycolumn + 1) +
-        ": literal float inválido '" + yytext() + "'"
+    errorLexico(
+        "literal float inválido '" + yytext() + "'"
     );
 }
 
-/* 131.8940, 0.8090, etc */
-({NOCERODIGITO}{DIGITO}*|0)\.{DIGITO}+0 {
-    System.out.println(
-        "Error léxico en línea " + (yyline + 1) +
-        ", columna " + (yycolumn + 1) +
-        ": literal float inválido '" + yytext() + "'"
-    );
-}
-
-//Está aquí para evitar conflicto con las reglas de errores
-{LITERAL_CHAR} {return new java_cup.runtime.Symbol(sym.LITERAL_CHAR, yytext());}
-
-/* Literal char con más de un carácter */
-\'{CARACTER}{CARACTER}+\' {
-    System.out.println(
-        "Error léxico en línea " + (yyline + 1) +
-        ", columna " + (yycolumn + 1) +
-        ": literal char inválido '" + yytext() + "'"
+/* Flotante terminado en cero: 1.50, 0.00, 131.8940 */
+{ENTERO}\.{DIGITO}+0 {
+    errorLexico(
+        "literal float inválido '" + yytext() + "'"
     );
 }
 
 
-/* Literal char incompleto: 'a */
-\'{CARACTER} {
-    System.out.println(
-        "Error léxico en línea " + (yyline + 1) +
-        ", columna " + (yycolumn + 1) +
-        ": literal char incompleto '" + yytext() + "'"
+/* Flotante sin parte decimal: 5. */
+{ENTERO}\. {
+    errorLexico(
+        "literal float incompleto '" + yytext() + "'"
     );
 }
 
-/* Literal char incompleto: ' */
-\' {
-    System.out.println(
-        "Error léxico en línea " + (yyline + 1) +
-        ", columna " + (yycolumn + 1) +
-        ": literal char incompleto '" + yytext() + "'"
-    );
-}
 
 /*
- * Cuando aparece una comilla doble sin que exista
- * un string completo, se entra en este estado.
+============================================================
+                ERRORES: IDENTIFICADORES
+============================================================
+
+DESCRIPCIÓN:
+Detecta identificadores que no cumplen las reglas establecidas.
+
+ENTRADA: Secuencias de caracteres que intentan formar identificadores.
+
+SALIDA: Un mensaje de error léxico.
+
+RESTRICCIONES:
+Un identificador no puede comenzar con un número.
+Un identificador no puede comenzar con un guion bajo.
+
+OBJETIVO:
+Evitar que identificadores inválidos lleguen al parser.
  */
+
+
+/* Empieza con dígito: 1x, 123abc */
+{DIGITO}+{LETRA}({LETRA}|{DIGITO}|\_)* {
+    errorLexico(
+        "identificador inválido '" + yytext() + "'"
+    );
+}
+
+
+/* Empieza con guion bajo: _counter, __variable, _1 */
+\_+({LETRA}|{DIGITO})({LETRA}|{DIGITO}|\_)* {
+    errorLexico(
+        "identificador inválido '" + yytext() + "'"
+    );
+}
+
+
+/*
+============================================================
+                LITERALES CHAR
+============================================================
+
+DESCRIPCIÓN:
+Reconoce caracteres individuales y detecta caracteres escritos
+de manera incorrecta.
+
+ENTRADA:
+Un carácter encerrado entre comillas simples.
+
+SALIDA:
+LITERAL_CHAR si es válido.
+Un error léxico si es inválido o está incompleto.
+
+RESTRICCIONES:
+Un char debe contener exactamente un carácter.
+
+OBJETIVO:
+Reconocer correctamente los literales de tipo char.
+ */
+
+
+/* Char válido */
+{LITERAL_CHAR} {
+    return symbol(sym.LITERAL_CHAR);
+}
+
+/* Char vacío: '' */
+\'\' {
+    errorLexico(
+        "literal char vacío '" + yytext() + "'"
+    );
+}
+
+/* Más de un carácter: 'ab' */
+\'{CARACTER_SC}{CARACTER_SC}+\' {
+    errorLexico(
+        "literal char inválido '" + yytext() + "'"
+    );
+}
+
+
+/* Char sin cerrar: 'a */
+\'{CARACTER_SC}+ {
+    errorLexico(
+        "literal char incompleto '" + yytext() + "'"
+    );
+}
+
+
+/* Comilla simple suelta */
+\' {
+    errorLexico(
+        "literal char incompleto '" + yytext() + "'"
+    );
+}
+
+
+/*
+============================================================
+                    STRINGS
+============================================================
+
+DESCRIPCIÓN:
+Reconoce cadenas de texto y controla cadenas que quedaron
+abiertas o contienen caracteres no permitidos.
+
+ENTRADA:Texto encerrado entre comillas dobles.
+
+SALIDA:
+LITERAL_STRING si la cadena es válida.
+Error léxico si la cadena es inválida o no está cerrada.
+
+OBJETIVO:
+Garantizar que las cadenas respeten las reglas del lenguaje.
+
+ */
+
+
+/* String válido */
+{LITERAL_STRING} {
+    return symbol(sym.LITERAL_STRING);
+}
+
+/* Comilla doble que no abre un string válido */
 \" {
+    lineaInicio = yyline + 1;
+    columnaInicio = yycolumn + 1;
     yybegin(STRING_INCOMPLETO);
 }
 
-
-/* Contenido de un string incompleto */
+/*
+Estado utilizado para procesar un string incompleto.
+ */
 <STRING_INCOMPLETO> {
+
     [^\r\n\"]+ {
-        // Se continúa consumiendo el contenido para no detener la ejecución
+        /* Se consume el contenido para poder continuar. */
     }
 
+    /*
+    Se encontró el cierre del string, pero el contenido
+    ontiene caracteres no permitidos.
+     */
     \" {
-        System.out.println(
-            "Error léxico en línea " + (yyline + 1) +
-            ", columna " + (yycolumn + 1) +
-            ": literal string incompleto"
+        errorLexico(
+            "literal string inválido (carácter no permitido)",
+            lineaInicio,
+            columnaInicio
         );
         yybegin(YYINITIAL);
     }
 
+    /*
+    La cadena llegó al final de la línea sin cerrarse.
+     */
     \r|\n {
-        System.out.println(
-            "Error léxico en línea " + (yyline + 1) +
-            ", columna " + (yycolumn + 1) +
-            ": literal string incompleto"
+        errorLexico(
+            "literal string sin cerrar",
+            lineaInicio,
+            columnaInicio
         );
         yybegin(YYINITIAL);
     }
 
+    /*
+    La cadena llegó al final del archivo sin cerrarse.
+     */
     <<EOF>> {
-        System.out.println(
-            "Error léxico en línea " + (yyline + 1) +
-            ", columna " + (yycolumn + 1) +
-            ": literal string incompleto"
+        errorLexico(
+            "literal string sin cerrar",
+            lineaInicio,
+            columnaInicio
         );
-        return null;
+        yybegin(YYINITIAL);
+        return new Symbol(sym.EOF);
     }
 }
 
-/* Operadores aritméticos */
-"++" {return new java_cup.runtime.Symbol(sym.INCREMENT);}
 
-"+" {return new java_cup.runtime.Symbol(sym.PLUS);}
+/*
+============================================================
+            OPERADORES 
+============================================================
+ */
 
-"--" {return new java_cup.runtime.Symbol(sym.DECREMENT);}
-
-"-" {return new java_cup.runtime.Symbol(sym.MINUS);}
-
-"*" {return new java_cup.runtime.Symbol(sym.MULTIPLY);}
-
-"//" {return new java_cup.runtime.Symbol(sym.ENTIREDIV);}
-
-"/" {return new java_cup.runtime.Symbol(sym.FLOATDIV);}
-
-"mod" {return new java_cup.runtime.Symbol(sym.MOD);}
-
-"pot" {return new java_cup.runtime.Symbol(sym.POT);}
-
-
-/* Operadores relacionales */
-"<=" {return new java_cup.runtime.Symbol(sym.LTE);}
-
-">=" {return new java_cup.runtime.Symbol(sym.GTE);}
-
-"==" {return new java_cup.runtime.Symbol(sym.EQUAL);}
-
-"!=" {return new java_cup.runtime.Symbol(sym.NEQ);}
-
-"<" {return new java_cup.runtime.Symbol(sym.LT);}
-
-">" {return new java_cup.runtime.Symbol(sym.GT);}
+"++" { return symbol(sym.INCREMENT); }
+"+"  { return symbol(sym.PLUS); }
+"--" { return symbol(sym.DECREMENT); }
+"-"  { return symbol(sym.MINUS); }
+"\*" { return symbol(sym.MULTIPLY); }
+"//" { return symbol(sym.ENTIREDIV); }
+"/"  { return symbol(sym.FLOATDIV); }
+"mod" { return symbol(sym.MOD); }
+"pot" { return symbol(sym.POT); }
+"<=" { return symbol(sym.LTE); }
+">=" { return symbol(sym.GTE); }
+"==" { return symbol(sym.EQUAL); }
+"!=" { return symbol(sym.NEQ); }
+"<"  { return symbol(sym.LT); }
+">"  { return symbol(sym.GT); }
+"λ" { return symbol(sym.AND); }
+"θ" { return symbol(sym.OR); }
+"Σ" { return symbol(sym.NOT); }
 
 
-/* Operadores lógicos */
-"λ" {return new java_cup.runtime.Symbol(sym.AND);}
+/*
+============================================================
+        DELIMITADORES Y OPERADORES ESPECIALES
+============================================================
+ */
 
-"θ" {return new java_cup.runtime.Symbol(sym.OR);}
-
-"Σ" {return new java_cup.runtime.Symbol(sym.NOT);}
-
-
-/* Delimitadores y bloques */
-"¿:" {return new java_cup.runtime.Symbol(sym.OPBLOCK);}
-
-":?" {return new java_cup.runtime.Symbol(sym.CLBLOCK);}
-
-"є:" {return new java_cup.runtime.Symbol(sym.PARENOP);}
-
-":э" {return new java_cup.runtime.Symbol(sym.PARENCL);}
-
-"ʃ:" {return new java_cup.runtime.Symbol(sym.OPBRACKET);}
-
-":ʅ" {return new java_cup.runtime.Symbol(sym.CLBRACKET);}
-
-"»" {return new java_cup.runtime.Symbol(sym.TERMINATOR);}
+"¿:" { return symbol(sym.OPBLOCK); }
+":?" { return symbol(sym.CLBLOCK); }
+"є:" { return symbol(sym.PARENOP); }
+":э" { return symbol(sym.PARENCL); }
+"ʃ:" { return symbol(sym.OPBRACKET); }
+":ʅ" { return symbol(sym.CLBRACKET); }
+"»"  { return symbol(sym.TERMINATOR); }
+"Ͱ"  { return symbol(sym.ASIGN); }
+","  { return symbol(sym.COMA); }
 
 
-/* Asignación y puntuación */
-"Ͱ" {return new java_cup.runtime.Symbol(sym.ASIGN);}
+/*
+============================================================
+                PALABRAS RESERVADAS
+============================================================
+ */
 
-"," {return new java_cup.runtime.Symbol(sym.COMA);}
+"val"       { return symbol(sym.VAL); }
+"principal" { return symbol(sym.PRINCIPAL); }
+"int"       { return symbol(sym.INT); }
+"float"     { return symbol(sym.FLOAT); }
+"bool"      { return symbol(sym.BOOL); }
+"char"      { return symbol(sym.CHAR); }
+"string"    { return symbol(sym.STRING); }
+"void"      { return symbol(sym.VOID); }
+"true"      { return symbol(sym.TRUE); }
+"false"     { return symbol(sym.FALSE); }
+"if"        { return symbol(sym.IF); }
+"elif"      { return symbol(sym.ELIF); }
+"else"      { return symbol(sym.ELSE); }
+"while"     { return symbol(sym.WHILE); }
+"for"       { return symbol(sym.FOR); }
+"return"    { return symbol(sym.RETURN); }
+"break"     { return symbol(sym.BREAK); }
+"print"     { return symbol(sym.PRINT); }
+"read"      { return symbol(sym.READ); }
+"write"     { return symbol(sym.WRITE); }
 
-"." {return new java_cup.runtime.Symbol(sym.DOT);}
+
+/*
+============================================================
+        LITERALES E IDENTIFICADORES
+============================================================
+ */
+
+{ENTERO} {return symbol(sym.LITERAL_INT);}
+{FLOTANTE} {return symbol(sym.LITERAL_FLOAT);}
+{IDENTIFICADOR} {return symbol(sym.ID);}
 
 
-/* Espacios y saltos de línea */
+/*
+Identificador con guion bajo mal ubicado.
+Esta regla detecta identificadores que comienzan correctamente
+pero terminan utilizando el guion bajo de forma incorrecta.
+ */
+
+{LETRA}({LETRA}|{DIGITO}|\_)* {
+    errorLexico(
+        "identificador inválido '" + yytext() + "'"
+    );
+}
+
+
+/*
+============================================================
+                ESPACIOS
+============================================================
+
+DESCRIPCIÓN:Ignora espacios, tabulaciones y saltos de línea.
+
+ENTRADA:Espacios en blanco del código fuente.
+
+SALIDA:Ningún token.
+
+OBJETIVO:Evitar que los espacios interfieran con el análisis léxico.
+ */
+
 [ \t\r\n]+ { }
 
-
-/* Palabras reservadas */
-"val" {return new java_cup.runtime.Symbol(sym.VAL);}
-
-"principal" {return new java_cup.runtime.Symbol(sym.PRINCIPAL);}
-
-"defun" {return new java_cup.runtime.Symbol(sym.DEFUN);}
-
-"int" {return new java_cup.runtime.Symbol(sym.INT);}
-
-"float" {return new java_cup.runtime.Symbol(sym.FLOAT);}
-
-"bool" {return new java_cup.runtime.Symbol(sym.BOOL);}
-
-"char" {return new java_cup.runtime.Symbol(sym.CHAR);}
-
-"string" {return new java_cup.runtime.Symbol(sym.STRING);}
-
-"void" {return new java_cup.runtime.Symbol(sym.VOID);}
-
-"true" {return new java_cup.runtime.Symbol(sym.TRUE);}
-
-"false" {return new java_cup.runtime.Symbol(sym.FALSE);}
-
-"dg" {return new java_cup.runtime.Symbol(sym.GLOBAL);}
-
-"dl" {return new java_cup.runtime.Symbol(sym.LOCAL);}
-
-"if" {return new java_cup.runtime.Symbol(sym.IF);}
-
-"elif" {return new java_cup.runtime.Symbol(sym.ELIF);}
-
-"else" {return new java_cup.runtime.Symbol(sym.ELSE);}
-
-"while" {return new java_cup.runtime.Symbol(sym.WHILE);}
-
-"for" {return new java_cup.runtime.Symbol(sym.FOR);}
-
-"return" {return new java_cup.runtime.Symbol(sym.RETURN);}
-
-"break" {return new java_cup.runtime.Symbol(sym.BREAK);}
-
-"read" {return new java_cup.runtime.Symbol(sym.READ);}
-
-"write" {return new java_cup.runtime.Symbol(sym.WRITE);}
-
-
-/* Reglas para patrones que conservan lexema */
-{LITERAL_INT} {return new java_cup.runtime.Symbol(sym.LITERAL_INT, yytext());}
-
-{LITERAL_FLOAT} {return new java_cup.runtime.Symbol(sym.LITERAL_FLOAT, yytext());}
-
-{LITERAL_STRING} {return new java_cup.runtime.Symbol(sym.LITERAL_STRING, yytext());}
-
-{IDENTIFICADOR} {return new java_cup.runtime.Symbol(sym.ID, yytext());}
-
-
-/* Comentarios */
-"|" [^\r\n]* {
+/* Comentario de una línea */
+"|"[^\r\n]* {
+    /* El comentario se ignora. */
 }
 
+/* Inicio de comentario multilínea */
 "¡" {
+    lineaInicio = yyline + 1;
+    columnaInicio = yycolumn + 1;
     yybegin(COMENTARIO_MULTILINEA);
 }
 
+/*
+ * Estado utilizado mientras se procesa un comentario multilínea.
+ */
 <COMENTARIO_MULTILINEA> {
+
     "!" {
         yybegin(YYINITIAL);
     }
-    .|\r|\n {
+
+    [^] {
+        /* Se ignora el contenido del comentario. */
+    }
+
+    <<EOF>> {
+        errorLexico(
+            "comentario multilínea sin cerrar",
+            lineaInicio,
+            columnaInicio
+        );
+        yybegin(YYINITIAL);
+        return new Symbol(sym.EOF);
     }
 }
 
-/* Regla general para caracteres no reconocidos */
+
+/*
+============================================================
+            CUALQUIER OTRO CARÁCTER
+============================================================
+DESCRIPCIÓN:
+captura cualquier carácter que no haya sido reconocido por
+as reglas anteriores.
+
+ENTRADA:
+Cualquier carácter no contemplado por el lenguaje.
+
+SALIDA:
+Un error léxico indicando el carácter no reconocido.
+
+OBJETIVO:
+Evitar que caracteres desconocidos pasen silenciosamente
+al analizador sintáctico.
+
+ */
+
 . {
-    System.out.println(
-        "Error léxico en la línea " + (yyline + 1) +
-        ", columna " + (yycolumn + 1) +
-        ": carácter no reconocido '" + yytext() + "'"
+    errorLexico(
+        "carácter no reconocido '" + yytext() + "'"
     );
 }
