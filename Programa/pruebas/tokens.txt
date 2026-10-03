@@ -2,823 +2,843 @@ LINEA    COLUMNA  TOKEN              LEXEMA
 ------------------------------------------------------------
 10       1        VAL                val
 10       5        INT                int
-10       9        ID                 entero1
-10       17       ASIGN              Ͱ
-10       19       LITERAL_INT        0
-10       20       TERMINATOR         »
+10       8        TERMINATOR         »
 11       1        VAL                val
 11       5        INT                int
-11       9        ID                 entero2
-11       17       ASIGN              Ͱ
-11       19       LITERAL_INT        1
-11       20       TERMINATOR         »
+11       9        ID                 variable
+11       18       ASIGN              Ͱ
+11       19       TERMINATOR         »
 12       1        VAL                val
 12       5        INT                int
-12       9        ID                 entero3
-12       17       ASIGN              Ͱ
-12       19       LITERAL_INT        10
-12       21       TERMINATOR         »
+12       9        ASIGN              Ͱ
+12       11       LITERAL_INT        10
+12       13       TERMINATOR         »
 13       1        VAL                val
-13       5        INT                int
-13       9        ID                 entero4
-13       17       ASIGN              Ͱ
-13       19       LITERAL_INT        123456789
-13       28       TERMINATOR         »
+13       5        ID                 variable
+13       14       ASIGN              Ͱ
+13       16       LITERAL_INT        10
+13       18       TERMINATOR         »
 14       1        VAL                val
-14       5        FLOAT              float
-14       11       ID                 decimal1
-14       20       ASIGN              Ͱ
-14       22       LITERAL_FLOAT      0.5
-14       25       TERMINATOR         »
+14       5        INT                int
+14       9        ID                 variable1
+14       19       LITERAL_INT        10
+14       21       TERMINATOR         »
 15       1        VAL                val
-15       5        FLOAT              float
-15       11       ID                 decimal2
-15       20       ASIGN              Ͱ
-15       22       LITERAL_FLOAT      1.25
-15       26       TERMINATOR         »
+15       5        INT                int
+15       9        ID                 variable2
+15       19       ASIGN              Ͱ
+15       20       TERMINATOR         »
 16       1        VAL                val
 16       5        FLOAT              float
-16       11       ID                 decimal3
-16       20       ASIGN              Ͱ
-16       22       LITERAL_FLOAT      123.456
-16       29       TERMINATOR         »
+16       11       ID                 decimal
+16       19       ASIGN              Ͱ
+16       21       LITERAL_INT        10
+16       23       TERMINATOR         »
 17       1        VAL                val
 17       5        BOOL               bool
-17       10       ID                 verdadero
-17       20       ASIGN              Ͱ
-17       22       TRUE               true
-17       26       TERMINATOR         »
+17       10       ID                 bandera
+17       18       ASIGN              Ͱ
+17       19       TERMINATOR         »
 18       1        VAL                val
-18       5        BOOL               bool
-18       10       ID                 falso
-18       16       ASIGN              Ͱ
-18       18       FALSE              false
-18       23       TERMINATOR         »
+18       5        STRING             string
+18       12       ID                 texto
+18       18       ASIGN              Ͱ
+18       19       TERMINATOR         »
 19       1        VAL                val
 19       5        CHAR               char
-19       10       ID                 letraA
-19       17       ASIGN              Ͱ
-19       19       LITERAL_CHAR       'A'
-19       22       TERMINATOR         »
-20       1        VAL                val
-20       5        CHAR               char
-20       10       ID                 letraZ
-20       17       ASIGN              Ͱ
-20       19       LITERAL_CHAR       'z'
-20       22       TERMINATOR         »
-21       1        VAL                val
-21       5        STRING             string
-21       12       ID                 texto
-21       18       ASIGN              Ͱ
-21       20       LITERAL_STRING     "Hola mundo"
-21       32       TERMINATOR         »
+19       10       ID                 letra
+19       16       ASIGN              Ͱ
+19       17       TERMINATOR         »
+25       1        VAL                val
+25       5        INT                int
+25       9        ID                 error1
+25       16       ASIGN              Ͱ
+25       18       LITERAL_INT        10
+25       21       PLUS               +
+25       22       TERMINATOR         »
+26       1        VAL                val
+26       5        INT                int
+26       9        ID                 error2
+26       16       ASIGN              Ͱ
+26       18       PLUS               +
+26       20       LITERAL_INT        10
+26       22       TERMINATOR         »
 27       1        VAL                val
-27       5        FLOAT              float
-27       11       ID                 errorNumero1
-27       24       ASIGN              Ͱ
-27       26       LITERAL_FLOAT      10.25
-27       32       LITERAL_INT        5
-27       33       TERMINATOR         »
+27       5        INT                int
+27       9        ID                 error3
+27       16       ASIGN              Ͱ
+27       18       LITERAL_INT        10
+27       21       MULTIPLY           *
+27       22       TERMINATOR         »
 28       1        VAL                val
-28       5        FLOAT              float
-28       11       ID                 errorNumero2
-28       24       ASIGN              Ͱ
-28       26       LITERAL_FLOAT      1.2
-28       30       LITERAL_FLOAT      3.4
-28       33       TERMINATOR         »
+28       5        INT                int
+28       9        ID                 error4
+28       16       ASIGN              Ͱ
+28       18       MULTIPLY           *
+28       20       LITERAL_INT        10
+28       22       TERMINATOR         »
 29       1        VAL                val
-29       5        FLOAT              float
-29       11       ID                 errorNumero3
-29       24       ASIGN              Ͱ
-29       31       LITERAL_INT        456
-29       34       TERMINATOR         »
+29       5        INT                int
+29       9        ID                 error5
+29       16       ASIGN              Ͱ
+29       18       LITERAL_INT        10
+29       21       POT                pot
+29       24       TERMINATOR         »
 30       1        VAL                val
-30       5        FLOAT              float
-30       11       ID                 errorNumero4
-30       24       ASIGN              Ͱ
-30       27       LITERAL_INT        123
-30       30       TERMINATOR         »
+30       5        INT                int
+30       9        ID                 error6
+30       16       ASIGN              Ͱ
+30       18       POT                pot
+30       22       LITERAL_INT        10
+30       24       TERMINATOR         »
 31       1        VAL                val
-31       5        FLOAT              float
-31       11       ID                 errorNumero5
-31       24       ASIGN              Ͱ
-31       30       TERMINATOR         »
+31       5        INT                int
+31       9        ID                 error7
+31       16       ASIGN              Ͱ
+31       18       PARENOP            є:
+31       21       LITERAL_INT        10
+31       24       PLUS               +
+31       26       LITERAL_INT        20
+31       28       TERMINATOR         »
 32       1        VAL                val
-32       5        FLOAT              float
-32       11       ID                 errorNumero6
-32       24       ASIGN              Ͱ
-32       26       LITERAL_FLOAT      10.0
-32       31       LITERAL_INT        0
-32       32       TERMINATOR         »
+32       5        INT                int
+32       9        ID                 error8
+32       16       ASIGN              Ͱ
+32       18       PARENOP            є:
+32       21       LITERAL_INT        10
+32       24       PLUS               +
+32       26       PARENCL            :э
+32       28       TERMINATOR         »
 33       1        VAL                val
 33       5        INT                int
-33       9        ID                 errorNumero7
-33       22       ASIGN              Ͱ
-33       24       LITERAL_FLOAT      12.34
-33       30       LITERAL_INT        56
-33       32       TERMINATOR         »
+33       9        ID                 error9
+33       16       ASIGN              Ͱ
+33       18       PARENOP            є:
+33       21       PARENCL            :э
+33       23       TERMINATOR         »
 34       1        VAL                val
 34       5        INT                int
-34       9        ID                 errorNumero8
-34       22       ASIGN              Ͱ
-34       24       LITERAL_INT        999999999999999999999999999
-34       51       TERMINATOR         »
+34       9        ID                 error10
+34       17       ASIGN              Ͱ
+34       19       PARENOP            є:
+34       22       LITERAL_INT        10
+34       25       MULTIPLY           *
+34       27       PARENOP            є:
+34       30       LITERAL_INT        20
+34       33       PARENCL            :э
+34       35       TERMINATOR         »
 35       1        VAL                val
-35       5        FLOAT              float
-35       11       ID                 errorNumero9
-35       24       ASIGN              Ͱ
-35       26       LITERAL_FLOAT      999999999.999999
-35       43       LITERAL_INT        999
-35       46       TERMINATOR         »
-36       1        VAL                val
-36       5        INT                int
-36       9        ID                 errorNumero10
-36       23       ASIGN              Ͱ
-36       31       TERMINATOR         »
+35       5        INT                int
+35       9        ID                 error11
+35       17       ASIGN              Ͱ
+35       19       PARENOP            є:
+35       22       LITERAL_INT        10
+35       25       PLUS               +
+35       27       LITERAL_INT        20
+35       30       PARENCL            :э
+35       33       MULTIPLY           *
+35       34       TERMINATOR         »
+41       1        VAL                val
+41       5        INT                int
+41       9        ID                 parentesis1
+41       21       ASIGN              Ͱ
+41       23       PARENOP            є:
+41       26       LITERAL_INT        10
+41       29       PLUS               +
+41       31       LITERAL_INT        20
+41       34       PARENCL            :э
+41       37       PARENCL            :э
+41       39       TERMINATOR         »
 42       1        VAL                val
 42       5        INT                int
-42       20       ASIGN              Ͱ
-42       22       LITERAL_INT        10
-42       24       TERMINATOR         »
+42       9        ID                 parentesis2
+42       21       ASIGN              Ͱ
+42       23       PARENOP            є:
+42       26       LITERAL_INT        10
+42       29       PLUS               +
+42       31       LITERAL_INT        20
+42       33       TERMINATOR         »
 43       1        VAL                val
 43       5        INT                int
-43       20       ASIGN              Ͱ
-43       22       LITERAL_INT        20
-43       24       TERMINATOR         »
+43       9        ID                 parentesis3
+43       21       ASIGN              Ͱ
+43       23       PARENOP            є:
+43       26       LITERAL_INT        10
+43       29       PLUS               +
+43       31       PARENOP            є:
+43       34       LITERAL_INT        20
+43       37       PLUS               +
+43       39       LITERAL_INT        30
+43       42       PARENCL            :э
+43       44       TERMINATOR         »
 44       1        VAL                val
 44       5        INT                int
-44       19       ASIGN              Ͱ
-44       21       LITERAL_INT        30
-44       23       TERMINATOR         »
-45       1        VAL                val
-45       5        INT                int
-45       19       ASIGN              Ͱ
-45       21       LITERAL_INT        40
-45       23       TERMINATOR         »
-46       1        VAL                val
-46       5        INT                int
-46       9        ID                 nombre
-46       15       MINUS              -
-46       16       ID                 con
-46       19       MINUS              -
-46       20       ID                 guion
-46       26       ASIGN              Ͱ
-46       28       LITERAL_INT        50
-46       30       TERMINATOR         »
-47       1        VAL                val
-47       5        INT                int
-47       9        ID                 nombre
-47       16       ID                 variable
-47       25       ASIGN              Ͱ
-47       27       LITERAL_INT        60
-47       29       TERMINATOR         »
-48       1        VAL                val
-48       5        INT                int
-48       9        ID                 nombre
-48       16       ID                 variable
-48       25       ASIGN              Ͱ
-48       27       LITERAL_INT        70
-48       29       TERMINATOR         »
-49       1        VAL                val
-49       5        INT                int
-49       9        ID                 nombre
-49       16       ID                 variable
-49       25       ASIGN              Ͱ
-49       27       LITERAL_INT        80
-49       29       TERMINATOR         »
+44       9        ID                 parentesis4
+44       21       ASIGN              Ͱ
+44       23       PARENOP            є:
+44       26       PARENOP            є:
+44       29       LITERAL_INT        10
+44       32       PLUS               +
+44       34       LITERAL_INT        20
+44       37       PARENCL            :э
+44       40       MULTIPLY           *
+44       42       LITERAL_INT        30
+44       44       TERMINATOR         »
 50       1        VAL                val
 50       5        INT                int
-50       9        ID                 nombre
-50       16       ID                 variable
-50       25       ASIGN              Ͱ
-50       27       LITERAL_INT        90
-50       29       TERMINATOR         »
+50       9        ID                 llamada1
+50       18       ASIGN              Ͱ
+50       20       ID                 suma
+50       25       PARENOP            є:
+50       28       PARENCL            :э
+50       30       TERMINATOR         »
+51       1        VAL                val
+51       5        INT                int
+51       9        ID                 llamada2
+51       18       ASIGN              Ͱ
+51       20       ID                 suma
+51       25       PARENOP            є:
+51       28       LITERAL_INT        10
+51       31       PARENCL            :э
+51       33       TERMINATOR         »
+52       1        VAL                val
+52       5        INT                int
+52       9        ID                 llamada3
+52       18       ASIGN              Ͱ
+52       20       ID                 suma
+52       25       PARENOP            є:
+52       28       LITERAL_INT        10
+52       30       COMA               ,
+52       32       PARENCL            :э
+52       34       TERMINATOR         »
+53       1        VAL                val
+53       5        INT                int
+53       9        ID                 llamada4
+53       18       ASIGN              Ͱ
+53       20       ID                 suma
+53       25       PARENOP            є:
+53       28       COMA               ,
+53       30       LITERAL_INT        20
+53       33       PARENCL            :э
+53       35       TERMINATOR         »
+54       1        VAL                val
+54       5        INT                int
+54       9        ID                 llamada5
+54       18       ASIGN              Ͱ
+54       20       ID                 suma
+54       25       PARENOP            є:
+54       28       LITERAL_INT        10
+54       30       COMA               ,
+54       32       LITERAL_INT        20
+54       34       COMA               ,
+54       36       PARENCL            :э
+54       38       TERMINATOR         »
+55       1        VAL                val
+55       5        INT                int
+55       9        ID                 llamada6
+55       18       ASIGN              Ͱ
+55       20       ID                 suma
+55       25       PARENOP            є:
+55       28       LITERAL_INT        10
+55       31       LITERAL_INT        20
+55       34       PARENCL            :э
+55       36       TERMINATOR         »
 56       1        VAL                val
-56       5        STRING             string
-56       12       ID                 stringVacio
-56       24       ASIGN              Ͱ
-56       26       LITERAL_STRING     ""
-56       28       TERMINATOR         »
-57       1        VAL                val
-57       5        STRING             string
-57       12       ID                 stringNormal
-57       25       ASIGN              Ͱ
-57       27       LITERAL_STRING     "Texto valido"
-57       41       TERMINATOR         »
-58       1        VAL                val
-58       5        STRING             string
-58       12       ID                 stringSinCerrar
-58       28       ASIGN              Ͱ
-59       1        VAL                val
-59       5        STRING             string
-59       12       ID                 stringCon
-59       23       ASIGN              Ͱ
-60       1        VAL                val
-60       5        STRING             string
-60       12       ID                 stringCon
-60       23       ASIGN              Ͱ
-61       1        VAL                val
-61       5        STRING             string
-61       12       ID                 stringCon
-61       23       ASIGN              Ͱ
-62       1        VAL                val
-62       5        STRING             string
-62       12       ID                 stringConSalto
-62       27       ASIGN              Ͱ
-63       1        ID                 que
-63       5        ID                 continua
-69       1        VAL                val
-69       5        CHAR               char
-69       10       ID                 charValido1
-69       22       ASIGN              Ͱ
-69       24       LITERAL_CHAR       'A'
-69       27       TERMINATOR         »
-70       1        VAL                val
-70       5        CHAR               char
-70       10       ID                 charValido2
-70       22       ASIGN              Ͱ
-70       24       LITERAL_CHAR       '9'
-70       27       TERMINATOR         »
-71       1        VAL                val
-71       5        CHAR               char
-71       10       ID                 charVacio
-71       20       ASIGN              Ͱ
-71       24       TERMINATOR         »
-72       1        VAL                val
-72       5        CHAR               char
-72       10       ID                 charDos
-72       18       ASIGN              Ͱ
-72       24       TERMINATOR         »
-73       1        VAL                val
-73       5        CHAR               char
-73       10       ID                 charTres
-73       19       ASIGN              Ͱ
-73       26       TERMINATOR         »
-74       1        VAL                val
-74       5        CHAR               char
-74       10       ID                 charComilla
-74       22       ASIGN              Ͱ
-74       24       LITERAL_CHAR       '''
-74       27       TERMINATOR         »
-75       1        VAL                val
-75       5        CHAR               char
-75       10       ID                 charDobleComilla
-75       27       ASIGN              Ͱ
-81       1        VAL                val
-81       5        INT                int
-81       9        ID                 simboloArroba
-81       23       ASIGN              Ͱ
-81       25       LITERAL_INT        10
-81       30       LITERAL_INT        20
-81       32       TERMINATOR         »
-82       1        VAL                val
-82       5        INT                int
-82       9        ID                 simboloNumeral
-82       24       ASIGN              Ͱ
-82       26       LITERAL_INT        10
-82       31       LITERAL_INT        20
-82       33       TERMINATOR         »
-83       1        VAL                val
-83       5        INT                int
-83       9        ID                 simboloDolar
-83       22       ASIGN              Ͱ
-83       24       LITERAL_INT        10
-83       29       LITERAL_INT        20
-83       31       TERMINATOR         »
-84       1        VAL                val
-84       5        INT                int
-84       9        ID                 simboloPorcentaje
-84       27       ASIGN              Ͱ
-84       29       LITERAL_INT        10
-84       34       LITERAL_INT        20
-84       36       TERMINATOR         »
-85       1        VAL                val
-85       5        INT                int
-85       9        ID                 simboloAmpersand
-85       26       ASIGN              Ͱ
-85       28       LITERAL_INT        10
-85       33       LITERAL_INT        20
-85       35       TERMINATOR         »
-86       1        VAL                val
-86       5        INT                int
-86       9        ID                 simboloInterrogacion
-86       30       ASIGN              Ͱ
-86       32       LITERAL_INT        10
-86       37       LITERAL_INT        20
-86       39       TERMINATOR         »
-87       1        VAL                val
-87       5        INT                int
-87       9        ID                 simboloPuntoComa
-87       26       ASIGN              Ͱ
-87       28       LITERAL_INT        10
-87       33       LITERAL_INT        20
-87       35       TERMINATOR         »
-88       1        VAL                val
-88       5        INT                int
-88       9        ID                 simboloComillas
-88       25       ASIGN              Ͱ
-88       27       LITERAL_INT        10
-89       1        VAL                val
-89       5        INT                int
-89       9        ID                 simboloApostrofe
-89       26       ASIGN              Ͱ
-89       28       LITERAL_INT        10
-89       35       TERMINATOR         »
-90       1        VAL                val
-90       5        INT                int
-90       9        ID                 simboloBackslash
-90       26       ASIGN              Ͱ
-90       28       LITERAL_INT        10
-90       33       LITERAL_INT        20
-90       35       TERMINATOR         »
-91       1        VAL                val
-91       5        INT                int
-91       9        ID                 simboloExtra1
-91       23       ASIGN              Ͱ
-91       25       LITERAL_INT        10
-91       30       LITERAL_INT        20
-91       32       TERMINATOR         »
-92       1        VAL                val
-92       5        INT                int
-92       9        ID                 simboloExtra2
-92       23       ASIGN              Ͱ
-92       25       LITERAL_INT        10
-92       30       LITERAL_INT        20
-92       32       TERMINATOR         »
-93       1        VAL                val
-93       5        INT                int
-93       9        ID                 simboloExtra3
-93       23       ASIGN              Ͱ
-93       25       LITERAL_INT        10
-93       30       LITERAL_INT        20
-93       32       TERMINATOR         »
-99       1        VAL                val
-99       5        INT                int
-99       9        ID                 operador1
-99       19       ASIGN              Ͱ
-99       21       LITERAL_INT        10
-99       24       INCREMENT          ++
-99       26       TERMINATOR         »
-100      1        VAL                val
-100      5        INT                int
-100      9        ID                 operador2
-100      19       ASIGN              Ͱ
-100      21       LITERAL_INT        10
-100      24       DECREMENT          --
-100      26       TERMINATOR         »
-101      1        VAL                val
-101      5        INT                int
-101      9        ID                 operador3
-101      19       ASIGN              Ͱ
-101      21       LITERAL_INT        10
-101      24       MULTIPLY           *
-101      25       MULTIPLY           *
-101      27       LITERAL_INT        20
-101      29       TERMINATOR         »
-102      1        VAL                val
-102      5        INT                int
-102      9        ID                 operador4
-102      19       ASIGN              Ͱ
-102      21       LITERAL_INT        10
-102      24       ENTIREDIV          //
-102      27       LITERAL_INT        20
-102      29       TERMINATOR         »
-103      1        VAL                val
-103      5        INT                int
-103      9        ID                 operador5
-103      19       ASIGN              Ͱ
-103      21       LITERAL_INT        10
-103      27       LITERAL_INT        20
-103      29       TERMINATOR         »
-104      1        VAL                val
-104      5        INT                int
-104      9        ID                 operador6
-104      19       ASIGN              Ͱ
-104      21       LITERAL_INT        10
-104      24       EQUAL              ==
-104      27       LITERAL_INT        20
-104      29       TERMINATOR         »
-105      1        VAL                val
-105      5        INT                int
-105      9        ID                 operador7
-105      19       ASIGN              Ͱ
-105      21       LITERAL_INT        10
-105      24       NEQ                !=
-105      27       LITERAL_INT        20
-105      29       TERMINATOR         »
-106      1        VAL                val
-106      5        INT                int
-106      9        ID                 operador8
-106      19       ASIGN              Ͱ
-106      21       LITERAL_INT        10
-106      24       LTE                <=
-106      27       LITERAL_INT        20
-106      29       TERMINATOR         »
-107      1        VAL                val
-107      5        INT                int
-107      9        ID                 operador9
-107      19       ASIGN              Ͱ
-107      21       LITERAL_INT        10
-107      24       GTE                >=
-107      27       LITERAL_INT        20
-107      29       TERMINATOR         »
-113      1        VAL                val
-113      5        INT                int
-113      9        ID                 mezcla1
-113      17       ASIGN              Ͱ
-113      19       LITERAL_INT        10
-113      22       LITERAL_INT        20
-113      24       TERMINATOR         »
-114      1        VAL                val
-114      5        INT                int
-114      9        ID                 mezcla2
-114      17       ASIGN              Ͱ
-114      19       LITERAL_INT        10
-114      22       LITERAL_INT        20
-114      24       TERMINATOR         »
-115      1        VAL                val
-115      5        INT                int
-115      9        ID                 mezcla3
-115      17       ASIGN              Ͱ
-115      19       LITERAL_INT        10
-115      22       LITERAL_INT        20
-115      24       TERMINATOR         »
-116      1        VAL                val
-116      5        INT                int
-116      9        ID                 mezcla4
-116      17       ASIGN              Ͱ
-116      19       LITERAL_INT        10
-116      22       LITERAL_INT        20
-116      24       TERMINATOR         »
-117      1        VAL                val
-117      5        INT                int
-117      9        ID                 mezcla5
-117      17       ASIGN              Ͱ
-117      25       LITERAL_INT        30
-117      27       TERMINATOR         »
-118      1        VAL                val
-118      5        INT                int
-118      9        ID                 mezcla6
-118      17       ASIGN              Ͱ
-118      26       TERMINATOR         »
-119      1        VAL                val
-119      5        INT                int
-119      9        ID                 mezcla7
-119      17       ASIGN              Ͱ
-119      33       TERMINATOR         »
-125      1        VAL                val
-125      5        INT                int
-125      9        ID                 profunda1
-125      19       ASIGN              Ͱ
-125      21       PARENOP            є:
-125      24       LITERAL_INT        10
-125      27       PLUS               +
-125      29       LITERAL_INT        20
-125      32       MULTIPLY           *
-125      34       PARENOP            є:
-125      37       LITERAL_INT        30
-125      40       MINUS              -
-125      42       LITERAL_INT        5
-125      44       PARENCL            :э
-125      49       LITERAL_INT        100
-125      52       TERMINATOR         »
-126      1        VAL                val
-126      5        INT                int
-126      9        ID                 profunda2
-126      19       ASIGN              Ͱ
-126      21       PARENOP            є:
-126      24       PARENOP            є:
-126      27       LITERAL_INT        1
-126      29       PLUS               +
-126      31       LITERAL_INT        2
-126      33       PARENCL            :э
-126      36       MULTIPLY           *
-126      38       PARENOP            є:
-126      41       LITERAL_INT        3
-126      43       PLUS               +
-126      45       LITERAL_INT        4
-126      47       PARENCL            :э
-126      50       PARENCL            :э
-126      55       LITERAL_INT        50
-126      57       TERMINATOR         »
-127      1        VAL                val
-127      5        INT                int
-127      9        ID                 profunda3
-127      19       ASIGN              Ͱ
-127      21       PARENOP            є:
-127      24       LITERAL_INT        2
-127      26       POT                pot
-127      30       PARENOP            є:
-127      33       LITERAL_INT        3
-127      35       PLUS               +
-127      37       LITERAL_INT        4
-127      39       PARENCL            :э
-127      42       PARENCL            :э
-127      47       LITERAL_INT        10
-127      49       TERMINATOR         »
-128      1        VAL                val
-128      5        INT                int
-128      9        ID                 profunda4
-128      19       ASIGN              Ͱ
-128      21       PARENOP            є:
-128      24       PARENOP            є:
-128      27       PARENOP            є:
-128      30       LITERAL_INT        1
-128      32       PLUS               +
-128      34       LITERAL_INT        2
-128      36       PARENCL            :э
-128      39       MULTIPLY           *
-128      41       LITERAL_INT        3
-128      43       PARENCL            :э
-128      46       PLUS               +
-128      48       LITERAL_INT        4
-128      50       PARENCL            :э
-128      55       LITERAL_INT        20
-128      57       TERMINATOR         »
-129      1        VAL                val
-129      5        INT                int
-129      9        ID                 profunda5
-129      19       ASIGN              Ͱ
-129      21       ID                 suma
-129      26       PARENOP            є:
-129      29       PARENOP            є:
-129      32       LITERAL_INT        1
-129      34       PLUS               +
-129      36       LITERAL_INT        2
-129      38       PARENCL            :э
-129      40       COMA               ,
-129      42       PARENOP            є:
-129      45       LITERAL_INT        3
-129      47       MULTIPLY           *
-129      49       LITERAL_INT        4
-129      51       PARENCL            :э
-129      54       PARENCL            :э
-129      59       LITERAL_INT        50
-129      61       TERMINATOR         »
-135      1        VAL                val
-135      5        INT                int
-135      9        ID                 llamada1
-135      18       ASIGN              Ͱ
-135      20       ID                 suma
-135      25       PARENOP            є:
-135      28       LITERAL_INT        1
-135      29       COMA               ,
-135      31       ID                 suma
-135      36       PARENOP            є:
-135      39       LITERAL_INT        2
-135      40       COMA               ,
-135      42       LITERAL_INT        3
-135      44       PARENCL            :э
-135      47       PARENCL            :э
-135      49       TERMINATOR         »
-136      1        VAL                val
-136      5        INT                int
-136      9        ID                 llamada2
-136      18       ASIGN              Ͱ
-136      20       ID                 suma
-136      25       PARENOP            є:
-136      28       ID                 suma
-136      33       PARENOP            є:
-136      36       LITERAL_INT        1
-136      37       COMA               ,
-136      39       LITERAL_INT        2
-136      41       PARENCL            :э
-136      43       COMA               ,
-136      45       ID                 suma
-136      50       PARENOP            є:
-136      53       LITERAL_INT        3
-136      54       COMA               ,
-136      56       LITERAL_INT        4
-136      58       PARENCL            :э
-136      61       PARENCL            :э
-136      63       TERMINATOR         »
-137      1        VAL                val
-137      5        INT                int
-137      9        ID                 llamada3
-137      18       ASIGN              Ͱ
-137      20       ID                 suma
-137      25       PARENOP            є:
-137      28       ID                 suma
-137      33       PARENOP            є:
-137      36       ID                 suma
-137      41       PARENOP            є:
-137      44       LITERAL_INT        1
-137      45       COMA               ,
-137      47       LITERAL_INT        2
-137      49       PARENCL            :э
-137      51       COMA               ,
-137      53       LITERAL_INT        3
-137      55       PARENCL            :э
-137      57       COMA               ,
-137      59       LITERAL_INT        4
-137      61       PARENCL            :э
-137      63       TERMINATOR         »
-138      1        VAL                val
-138      5        INT                int
-138      9        ID                 llamada4
-138      18       ASIGN              Ͱ
-138      20       ID                 suma
-138      25       PARENOP            є:
-138      28       LITERAL_INT        10
-138      31       LITERAL_INT        20
-138      33       COMA               ,
-138      35       LITERAL_INT        30
-138      38       PARENCL            :э
-138      40       TERMINATOR         »
-139      1        VAL                val
-139      5        INT                int
-139      9        ID                 llamada5
-139      18       ASIGN              Ͱ
-139      20       ID                 suma
-139      25       PARENOP            є:
-139      28       LITERAL_INT        10
-139      30       COMA               ,
-139      32       LITERAL_INT        20
-139      35       LITERAL_INT        30
-139      38       PARENCL            :э
-139      40       TERMINATOR         »
-145      1        PRINT              print
-145      7        PARENOP            є:
-145      31       PARENCL            :э
-146      1        PRINT              print
-146      7        PARENOP            є:
-146      10       LITERAL_STRING     "Texto con @ # $ % &"
-146      32       PARENCL            :э
+56       5        INT                int
+56       9        ID                 llamada7
+56       18       ASIGN              Ͱ
+56       20       ID                 suma
+56       25       PARENOP            є:
+56       28       LITERAL_INT        10
+56       30       COMA               ,
+56       32       LITERAL_INT        20
+56       34       TERMINATOR         »
+62       1        INT                int
+62       5        ID                 suma
+62       10       PARENOP            є:
+62       13       INT                int
+62       17       ID                 a
+62       19       INT                int
+62       23       ID                 b
+62       25       PARENCL            :э
+62       28       OPBLOCK            ¿:
+65       1        RETURN             return
+65       8        ID                 a
+65       10       PLUS               +
+65       12       ID                 b
+65       13       TERMINATOR         »
+68       1        CLBLOCK            :?
+70       1        INT                int
+70       5        ID                 resta
+70       11       PARENOP            є:
+70       14       INT                int
+70       18       ID                 a
+70       19       COMA               ,
+70       21       INT                int
+70       25       ID                 b
+70       27       PARENCL            :э
+70       30       OPBLOCK            ¿:
+73       1        RETURN             return
+73       8        ID                 a
+73       10       MINUS              -
+73       12       ID                 b
+73       13       TERMINATOR         »
+76       1        CLBLOCK            :?
+78       1        INT                int
+78       5        ID                 multiplicacion
+78       20       PARENOP            є:
+78       23       INT                int
+78       27       ID                 a
+78       28       COMA               ,
+78       30       PARENCL            :э
+78       33       OPBLOCK            ¿:
+81       1        RETURN             return
+81       8        ID                 a
+81       10       MULTIPLY           *
+81       12       LITERAL_INT        10
+81       14       TERMINATOR         »
+84       1        CLBLOCK            :?
+90       1        IF                 if
+90       4        OPBLOCK            ¿:
+93       1        PRINT              print
+93       7        PARENOP            є:
+93       10       LITERAL_STRING     "Error"
+93       18       PARENCL            :э
+96       1        CLBLOCK            :?
+98       1        IF                 if
+98       4        PARENOP            є:
+98       7        LITERAL_INT        10
+98       10       GT                 >
+98       12       LITERAL_INT        5
+98       14       PARENCL            :э
+101      1        PRINT              print
+101      7        PARENOP            є:
+101      10       LITERAL_STRING     "Error"
+101      18       PARENCL            :э
+104      1        IF                 if
+104      4        PARENOP            є:
+104      7        LITERAL_INT        10
+104      10       GT                 >
+104      12       LITERAL_INT        5
+104      14       PARENCL            :э
+104      17       OPBLOCK            ¿:
+107      1        PRINT              print
+107      7        PARENOP            є:
+107      10       LITERAL_STRING     "Correcto"
+107      21       PARENCL            :э
+110      1        ELSE               else
+113      1        PRINT              print
+113      7        PARENOP            є:
+113      10       LITERAL_STRING     "Error"
+113      18       PARENCL            :э
+116      1        CLBLOCK            :?
+118      1        IF                 if
+118      4        PARENOP            є:
+118      7        LITERAL_INT        10
+118      10       GT                 >
+118      12       LITERAL_INT        5
+118      14       PARENCL            :э
+118      17       OPBLOCK            ¿:
+121      1        PRINT              print
+121      7        PARENOP            є:
+121      10       LITERAL_STRING     "A"
+121      14       PARENCL            :э
+124      1        CLBLOCK            :?
+124      4        ELSE               else
+124      9        PARENCL            :э
+124      12       OPBLOCK            ¿:
+127      1        PRINT              print
+127      7        PARENOP            є:
+127      10       LITERAL_STRING     "B"
+127      14       PARENCL            :э
+130      1        CLBLOCK            :?
+136      1        WHILE              while
+136      7        PARENOP            є:
+136      10       LITERAL_INT        10
+136      13       GT                 >
+136      15       LITERAL_INT        0
+136      17       PARENCL            :э
+139      1        PRINT              print
+139      7        PARENOP            є:
+139      10       LITERAL_STRING     "Error"
+139      18       PARENCL            :э
+142      1        CLBLOCK            :?
+144      1        WHILE              while
+144      7        PARENOP            є:
+144      10       PARENCL            :э
+144      13       OPBLOCK            ¿:
 147      1        PRINT              print
 147      7        PARENOP            є:
-147      26       PARENCL            :э
-148      1        PRINT              print
-148      7        PARENOP            є:
-149      1        PRINT              print
-149      7        PARENOP            є:
-149      10       LITERAL_STRING     "Otro texto "
-149      24       ID                 sin
-149      28       ID                 cerrar
-149      35       PARENCL            :э
-155      1        VAL                val
-155      5        INT                int
-155      9        ID                 final1
-155      16       ASIGN              Ͱ
-155      18       LITERAL_INT        10
-155      21       PLUS               +
-155      23       LITERAL_INT        20
-155      27       TERMINATOR         »
-156      1        VAL                val
-156      5        INT                int
-156      9        ID                 final2
-156      16       ASIGN              Ͱ
-156      18       LITERAL_INT        10
-156      21       MULTIPLY           *
-156      23       LITERAL_INT        20
-156      27       TERMINATOR         »
-157      1        VAL                val
-157      5        INT                int
-157      9        ID                 final3
-157      16       ASIGN              Ͱ
-157      18       LITERAL_INT        10
-157      21       POT                pot
-157      25       LITERAL_INT        2
-157      28       TERMINATOR         »
-158      1        VAL                val
-158      5        INT                int
-158      9        ID                 final4
-158      16       ASIGN              Ͱ
-158      18       PARENOP            є:
-158      21       LITERAL_INT        1
-158      23       PLUS               +
-158      25       LITERAL_INT        2
-158      27       PARENCL            :э
-158      31       TERMINATOR         »
-159      1        VAL                val
-159      5        INT                int
-159      9        ID                 final5
-159      16       ASIGN              Ͱ
-159      18       ID                 suma
-159      23       PARENOP            є:
-159      26       LITERAL_INT        1
-159      27       COMA               ,
-159      29       LITERAL_INT        2
-159      31       PARENCL            :э
-159      35       TERMINATOR         »
-174      1        ID                 abc
-174      7        ID                 def
-175      1        LITERAL_INT        123
-175      7        LITERAL_INT        456
+147      10       LITERAL_STRING     "Error"
+147      18       PARENCL            :э
+150      1        CLBLOCK            :?
+152      1        WHILE              while
+152      7        OPBLOCK            ¿:
+152      10       LITERAL_INT        10
+152      13       GT                 >
+152      15       LITERAL_INT        0
+152      17       PARENCL            :э
+152      20       OPBLOCK            ¿:
+155      1        PRINT              print
+155      7        PARENOP            є:
+155      10       LITERAL_STRING     "Error"
+155      18       PARENCL            :э
+158      1        CLBLOCK            :?
+164      1        FOR                for
+164      5        PARENOP            є:
+164      8        ID                 i
+164      10       ASIGN              Ͱ
+164      12       LITERAL_INT        0
+164      13       TERMINATOR         »
+164      15       ID                 i
+164      17       LT                 <
+164      19       LITERAL_INT        10
+164      22       PARENCL            :э
+164      25       OPBLOCK            ¿:
+167      1        PRINT              print
+167      7        PARENOP            є:
+167      10       ID                 i
+167      12       PARENCL            :э
+170      1        CLBLOCK            :?
+172      1        FOR                for
+172      5        PARENOP            є:
+172      8        ID                 i
+172      10       ASIGN              Ͱ
+172      12       LITERAL_INT        0
+172      13       TERMINATOR         »
+172      14       TERMINATOR         »
+172      16       ID                 i
+172      18       LT                 <
+172      20       LITERAL_INT        10
+172      22       TERMINATOR         »
+172      24       ID                 i
+172      25       INCREMENT          ++
+172      28       PARENCL            :э
+172      31       OPBLOCK            ¿:
+175      1        PRINT              print
+175      7        PARENOP            є:
+175      10       ID                 i
+175      12       PARENCL            :э
+178      1        CLBLOCK            :?
+180      1        FOR                for
+180      5        PARENOP            є:
+180      8        ID                 i
+180      10       ASIGN              Ͱ
+180      12       LITERAL_INT        0
+180      13       TERMINATOR         »
+180      15       ID                 i
+180      17       LT                 <
+180      19       LITERAL_INT        10
+180      21       TERMINATOR         »
+180      23       PARENCL            :э
+180      26       OPBLOCK            ¿:
 183      1        PRINT              print
 183      7        PARENOP            є:
-183      10       LITERAL_STRING     "Fin de prueba lexica dificil"
-183      41       PARENCL            :э
-185      1        CLBLOCK            :?
+183      10       ID                 i
+183      12       PARENCL            :э
+186      1        CLBLOCK            :?
+192      1        VAL                val
+192      5        INT                int
+192      9        ID                 operador1
+192      19       ASIGN              Ͱ
+192      21       LITERAL_INT        10
+192      24       PLUS               +
+192      26       MULTIPLY           *
+192      28       LITERAL_INT        20
+192      30       TERMINATOR         »
+193      1        VAL                val
+193      5        INT                int
+193      9        ID                 operador2
+193      19       ASIGN              Ͱ
+193      21       LITERAL_INT        10
+193      24       MULTIPLY           *
+193      26       PLUS               +
+193      28       LITERAL_INT        20
+193      30       TERMINATOR         »
+194      1        VAL                val
+194      5        INT                int
+194      9        ID                 operador3
+194      19       ASIGN              Ͱ
+194      21       LITERAL_INT        10
+194      24       MINUS              -
+194      26       FLOATDIV           /
+194      28       LITERAL_INT        20
+194      30       TERMINATOR         »
+195      1        VAL                val
+195      5        INT                int
+195      9        ID                 operador4
+195      19       ASIGN              Ͱ
+195      21       LITERAL_INT        10
+195      24       POT                pot
+195      28       MULTIPLY           *
+195      30       LITERAL_INT        2
+195      31       TERMINATOR         »
+196      1        VAL                val
+196      5        INT                int
+196      9        ID                 operador5
+196      19       ASIGN              Ͱ
+196      21       LITERAL_INT        10
+196      24       PLUS               +
+196      26       LITERAL_INT        20
+196      29       LITERAL_INT        30
+196      31       TERMINATOR         »
+197      1        VAL                val
+197      5        INT                int
+197      9        ID                 operador6
+197      19       ASIGN              Ͱ
+197      21       LITERAL_INT        10
+197      24       LITERAL_INT        20
+197      27       PLUS               +
+197      29       LITERAL_INT        30
+197      31       TERMINATOR         »
+203      1        INT                int
+203      5        ID                 pruebaReturn
+203      18       PARENOP            є:
+203      21       INT                int
+203      25       ID                 x
+203      27       PARENCL            :э
+203      30       OPBLOCK            ¿:
+206      1        RETURN             return
+206      7        TERMINATOR         »
+209      1        CLBLOCK            :?
+211      1        INT                int
+211      5        ID                 pruebaReturn2
+211      19       PARENOP            є:
+211      22       INT                int
+211      26       ID                 x
+211      28       PARENCL            :э
+211      31       OPBLOCK            ¿:
+214      1        RETURN             return
+214      8        ID                 x
+214      10       PLUS               +
+214      11       TERMINATOR         »
+217      1        CLBLOCK            :?
+219      1        INT                int
+219      5        ID                 pruebaReturn3
+219      19       PARENOP            є:
+219      22       INT                int
+219      26       ID                 x
+219      28       PARENCL            :э
+219      31       OPBLOCK            ¿:
+222      1        RETURN             return
+222      8        PARENOP            є:
+222      11       ID                 x
+222      13       PLUS               +
+222      15       LITERAL_INT        10
+222      17       TERMINATOR         »
+225      1        CLBLOCK            :?
+231      1        VOID               void
+231      6        ID                 estructura
+231      17       PARENOP            є:
+231      20       PARENCL            :э
+231      23       OPBLOCK            ¿:
+234      1        IF                 if
+234      4        PARENOP            є:
+234      7        LITERAL_INT        10
+234      10       GT                 >
+234      12       LITERAL_INT        0
+234      14       PARENCL            :э
+234      17       OPBLOCK            ¿:
+236      5        WHILE              while
+236      11       PARENOP            є:
+236      14       LITERAL_INT        20
+236      17       GT                 >
+236      19       LITERAL_INT        0
+236      21       PARENCL            :э
+236      24       OPBLOCK            ¿:
+238      9        FOR                for
+238      13       PARENOP            є:
+238      16       ID                 i
+238      18       ASIGN              Ͱ
+238      20       LITERAL_INT        0
+238      21       TERMINATOR         »
+238      23       ID                 i
+238      25       LT                 <
+238      27       LITERAL_INT        10
+238      29       TERMINATOR         »
+238      31       ID                 i
+238      32       INCREMENT          ++
+238      35       PARENCL            :э
+238      38       OPBLOCK            ¿:
+240      13       IF                 if
+240      16       PARENOP            є:
+240      19       ID                 i
+240      21       GT                 >
+240      23       LITERAL_INT        5
+240      25       PARENCL            :э
+240      28       OPBLOCK            ¿:
+242      17       PRINT              print
+242      23       PARENOP            є:
+242      26       LITERAL_STRING     "Profundo"
+242      37       PARENCL            :э
+244      13       CLBLOCK            :?
+246      9        CLBLOCK            :?
+248      5        CLBLOCK            :?
+250      1        CLBLOCK            :?
+253      1        CLBLOCK            :?
+259      1        VAL                val
+259      5        INT                int
+259      9        ID                 profunda1
+259      19       ASIGN              Ͱ
+259      21       PARENOP            є:
+259      24       PARENOP            є:
+259      27       LITERAL_INT        1
+259      29       PLUS               +
+259      31       LITERAL_INT        2
+259      33       PARENCL            :э
+259      36       MULTIPLY           *
+259      38       PARENOP            є:
+259      41       LITERAL_INT        3
+259      43       PLUS               +
+259      45       LITERAL_INT        4
+259      47       PARENCL            :э
+259      49       TERMINATOR         »
+260      1        VAL                val
+260      5        INT                int
+260      9        ID                 profunda2
+260      19       ASIGN              Ͱ
+260      21       PARENOP            є:
+260      24       PARENOP            є:
+260      27       PARENOP            є:
+260      30       LITERAL_INT        1
+260      32       PLUS               +
+260      34       LITERAL_INT        2
+260      36       PARENCL            :э
+260      39       MULTIPLY           *
+260      41       LITERAL_INT        3
+260      43       PARENCL            :э
+260      46       PLUS               +
+260      48       LITERAL_INT        4
+260      49       TERMINATOR         »
+261      1        VAL                val
+261      5        INT                int
+261      9        ID                 profunda3
+261      19       ASIGN              Ͱ
+261      21       ID                 suma
+261      26       PARENOP            є:
+261      29       PARENOP            є:
+261      32       LITERAL_INT        1
+261      34       PLUS               +
+261      36       LITERAL_INT        2
+261      38       PARENCL            :э
+261      40       COMA               ,
+261      42       PARENOP            є:
+261      45       LITERAL_INT        3
+261      47       MULTIPLY           *
+261      49       LITERAL_INT        4
+261      51       PARENCL            :э
+261      53       TERMINATOR         »
+262      1        VAL                val
+262      5        INT                int
+262      9        ID                 profunda4
+262      19       ASIGN              Ͱ
+262      21       ID                 suma
+262      26       PARENOP            є:
+262      29       ID                 suma
+262      34       PARENOP            є:
+262      37       LITERAL_INT        1
+262      38       COMA               ,
+262      40       LITERAL_INT        2
+262      42       PARENCL            :э
+262      44       COMA               ,
+262      46       PARENCL            :э
+262      48       TERMINATOR         »
+263      1        VAL                val
+263      5        INT                int
+263      9        ID                 profunda5
+263      19       ASIGN              Ͱ
+263      21       PARENOP            є:
+263      24       ID                 suma
+263      29       PARENOP            є:
+263      32       LITERAL_INT        1
+263      33       COMA               ,
+263      35       LITERAL_INT        2
+263      37       PARENCL            :э
+263      40       PLUS               +
+263      42       LITERAL_INT        10
+263      45       PARENCL            :э
+263      47       TERMINATOR         »
+269      1        VOID               void
+269      6        ID                 bloque1
+269      14       PARENOP            є:
+269      17       PARENCL            :э
+269      20       OPBLOCK            ¿:
+272      1        PRINT              print
+272      7        PARENOP            є:
+272      10       LITERAL_STRING     "Bloque 1"
+272      21       PARENCL            :э
+275      1        VOID               void
+275      6        ID                 bloque2
+275      14       PARENOP            є:
+275      17       PARENCL            :э
+275      20       OPBLOCK            ¿:
+278      1        IF                 if
+278      4        PARENOP            є:
+278      7        LITERAL_INT        10
+278      10       GT                 >
+278      12       LITERAL_INT        0
+278      14       PARENCL            :э
+278      17       OPBLOCK            ¿:
+280      5        PRINT              print
+280      11       PARENOP            є:
+280      14       LITERAL_STRING     "Bloque 2"
+280      25       PARENCL            :э
+283      1        CLBLOCK            :?
+285      1        VOID               void
+285      6        ID                 bloque3
+285      14       PARENOP            є:
+285      17       PARENCL            :э
+285      20       OPBLOCK            ¿:
+288      1        WHILE              while
+288      7        PARENOP            є:
+288      10       LITERAL_INT        10
+288      13       GT                 >
+288      15       LITERAL_INT        0
+288      17       PARENCL            :э
+288      20       OPBLOCK            ¿:
+290      5        PRINT              print
+290      11       PARENOP            є:
+290      14       LITERAL_STRING     "Bloque 3"
+290      25       PARENCL            :э
+293      1        CLBLOCK            :?
+295      1        CLBLOCK            :?
+297      1        CLBLOCK            :?
+303      1        PRINT              print
+303      7        PARENOP            є:
+303      10       LITERAL_STRING     "Fin de prueba sintactica"
+303      37       PARENCL            :э
 
-ERRORES LEXICOS (110)
+ERRORES LEXICOS (132)
 ------------------------------------------------------------
-Error léxico en línea 27, columna 31: carácter no reconocido '.'
-Error léxico en línea 28, columna 29: carácter no reconocido '.'
-Error léxico en línea 29, columna 26: literal float incompleto '123.'
-Error léxico en línea 29, columna 30: carácter no reconocido '.'
-Error léxico en línea 30, columna 26: carácter no reconocido '.'
-Error léxico en línea 31, columna 26: literal float incompleto '123.'
-Error léxico en línea 32, columna 30: carácter no reconocido '.'
-Error léxico en línea 33, columna 29: carácter no reconocido '.'
-Error léxico en línea 35, columna 42: carácter no reconocido '.'
-Error léxico en línea 36, columna 25: identificador inválido '123abc'
-Error léxico en línea 42, columna 9: identificador inválido '_variable1'
-Error léxico en línea 43, columna 9: identificador inválido '_variable2'
-Error léxico en línea 44, columna 9: identificador inválido '2variable'
-Error léxico en línea 45, columna 9: identificador inválido '123nombre'
-Error léxico en línea 47, columna 15: carácter no reconocido '@'
-Error léxico en línea 48, columna 15: carácter no reconocido '#'
-Error léxico en línea 49, columna 15: carácter no reconocido '$'
-Error léxico en línea 50, columna 15: carácter no reconocido '.'
-Error léxico en línea 58, columna 30: literal string sin cerrar
-Error léxico en línea 59, columna 21: carácter no reconocido '@'
-Error léxico en línea 59, columna 25: literal string sin cerrar
-Error léxico en línea 60, columna 21: carácter no reconocido '#'
-Error léxico en línea 60, columna 25: literal string sin cerrar
-Error léxico en línea 61, columna 21: carácter no reconocido '$'
-Error léxico en línea 61, columna 25: literal string sin cerrar
-Error léxico en línea 62, columna 29: literal string sin cerrar
-Error léxico en línea 63, columna 13: literal string sin cerrar
-Error léxico en línea 71, columna 22: literal char vacío ''''
-Error léxico en línea 72, columna 20: literal char inválido ''AB''
-Error léxico en línea 73, columna 21: literal char inválido ''ABC''
-Error léxico en línea 75, columna 29: literal char incompleto '''
-Error léxico en línea 75, columna 30: literal string sin cerrar
-Error léxico en línea 81, columna 28: carácter no reconocido '@'
-Error léxico en línea 82, columna 29: carácter no reconocido '#'
-Error léxico en línea 83, columna 27: carácter no reconocido '$'
-Error léxico en línea 84, columna 32: carácter no reconocido '%'
-Error léxico en línea 85, columna 31: carácter no reconocido '&'
-Error léxico en línea 86, columna 35: carácter no reconocido '?'
-Error léxico en línea 87, columna 31: carácter no reconocido ';'
-Error léxico en línea 88, columna 30: literal string sin cerrar
-Error léxico en línea 89, columna 31: literal char incompleto '' 20'
-Error léxico en línea 90, columna 31: carácter no reconocido '\'
-Error léxico en línea 91, columna 28: carácter no reconocido '§'
-Error léxico en línea 92, columna 28: carácter no reconocido 'ñ'
-Error léxico en línea 93, columna 28: carácter no reconocido '¿'
-Error léxico en línea 103, columna 24: carácter no reconocido '%'
-Error léxico en línea 103, columna 25: carácter no reconocido '%'
-Error léxico en línea 113, columna 21: carácter no reconocido '@'
-Error léxico en línea 114, columna 21: carácter no reconocido '#'
-Error léxico en línea 115, columna 21: carácter no reconocido '$'
-Error léxico en línea 116, columna 21: carácter no reconocido '§'
-Error léxico en línea 117, columna 19: literal float inválido '10.20'
-Error léxico en línea 117, columna 24: carácter no reconocido '.'
-Error léxico en línea 118, columna 19: identificador inválido '10abc20'
-Error léxico en línea 119, columna 19: identificador inválido '123variable456'
-Error léxico en línea 125, columna 47: carácter no reconocido '@'
-Error léxico en línea 126, columna 53: carácter no reconocido '#'
-Error léxico en línea 127, columna 45: carácter no reconocido '$'
-Error léxico en línea 128, columna 53: carácter no reconocido '§'
-Error léxico en línea 129, columna 57: carácter no reconocido '@'
-Error léxico en línea 138, columna 30: carácter no reconocido '@'
-Error léxico en línea 139, columna 34: carácter no reconocido '#'
-Error léxico en línea 145, columna 10: literal string inválido (carácter no permitido)
-Error léxico en línea 147, columna 10: literal string inválido (carácter no permitido)
-Error léxico en línea 148, columna 10: literal string sin cerrar
-Error léxico en línea 155, columna 26: carácter no reconocido '@'
-Error léxico en línea 156, columna 26: carácter no reconocido '#'
-Error léxico en línea 157, columna 27: carácter no reconocido '$'
-Error léxico en línea 158, columna 30: carácter no reconocido '§'
-Error léxico en línea 159, columna 34: carácter no reconocido '@'
-Error léxico en línea 165, columna 1: carácter no reconocido '@'
-Error léxico en línea 165, columna 2: carácter no reconocido '@'
-Error léxico en línea 167, columna 1: carácter no reconocido '#'
-Error léxico en línea 167, columna 2: carácter no reconocido '#'
-Error léxico en línea 167, columna 3: carácter no reconocido '#'
-Error léxico en línea 169, columna 1: carácter no reconocido '$'
-Error léxico en línea 169, columna 2: carácter no reconocido '$'
-Error léxico en línea 169, columna 3: carácter no reconocido '$'
-Error léxico en línea 169, columna 4: carácter no reconocido '$'
-Error léxico en línea 170, columna 1: carácter no reconocido '%'
-Error léxico en línea 170, columna 2: carácter no reconocido '%'
-Error léxico en línea 170, columna 3: carácter no reconocido '%'
-Error léxico en línea 171, columna 1: carácter no reconocido '&'
-Error léxico en línea 171, columna 2: carácter no reconocido '&'
-Error léxico en línea 171, columna 3: carácter no reconocido '&'
-Error léxico en línea 172, columna 1: carácter no reconocido '§'
-Error léxico en línea 172, columna 2: carácter no reconocido '§'
-Error léxico en línea 172, columna 3: carácter no reconocido '§'
-Error léxico en línea 173, columna 1: carácter no reconocido '@'
-Error léxico en línea 173, columna 2: carácter no reconocido '@'
-Error léxico en línea 173, columna 3: carácter no reconocido '@'
-Error léxico en línea 173, columna 4: carácter no reconocido '#'
-Error léxico en línea 173, columna 5: carácter no reconocido '#'
-Error léxico en línea 173, columna 6: carácter no reconocido '#'
-Error léxico en línea 173, columna 7: carácter no reconocido '$'
-Error léxico en línea 173, columna 8: carácter no reconocido '$'
-Error léxico en línea 173, columna 9: carácter no reconocido '$'
-Error léxico en línea 174, columna 4: carácter no reconocido '@'
-Error léxico en línea 174, columna 5: carácter no reconocido '@'
-Error léxico en línea 174, columna 6: carácter no reconocido '@'
-Error léxico en línea 175, columna 4: carácter no reconocido '#'
-Error léxico en línea 175, columna 5: carácter no reconocido '#'
-Error léxico en línea 175, columna 6: carácter no reconocido '#'
-Error léxico en línea 176, columna 1: literal float inválido '10.20'
-Error léxico en línea 176, columna 6: carácter no reconocido '.'
-Error léxico en línea 176, columna 7: literal float inválido '30.40'
-Error léxico en línea 186, columna 1: carácter no reconocido '$'
-Error léxico en línea 186, columna 2: carácter no reconocido '$'
-Error léxico en línea 186, columna 3: carácter no reconocido '$'
-Error léxico en línea 186, columna 4: carácter no reconocido '$'
+Error léxico en línea 64, columna 1: carácter no reconocido '`'
+Error léxico en línea 64, columna 2: carácter no reconocido '`'
+Error léxico en línea 64, columna 3: carácter no reconocido '`'
+Error léxico en línea 66, columna 1: carácter no reconocido '`'
+Error léxico en línea 66, columna 2: carácter no reconocido '`'
+Error léxico en línea 66, columna 3: carácter no reconocido '`'
+Error léxico en línea 72, columna 1: carácter no reconocido '`'
+Error léxico en línea 72, columna 2: carácter no reconocido '`'
+Error léxico en línea 72, columna 3: carácter no reconocido '`'
+Error léxico en línea 74, columna 1: carácter no reconocido '`'
+Error léxico en línea 74, columna 2: carácter no reconocido '`'
+Error léxico en línea 74, columna 3: carácter no reconocido '`'
+Error léxico en línea 80, columna 1: carácter no reconocido '`'
+Error léxico en línea 80, columna 2: carácter no reconocido '`'
+Error léxico en línea 80, columna 3: carácter no reconocido '`'
+Error léxico en línea 82, columna 1: carácter no reconocido '`'
+Error léxico en línea 82, columna 2: carácter no reconocido '`'
+Error léxico en línea 82, columna 3: carácter no reconocido '`'
+Error léxico en línea 92, columna 1: carácter no reconocido '`'
+Error léxico en línea 92, columna 2: carácter no reconocido '`'
+Error léxico en línea 92, columna 3: carácter no reconocido '`'
+Error léxico en línea 94, columna 1: carácter no reconocido '`'
+Error léxico en línea 94, columna 2: carácter no reconocido '`'
+Error léxico en línea 94, columna 3: carácter no reconocido '`'
+Error léxico en línea 100, columna 1: carácter no reconocido '`'
+Error léxico en línea 100, columna 2: carácter no reconocido '`'
+Error léxico en línea 100, columna 3: carácter no reconocido '`'
+Error léxico en línea 102, columna 1: carácter no reconocido '`'
+Error léxico en línea 102, columna 2: carácter no reconocido '`'
+Error léxico en línea 102, columna 3: carácter no reconocido '`'
+Error léxico en línea 106, columna 1: carácter no reconocido '`'
+Error léxico en línea 106, columna 2: carácter no reconocido '`'
+Error léxico en línea 106, columna 3: carácter no reconocido '`'
+Error léxico en línea 108, columna 1: carácter no reconocido '`'
+Error léxico en línea 108, columna 2: carácter no reconocido '`'
+Error léxico en línea 108, columna 3: carácter no reconocido '`'
+Error léxico en línea 112, columna 1: carácter no reconocido '`'
+Error léxico en línea 112, columna 2: carácter no reconocido '`'
+Error léxico en línea 112, columna 3: carácter no reconocido '`'
+Error léxico en línea 114, columna 1: carácter no reconocido '`'
+Error léxico en línea 114, columna 2: carácter no reconocido '`'
+Error léxico en línea 114, columna 3: carácter no reconocido '`'
+Error léxico en línea 120, columna 1: carácter no reconocido '`'
+Error léxico en línea 120, columna 2: carácter no reconocido '`'
+Error léxico en línea 120, columna 3: carácter no reconocido '`'
+Error léxico en línea 122, columna 1: carácter no reconocido '`'
+Error léxico en línea 122, columna 2: carácter no reconocido '`'
+Error léxico en línea 122, columna 3: carácter no reconocido '`'
+Error léxico en línea 126, columna 1: carácter no reconocido '`'
+Error léxico en línea 126, columna 2: carácter no reconocido '`'
+Error léxico en línea 126, columna 3: carácter no reconocido '`'
+Error léxico en línea 128, columna 1: carácter no reconocido '`'
+Error léxico en línea 128, columna 2: carácter no reconocido '`'
+Error léxico en línea 128, columna 3: carácter no reconocido '`'
+Error léxico en línea 138, columna 1: carácter no reconocido '`'
+Error léxico en línea 138, columna 2: carácter no reconocido '`'
+Error léxico en línea 138, columna 3: carácter no reconocido '`'
+Error léxico en línea 140, columna 1: carácter no reconocido '`'
+Error léxico en línea 140, columna 2: carácter no reconocido '`'
+Error léxico en línea 140, columna 3: carácter no reconocido '`'
+Error léxico en línea 146, columna 1: carácter no reconocido '`'
+Error léxico en línea 146, columna 2: carácter no reconocido '`'
+Error léxico en línea 146, columna 3: carácter no reconocido '`'
+Error léxico en línea 148, columna 1: carácter no reconocido '`'
+Error léxico en línea 148, columna 2: carácter no reconocido '`'
+Error léxico en línea 148, columna 3: carácter no reconocido '`'
+Error léxico en línea 154, columna 1: carácter no reconocido '`'
+Error léxico en línea 154, columna 2: carácter no reconocido '`'
+Error léxico en línea 154, columna 3: carácter no reconocido '`'
+Error léxico en línea 156, columna 1: carácter no reconocido '`'
+Error léxico en línea 156, columna 2: carácter no reconocido '`'
+Error léxico en línea 156, columna 3: carácter no reconocido '`'
+Error léxico en línea 166, columna 1: carácter no reconocido '`'
+Error léxico en línea 166, columna 2: carácter no reconocido '`'
+Error léxico en línea 166, columna 3: carácter no reconocido '`'
+Error léxico en línea 168, columna 1: carácter no reconocido '`'
+Error léxico en línea 168, columna 2: carácter no reconocido '`'
+Error léxico en línea 168, columna 3: carácter no reconocido '`'
+Error léxico en línea 174, columna 1: carácter no reconocido '`'
+Error léxico en línea 174, columna 2: carácter no reconocido '`'
+Error léxico en línea 174, columna 3: carácter no reconocido '`'
+Error léxico en línea 176, columna 1: carácter no reconocido '`'
+Error léxico en línea 176, columna 2: carácter no reconocido '`'
+Error léxico en línea 176, columna 3: carácter no reconocido '`'
+Error léxico en línea 182, columna 1: carácter no reconocido '`'
+Error léxico en línea 182, columna 2: carácter no reconocido '`'
+Error léxico en línea 182, columna 3: carácter no reconocido '`'
+Error léxico en línea 184, columna 1: carácter no reconocido '`'
+Error léxico en línea 184, columna 2: carácter no reconocido '`'
+Error léxico en línea 184, columna 3: carácter no reconocido '`'
+Error léxico en línea 205, columna 1: carácter no reconocido '`'
+Error léxico en línea 205, columna 2: carácter no reconocido '`'
+Error léxico en línea 205, columna 3: carácter no reconocido '`'
+Error léxico en línea 207, columna 1: carácter no reconocido '`'
+Error léxico en línea 207, columna 2: carácter no reconocido '`'
+Error léxico en línea 207, columna 3: carácter no reconocido '`'
+Error léxico en línea 213, columna 1: carácter no reconocido '`'
+Error léxico en línea 213, columna 2: carácter no reconocido '`'
+Error léxico en línea 213, columna 3: carácter no reconocido '`'
+Error léxico en línea 215, columna 1: carácter no reconocido '`'
+Error léxico en línea 215, columna 2: carácter no reconocido '`'
+Error léxico en línea 215, columna 3: carácter no reconocido '`'
+Error léxico en línea 221, columna 1: carácter no reconocido '`'
+Error léxico en línea 221, columna 2: carácter no reconocido '`'
+Error léxico en línea 221, columna 3: carácter no reconocido '`'
+Error léxico en línea 223, columna 1: carácter no reconocido '`'
+Error léxico en línea 223, columna 2: carácter no reconocido '`'
+Error léxico en línea 223, columna 3: carácter no reconocido '`'
+Error léxico en línea 233, columna 1: carácter no reconocido '`'
+Error léxico en línea 233, columna 2: carácter no reconocido '`'
+Error léxico en línea 233, columna 3: carácter no reconocido '`'
+Error léxico en línea 251, columna 1: carácter no reconocido '`'
+Error léxico en línea 251, columna 2: carácter no reconocido '`'
+Error léxico en línea 251, columna 3: carácter no reconocido '`'
+Error léxico en línea 271, columna 1: carácter no reconocido '`'
+Error léxico en línea 271, columna 2: carácter no reconocido '`'
+Error léxico en línea 271, columna 3: carácter no reconocido '`'
+Error léxico en línea 273, columna 1: carácter no reconocido '`'
+Error léxico en línea 273, columna 2: carácter no reconocido '`'
+Error léxico en línea 273, columna 3: carácter no reconocido '`'
+Error léxico en línea 277, columna 1: carácter no reconocido '`'
+Error léxico en línea 277, columna 2: carácter no reconocido '`'
+Error léxico en línea 277, columna 3: carácter no reconocido '`'
+Error léxico en línea 281, columna 1: carácter no reconocido '`'
+Error léxico en línea 281, columna 2: carácter no reconocido '`'
+Error léxico en línea 281, columna 3: carácter no reconocido '`'
+Error léxico en línea 287, columna 1: carácter no reconocido '`'
+Error léxico en línea 287, columna 2: carácter no reconocido '`'
+Error léxico en línea 287, columna 3: carácter no reconocido '`'
+Error léxico en línea 291, columna 1: carácter no reconocido '`'
+Error léxico en línea 291, columna 2: carácter no reconocido '`'
+Error léxico en línea 291, columna 3: carácter no reconocido '`'
