@@ -1,0 +1,412 @@
+
+| ============================================================
+| PRUEBA COMPLETAMENTE VALIDA
+| Objetivo: programa complejo sin errores
+| ============================================================
+
+| ============================================================
+| VARIABLES GLOBALES
+| ============================================================
+
+val int a Ͱ 10»
+val int b Ͱ 20»
+val int c Ͱ 30»
+val int d Ͱ 40»
+val int e Ͱ 50»
+
+| ============================================================
+| FUNCIONES
+| ============================================================
+
+int suma є: int x, int y :э ¿:
+
+    return x + y»
+
+:?
+
+
+int calcular є: int x, int y :э ¿:
+
+    val int resultado Ͱ є: x + y :э * 2»
+
+    return resultado»
+
+:?
+
+
+int calcularTres є: int x, int y, int z :э ¿:
+
+    val int resultado Ͱ є: x + y :э * z»
+
+    return resultado»
+
+:?
+
+
+float calcularDecimal є: float x, float y :э ¿:
+
+    return x + y»
+
+:?
+
+
+bool esPositivo є: int numero :э ¿:
+
+    if є: numero > 0 :э ¿:
+
+        return true»
+
+    :? else ¿:
+
+        return false»
+
+    :?
+
+:?
+
+
+| ============================================================
+| PRINCIPAL
+| ============================================================
+
+void principal є: :э ¿:
+
+
+    | ========================================================
+    | VARIABLES
+    | ========================================================
+
+    val int a Ͱ 10»
+    val int b Ͱ 20»
+    val int c Ͱ 30»
+    val int d Ͱ 40»
+    val int e Ͱ 50»
+
+    val float x Ͱ 10.5»
+    val float y Ͱ 20.25»
+
+    val bool activo Ͱ true»
+    val bool terminado Ͱ false»
+
+    val char inicial Ͱ 'A'»
+    val char final Ͱ 'Z'»
+
+    val string nombre Ͱ "Alice"»
+    val string mensaje Ͱ "Programa completamente valido"»
+
+
+    | ========================================================
+    | OPERACIONES ARITMETICAS
+    | ========================================================
+
+    val int suma1 Ͱ a + b»
+    val int suma2 Ͱ a + b + c»
+    val int resta1 Ͱ c - a»
+    val int multiplicacion1 Ͱ a * b»
+    val int division1 Ͱ c / a»
+    val int division2 Ͱ c // a»
+    val int modulo1 Ͱ c mod a»
+    val int potencia1 Ͱ 2 pot 3»
+    val int negativo1 Ͱ -1»
+
+
+    | ========================================================
+    | EXPRESIONES AGRUPADAS
+    | ========================================================
+
+    val int agrupada1 Ͱ є: a + b :э * c»
+    val int agrupada2 Ͱ є: a + b :э * є: c + d :э»
+    val int agrupada3 Ͱ є: є: a + b :э * c :э + d»
+    val int agrupada4 Ͱ є: a * є: b + c :э - d :э»
+    val int agrupada5 Ͱ є: є: a + b :э * є: c - d :э :э»
+
+
+    | ========================================================
+    | POTENCIAS
+    | ========================================================
+
+    val int potencia1 Ͱ 2 pot 3»
+    val int potencia2 Ͱ 2 pot є: 3 + 1 :э»
+    val int potencia3 Ͱ є: 2 pot 3 :э + 10»
+    val int potencia4 Ͱ є: є: 2 pot 3 :э + є: 4 pot 2 :э :э»
+    val int potencia5 Ͱ a pot 2»
+
+
+    | ========================================================
+    | LLAMADAS DE FUNCIONES
+    | ========================================================
+
+    val int resultado1 Ͱ suma є: 10, 20 :э»
+    val int resultado2 Ͱ suma є: a, b :э»
+    val int resultado3 Ͱ suma є: suma є: 1, 2 :э, suma є: 3, 4 :э :э»
+
+    val int resultado4 Ͱ suma є:
+        suma є: 1, 2 :э,
+        suma є: 3, 4 :э
+    :э»
+
+    val int resultado5 Ͱ calcular є:
+        suma є: 1, 2 :э,
+        suma є: 3, 4 :э
+    :э»
+
+
+    | ========================================================
+    | FUNCIONES DENTRO DE EXPRESIONES
+    | ========================================================
+
+    val int expresion1 Ͱ suma є: 10, 20 :э + 30»
+
+    val int expresion2 Ͱ є:
+        suma є: 10, 20 :э + suma є: 30, 40 :э
+    :э»
+
+    val int expresion3 Ͱ є:
+        suma є: suma є: 1, 2 :э, suma є: 3, 4 :э :э
+        * 2
+    :э»
+
+    val int expresion4 Ͱ calcular є:
+        suma є: 1, 2 :э,
+        є: 3 * 4 :э
+    :э»
+
+
+    | ========================================================
+    | LOGICA
+    | ========================================================
+
+    val bool logica1 Ͱ activo»
+    val bool logica2 Ͱ terminado»
+
+
+    | ========================================================
+    | OPERACIONES PROFUNDAS
+    | ========================================================
+
+    val int numero1 Ͱ 10»
+    val int numero2 Ͱ 20»
+    val int numero3 Ͱ 30»
+
+    val int profunda1 Ͱ є: numero1 + є: numero2 * numero3 :э :э»
+
+    val int profunda2 Ͱ є:
+        є: numero1 + numero2 :э *
+        є: numero3 - 5 :э
+    :э»
+
+    val int profunda3 Ͱ є:
+        є:
+            numero1 + numero2
+        :э *
+        є:
+            numero3 + 10
+        :э
+    :э»
+
+    val int profunda4 Ͱ є:
+        suma є: numero1, numero2 :э +
+        suma є: numero2, numero3 :э
+    :э»
+
+
+    | ========================================================
+    | POTENCIAS PROFUNDAS
+    | ========================================================
+
+    val int potenciaProfunda1 Ͱ 2 pot є: 3 + 1 :э»
+
+    val int potenciaProfunda2 Ͱ є:
+        2 pot 3
+    :э + 10»
+
+    val int potenciaProfunda3 Ͱ є:
+        є: 2 pot 3 :э +
+        є: 4 pot 2 :э
+    :э»
+
+
+    | ========================================================
+    | IF
+    | ========================================================
+
+    if є: numero1 > 0 :э ¿:
+
+        print є: "numero1 es positivo" :э
+
+    :?
+
+
+    | ========================================================
+    | IF CON AND
+    | ========================================================
+
+    if є: є:numero1 > 0:э λ є:numero2 > 0:э :э ¿:
+
+        print є: "Los dos son positivos" :э
+
+    :?
+
+
+    | ========================================================
+    | IF CON OR
+    | ========================================================
+
+    if є: є:numero1 > 100:э θ є:numero2 > 0:э :э ¿:
+
+        print є: "Al menos una condicion es verdadera" :э
+
+    :?
+
+
+    | ========================================================
+    | IF CON NOT
+    | ========================================================
+
+    if Σє: numero1 < 0 :э ¿:
+
+        print є: "numero1 no es negativo" :э
+
+    :?
+
+
+    | ========================================================
+    | IF / ELSE
+    | ========================================================
+
+    if є: numero1 > numero2 :э ¿:
+
+        print є: "numero1 es mayor" :э
+
+    :? else ¿:
+
+        print є: "numero2 es mayor o igual" :э
+
+    :?
+
+
+    | ========================================================
+    | WHILE
+    | ========================================================
+
+    while є: numero2 > 0 :э ¿:
+
+        val int calculo Ͱ є:
+            numero1 + numero2
+        :э»
+
+        numero2 Ͱ numero2 - 1»
+
+    :?
+
+
+    | ========================================================
+    | FOR
+    | ========================================================
+
+    for є: i Ͱ 0» i < 10» i++ :э ¿:
+
+        print є: i :э
+
+    :?
+
+
+    | ========================================================
+    | ESTRUCTURAS ANIDADAS
+    | ========================================================
+
+    if є: numero1 > 0 :э ¿:
+
+        while є: numero2 > 0 :э ¿:
+
+            if є: numero3 > 0 :э ¿:
+
+                val int calculoAnidado Ͱ є:
+                    numero1 +
+                    є:
+                        numero2 * numero3
+                    :э
+                :э»
+
+                print є: calculoAnidado :э
+
+            :?
+
+            numero2 Ͱ numero2 - 1»
+
+        :?
+
+    :?
+
+
+    | ========================================================
+    | SEGUNDO FOR ANIDADO
+    | ========================================================
+
+    for є: j Ͱ 0» j < 5» j++ :э ¿:
+
+        if є: j > 2 :э ¿:
+
+            print є: j :э
+
+        :?
+
+    :?
+
+
+    | ========================================================
+    | INCREMENTOS Y DECREMENTOS
+    | ========================================================
+
+    numero1++
+    numero1++
+    numero2--
+    numero3--
+    numero3++
+    numero3++
+
+
+    | ========================================================
+    | READ
+    | ========================================================
+
+    read є: numero :э
+    read є: numero :э
+
+
+    | ========================================================
+    | WRITE
+    | ========================================================
+
+    write є: numero :э
+    write є: numero :э
+
+
+    | ========================================================
+    | LLAMADAS FINALES
+    | ========================================================
+
+    mostrar є: mensaje :э»
+
+    val int final1 Ͱ suma є:
+        numero1,
+        numero2
+    :э»
+
+    val int final2 Ͱ calcular є:
+        suma є: 1, 2 :э,
+        suma є: 3, 4 :э
+    :э»
+
+    val int final3 Ͱ є:
+        final1 + final2
+    :э»
+
+
+    | ========================================================
+    | MENSAJE FINAL
+    | ========================================================
+
+    print є: "Programa completamente valido" :э
+
+:?

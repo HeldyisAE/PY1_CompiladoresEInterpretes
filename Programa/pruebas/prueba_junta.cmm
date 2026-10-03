@@ -1,0 +1,202 @@
+| ============================================================
+| PRUEBA LEXICA + SINTACTICA
+| Objetivo: provocar ambos tipos de errores
+| ============================================================
+
+| ============================================================
+| PARTE 1 - DECLARACIONES
+| ============================================================
+
+val int a Ͱ 10»
+val int b Ͱ 20»
+val float numero Ͱ 12.50»
+val bool activo Ͱ true»
+val char letra Ͱ 'A'»
+val string nombre Ͱ "Alice"»
+
+| ============================================================
+| ERRORES LEXICOS
+| ============================================================
+
+val int errorLexico1 Ͱ 10 @ 20»
+val int errorLexico2 Ͱ 20 # 30»
+val int errorLexico3 Ͱ 30 $ 40»
+val int _errorLexico Ͱ 50»
+val int error123 Ͱ 60 § 70»
+
+val float decimalMalo1 Ͱ 10.20.30»
+val float decimalMalo2 Ͱ 123..456»
+
+val char charMalo1 Ͱ ''»
+val char charMalo2 Ͱ 'AB'»
+
+print є: "String correcto" :э
+print є: "String sin cerrar :э
+
+| ============================================================
+| ERRORES SINTACTICOS
+| ============================================================
+
+val int sintactico1 Ͱ»
+val int sintactico2 Ͱ 10 +»
+val int sintactico3 Ͱ є: 10 + 20»
+
+| ============================================================
+| EXPRESIONES COMPLEJAS
+| ============================================================
+
+val int expresion1 Ͱ є: a + b * є: 30 - 5 :э :э»
+
+val int expresion2 Ͱ є: є: a + b :э * є: 10 - 5 :э :э»
+
+val int expresion3 Ͱ suma є:
+suma є: 1, 2 :э,
+suma є: 3, 4 :э
+:э»
+
+val int expresion4 Ͱ suma є: є: 10 + 20 :э, є: 30 * 40 :э :э»
+
+| ============================================================
+| ERRORES LEXICOS DENTRO DE EXPRESIONES
+| ============================================================
+
+val int expresionMala1 Ͱ є: a + b @ є: 30 * 40 :э :э»
+val int expresionMala2 Ͱ suma є: 10, 20 # 30 :э»
+val int expresionMala3 Ͱ є: 10 + 20 § 30 :э»
+val int expresionMala4 Ͱ є: 10.50.60 + 20 :э»
+
+| ============================================================
+| FUNCION CORRECTA
+| ============================================================
+
+int suma є: int x, int y :э ¿:
+
+```
+return x + y»
+```
+
+:?
+
+| ============================================================
+| FUNCION CON ERRORES SINTACTICOS
+| ============================================================
+
+int resta є: int x int y :э ¿:
+
+```
+return x - y»
+```
+
+:?
+
+int multiplicar є: int x, int y :э ¿:
+
+```
+return x *»
+```
+
+:?
+
+| ============================================================
+| IF CON ERRORES
+| ============================================================
+
+if є: a > 0 :э ¿:
+
+```
+print є: "A es positivo" :э
+```
+
+:?
+
+if є: a > :э ¿:
+
+```
+print є: "Error sintactico" :э
+```
+
+:?
+
+if є: a > 0 λ :э ¿:
+
+```
+print є: "Otro error" :э
+```
+
+:?
+
+| ============================================================
+| WHILE + ERRORES LEXICOS
+| ============================================================
+
+while є: b > 0 :э ¿:
+
+```
+val int calculo Ͱ є: a + b * є: 10 - 5 :э :э»
+
+val int calculoMalo Ͱ є: a + b @ 50 :э»
+
+b Ͱ b - 1»
+```
+
+:?
+
+| ============================================================
+| ESTRUCTURA PROFUNDA
+| ============================================================
+
+if є: a > 0 :э ¿:
+
+```
+while є: b > 0 :э ¿:
+
+    if є: a < b :э ¿:
+
+        val int resultado Ͱ suma є:
+            suma є: a, b :э,
+            є: 10 * 20 :э
+        :э»
+
+    :?
+
+:?
+```
+
+:?
+
+| ============================================================
+| ESTRUCTURA PROFUNDA CON ERRORES
+| ============================================================
+
+if є: a > 0 :э ¿:
+
+```
+while є: b > 0 :э ¿:
+
+    if є: a < :э ¿:
+
+        val int resultado Ͱ є:
+            a + b @ 100
+        :э»
+
+    :?
+
+:?
+```
+
+| ============================================================
+| CARACTERES EXTRAÑOS AL FINAL
+| ============================================================
+
+val int ultimo1 Ͱ 10 @»
+val int ultimo2 Ͱ 20 #»
+val int ultimo3 Ͱ 30 $»
+val int ultimo4 Ͱ 40 §»
+
+| ============================================================
+| FIN
+| ============================================================
+
+print є: "Fin de prueba mixta" :э
+
+:?

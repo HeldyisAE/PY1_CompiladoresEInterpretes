@@ -1,8 +1,11 @@
+
 {
     "java.project.sourcePaths": [
-        "Programa/src"
+        "src"
     ],
+    "java.project.outputPath": "bin",
     "java.project.referencedLibraries": [
-        "Programa/librerias/java-cup-11b.jar"
+        "librerias/java-cup-11b.jar",
+        "librerias/jflex-full-1.9.1.jar"
     ]
 }

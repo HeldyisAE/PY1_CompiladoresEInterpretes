@@ -5,7 +5,6 @@ import java_cup.runtime.*;
    ============================================================ */
 
 /* Operadores aritméticos */
-
 terminal INCREMENT, PLUS, DECREMENT, MINUS, MULTIPLY;
 terminal ENTIREDIV, FLOATDIV, MOD, POT;
 
@@ -14,7 +13,6 @@ terminal ENTIREDIV, FLOATDIV, MOD, POT;
 terminal LTE, GTE, EQUAL, NEQ, LT, GT;
 
 /* Operadores lógicos */
-
 terminal AND, OR, NOT;
 
 /* Delimitadores */
@@ -57,6 +55,7 @@ terminal ID;
 non terminal programa;
 non terminal lista_globales;
 non terminal unidades_programa;
+non terminal tipo;
 
 /* Valores */
 non terminal valor_numerico;
@@ -65,6 +64,7 @@ non terminal flotante;
 non terminal bool;
 non terminal cadena_texto;
 non terminal caracter_literal;
+non terminal condicion_control;
 
 /* Identificadores */
 non terminal identificador;
@@ -188,12 +188,13 @@ non terminal principal;
 
 start with programa;
 
-
 /* ============================================================
                         VALORES
    ============================================================ */
 
 bool ::= TRUE | FALSE ;
+
+tipo ::= INT | FLOAT | BOOL | CHAR | STRING ;
 
 valor_numerico ::= entero | flotante  ;
 
@@ -211,7 +212,6 @@ caracter_literal ::=  LITERAL_CHAR ;
    ============================================================ */
 
 identificador ::= ID ;
-
 
 /* ============================================================
    DELIMITADORES Y OPERADORES
@@ -289,6 +289,7 @@ asignacion_variable ::= identificador asignacion expresion fin_sentencia ;
 lista_globales ::=   /* vacío */
     | def_variable lista_globales
     | creacion_arreglo lista_globales
+    | error fin_sentencia lista_globales
     ;
 
 
@@ -296,16 +297,19 @@ lista_globales ::=   /* vacío */
                      ENTRADA Y SALIDA
    ============================================================ */
 
-lectura ::=  leer identificador fin_sentencia| leer acceso_arreglo fin_sentencia ;
+/* ============================================================ */
+/* ENTRADA Y SALIDA                                              */
+/* ============================================================ */
 
-escritura ::=  escribir valor_escritura fin_sentencia ;
+lectura ::=  leer identificador | leer acceso_arreglo |leer PARENOP identificador PARENCL | leer PARENOP acceso_arreglo PARENCL ;
 
-impresion ::=  palabraPrint PARENOP lista_valores PARENCL fin_sentencia ;
+escritura ::=  escribir valor_escritura  |escribir PARENOP valor_escritura PARENCL;
 
-lista_valores ::= valor_escritura  | valor_escritura coma lista_valores ;
+impresion ::= palabraPrint PARENOP lista_valores PARENCL ;
 
-valor_escritura ::=  entero | flotante | bool| cadena_texto| caracter_literal| identificador | acceso_arreglo;
+lista_valores ::=  valor_escritura | valor_escritura coma lista_valores ;
 
+valor_escritura ::= entero | flotante | bool | cadena_texto | caracter_literal | identificador | acceso_arreglo ;
 
 /* ============================================================
                  ARREGLOS
@@ -320,27 +324,11 @@ creacion_arreglo ::= arreglo_con_tamano| arreglo_con_tamano_valores| arreglo_sin
 arreglo_con_tamano ::= palabraVal INT identificador abrir_corcheteCuadrados indice cerrar_corcheteCuadrados  fin_sentencia
     | palabraVal FLOAT identificador  abrir_corcheteCuadrados indice cerrar_corcheteCuadrados  fin_sentencia ;
 
-arreglo_con_tamano_valores ::=   palabraVal INT identificador
-      abrir_corcheteCuadrados indice cerrar_corcheteCuadrados
-      asignacion abrir_bloque lista_arreglo cerrar_bloque
-      fin_sentencia
+arreglo_con_tamano_valores ::=   palabraVal INT identificador abrir_corcheteCuadrados indice cerrar_corcheteCuadrados asignacion abrir_bloque lista_arreglo cerrar_bloque fin_sentencia
+    | palabraVal FLOAT identificador  abrir_corcheteCuadrados indice cerrar_corcheteCuadrados  asignacion abrir_bloque lista_arreglo cerrar_bloque  fin_sentencia ;
 
-    | palabraVal FLOAT identificador
-      abrir_corcheteCuadrados indice cerrar_corcheteCuadrados
-      asignacion abrir_bloque lista_arreglo cerrar_bloque
-      fin_sentencia
-    ;
-
-arreglo_sin_tamano_valores ::=
-      palabraVal INT identificador
-      abrir_corcheteCuadrados cerrar_corcheteCuadrados
-      asignacion abrir_bloque lista_arreglo cerrar_bloque
-      fin_sentencia
-    | palabraVal FLOAT identificador
-      abrir_corcheteCuadrados cerrar_corcheteCuadrados
-      asignacion abrir_bloque lista_arreglo cerrar_bloque
-      fin_sentencia
-    ;
+arreglo_sin_tamano_valores ::=  palabraVal INT identificador  abrir_corcheteCuadrados cerrar_corcheteCuadrados  asignacion abrir_bloque lista_arreglo cerrar_bloque  fin_sentencia
+    | palabraVal FLOAT identificador  abrir_corcheteCuadrados cerrar_corcheteCuadrados asignacion abrir_bloque lista_arreglo cerrar_bloque  fin_sentencia ;
 
 lista_arreglo ::= inicio_lista_arreglo ;
 
@@ -369,7 +357,7 @@ expresion_unaria ::=  MINUS valor_numerico | expresion_potencia ;
 
 expresion_potencia ::= valor_aritmetico | valor_aritmetico operadorPotencia exponente ;
 
-exponente ::= entero | PARENOP expresion_potencia PARENCL ;
+exponente ::= entero | PARENOP expresion_aritmetica  PARENCL ;
 
 valor_aritmetico ::= valor_numerico | identificador | acceso_arreglo | llamada_funcion | PARENOP expresion_aritmetica PARENCL ;
 
@@ -382,7 +370,7 @@ operacion_incremento ::= identificador incremento | identificador decremento ;
 
 operadorRelacional ::=  LT | GT | LTE | GTE | EQUAL | NEQ ;
 
-operando_relacional ::=  expresion_aritmetica | bool| cadena_texto| caracter_literal;
+operando_relacional ::=  valor_aritmetico  | bool  | cadena_texto  | caracter_literal  ;
 
 operacion_relacional ::=operando_relacional operadorRelacional operando_relacional ;
 
@@ -390,23 +378,25 @@ operacion_relacional ::=operando_relacional operadorRelacional operando_relacion
                  EXPRESIONES LÓGICAS
    ============================================================ */
 
-condicion_basica ::=  PARENOP operacion_relacional PARENCL | PARENOP bool PARENCL ;
+condicion_basica ::=   PARENOP operacion_relacional PARENCL | PARENOP bool PARENCL  ;
 
-condiciones_and ::= condicion_basica AND condicion_basica  ;
+condiciones_and ::=  condicion_basica AND condicion_basica ;
 
-condiciones_or ::= condicion_basica OR condicion_basica  ;
+condiciones_or ::=  condicion_basica OR condicion_basica  ;
 
-condiciones_logicas ::=  PARENOP condiciones_and PARENCL | PARENOP condiciones_or PARENCL ;
+condiciones_logicas ::=   PARENOP condiciones_and PARENCL | PARENOP condiciones_or PARENCL ;
 
-negacion ::=  NOT condicion_basica| NOT condiciones_logicas ;
+negacion ::=  NOT condicion_basica | NOT condiciones_logicas ;
 
-expresion_logica ::=  condiciones_and | condiciones_or  | negacion ;
+expresion_logica ::=   condiciones_and | condiciones_or | negacion  ;
+
+condicion_control ::=   operacion_relacional  | condiciones_and | condiciones_or | negacion | bool | PARENOP operacion_relacional PARENCL | PARENOP bool PARENCL ;
 
 /* ============================================================
                 EXPRESIONES Y FUNCIONES
    ============================================================ */
 
-expresion ::= expresion_aritmetica  | operacion_relacional | expresion_logica | bool| cadena_texto | caracter_literal ;
+expresion ::= expresion_aritmetica   | operacion_relacional   | expresion_logica   | bool   | cadena_texto   | caracter_literal   ;
 
 lista_expresiones ::=   /* vacío */ | expresiones ;
 
@@ -419,34 +409,33 @@ llamada_funcion ::= identificador PARENOP  lista_expresiones  PARENCL ;
    ESTRUCTURAS DE CONTROL
    ============================================================ */
 
-if ::=  palabraIf PARENOP expresion PARENCL  abrir_bloque bloque cerrar_bloque  demas_if  ;
+if ::=  palabraIf PARENOP condicion_control PARENCL  abrir_bloque bloque cerrar_bloque demas_if
+    | palabraIf negacion  abrir_bloque bloque cerrar_bloque demas_if
+    | palabraIf error abrir_bloque bloque cerrar_bloque demas_if ;
 
 demas_if ::=  cadena_elif fin_if | fin_if ;
 
 fin_if ::= else | /* vacío */ ;
 
-elif ::= palabraElif PARENOP expresion PARENCL  abrir_bloque bloque cerrar_bloque;
+elif ::=  palabraElif PARENOP condicion_control PARENCL abrir_bloque bloque cerrar_bloque
+    | palabraElif error abrir_bloque bloque cerrar_bloque ;
 
 cadena_elif ::=   elif | elif cadena_elif ;
 
-else ::=  palabraElse abrir_bloque bloque cerrar_bloque ;
+else ::=  palabraElse abrir_bloque bloque cerrar_bloque  | palabraElse error abrir_bloque bloque cerrar_bloque ;
 
-while ::=  palabraWhile PARENOP expresion PARENCL  abrir_bloque bloque cerrar_bloque ;
+while ::=  palabraWhile PARENOP condicion_control PARENCL  abrir_bloque bloque cerrar_bloque
+    | palabraWhile error abrir_bloque bloque cerrar_bloque ;
 
-for ::=
-      palabraFor PARENOP
-      inicio_for fin_sentencia
-      condicion_for fin_sentencia
-      incremento_for
-      PARENCL
-      abrir_bloque bloque cerrar_bloque
+for ::=  palabraFor PARENOP  inicio_for fin_sentencia  condicion_for fin_sentencia  incremento_for PARENCL  abrir_bloque bloque cerrar_bloque
+    | palabraFor error  abrir_bloque bloque cerrar_bloque
     ;
 
-inicio_for ::=  /* vacío */ | identificador asignacion expresion ;
+inicio_for ::=  /* vacío */  | identificador asignacion expresion  ;
 
-condicion_for ::=   /* vacío */  | expresion ;
+condicion_for ::=   /* vacío */   operacion_relacional | expresion_logica | bool | PARENOP operacion_relacional PARENCL | PARENOP bool PARENCL ;
 
-incremento_for ::= /* vacío */ | operacion_incremento ;
+incremento_for ::=  /* vacío */ | operacion_incremento ;
 
 estructura_control ::=   if | while | for ;
 
@@ -469,22 +458,11 @@ sentencia_simple ::=
     | lectura
     | escritura
     | impresion
-    | operacion_incremento fin_sentencia
+    | operacion_incremento 
     | llamada_funcion fin_sentencia
     | break fin_sentencia
     | return
     | error fin_sentencia
-        {:
-            System.out.println(
-                "---------------------------------------"
-            );
-            System.out.println(
-                "Recuperación: hasta fin de sentencia »"
-            );
-            System.out.println(
-                "---------------------------------------"
-            );
-        :}
     ;
 
 lista_instrucciones ::= instruccion | instruccion lista_instrucciones ;
@@ -496,13 +474,7 @@ bloque ::=  /* vacío */ | lista_instrucciones ;
    PARÁMETROS
    ============================================================ */
 
-parametro ::=
-      INT identificador
-    | FLOAT identificador
-    | BOOL identificador
-    | CHAR identificador
-    | STRING identificador
-    ;
+parametro ::= tipo identificador ;
 
 lista_parametros ::=  /* vacío */| parametros ;
 
@@ -514,39 +486,22 @@ parametros ::=  parametro | parametro coma parametros ;
    ============================================================ */
 
 
-funcion_no_void ::=
-      INT identificador
-      PARENOP lista_parametros PARENCL
-      abrir_bloque bloque cerrar_bloque
-    | FLOAT identificador
-      PARENOP lista_parametros PARENCL
-      abrir_bloque bloque cerrar_bloque
-    | BOOL identificador
-      PARENOP lista_parametros PARENCL
-      abrir_bloque bloque cerrar_bloque
-    | CHAR identificador
-      PARENOP lista_parametros PARENCL
-      abrir_bloque bloque cerrar_bloque
-    | STRING identificador
-      PARENOP lista_parametros PARENCL
-      abrir_bloque bloque cerrar_bloque
-    ;
+funcion_no_void ::=  tipo identificador  PARENOP lista_parametros PARENCL  abrir_bloque bloque cerrar_bloque
+    | tipo error   abrir_bloque bloque cerrar_bloque  ;
 
-funcion_void ::= VOID identificador  PARENOP lista_parametros PARENCL  abrir_bloque bloque cerrar_bloque;
-
+funcion_void ::= VOID identificador PARENOP lista_parametros PARENCL  abrir_bloque bloque cerrar_bloque ;
 
 /* ============================================================
                  PRINCIPAL
    ============================================================ */
 
-principal ::= Principal PARENOP PARENCL abrir_bloque bloque cerrar_bloque;
+principal ::= VOID PRINCIPAL PARENOP PARENCL  abrir_bloque bloque cerrar_bloque ;
 
 /* ============================================================
    UNIDADES DEL PROGRAMA
    ============================================================ */
 
-unidades_programa ::= principal | funcion_no_void unidades_programa | funcion_void unidades_programa ;
-
+unidades_programa ::=  principal | funcion_no_void unidades_programa | funcion_void unidades_programa  ;
 
 /* ============================================================
                      PROGRAMA
