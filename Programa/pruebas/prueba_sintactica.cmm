@@ -61,25 +61,25 @@ val int llamada7 Ͱ suma є: 10, 20»
 
 int suma є: int a int b :э ¿:
 
-```
+
 return a + b»
-```
+
 
 :?
 
 int resta є: int a, int b :э ¿:
 
-```
+
 return a - b»
-```
+
 
 :?
 
 int multiplicacion є: int a, :э ¿:
 
-```
+
 return a * 10»
-```
+
 
 :?
 
@@ -89,43 +89,39 @@ return a * 10»
 
 if ¿:
 
-```
+
 print є: "Error" :э
-```
 
 :?
 
 if є: 10 > 5 :э
 
-```
+
 print є: "Error" :э
-```
+
 
 if є: 10 > 5 :э ¿:
 
-```
+
 print є: "Correcto" :э
-```
 
 else
 
-```
+
 print є: "Error" :э
-```
+
 
 :?
 
 if є: 10 > 5 :э ¿:
 
-```
+
 print є: "A" :э
-```
 
 :? else :э ¿:
 
-```
 print є: "B" :э
-```
+
 
 :?
 
@@ -135,25 +131,23 @@ print є: "B" :э
 
 while є: 10 > 0 :э
 
-```
+
 print є: "Error" :э
-```
 
 :?
 
 while є: :э ¿:
 
-```
+
 print є: "Error" :э
-```
 
 :?
 
 while ¿: 10 > 0 :э ¿:
 
-```
+
 print є: "Error" :э
-```
+
 
 :?
 
@@ -163,25 +157,23 @@ print є: "Error" :э
 
 for є: i Ͱ 0» i < 10 :э ¿:
 
-```
 print є: i :э
-```
 
 :?
 
 for є: i Ͱ 0»» i < 10» i++ :э ¿:
 
-```
+
 print є: i :э
-```
+
 
 :?
 
 for є: i Ͱ 0» i < 10» :э ¿:
 
-```
+
 print є: i :э
-```
+
 
 :?
 
@@ -202,25 +194,23 @@ val int operador6 Ͱ 10 20 + 30»
 
 int pruebaReturn є: int x :э ¿:
 
-```
+
 return»
-```
 
 :?
 
 int pruebaReturn2 є: int x :э ¿:
 
-```
+
 return x +»
-```
+
 
 :?
 
 int pruebaReturn3 є: int x :э ¿:
 
-```
 return є: x + 10» 
-```
+
 
 :?
 
@@ -230,7 +220,7 @@ return є: x + 10»
 
 void estructura є: :э ¿:
 
-```
+
 if є: 10 > 0 :э ¿:
 
     while є: 20 > 0 :э ¿:
@@ -248,7 +238,7 @@ if є: 10 > 0 :э ¿:
     :?
 
 :?
-```
+
 
 :?
 
@@ -268,27 +258,25 @@ val int profunda5 Ͱ є: suma є: 1, 2 :э + 10 :э»
 
 void bloque1 є: :э ¿:
 
-```
+
 print є: "Bloque 1" :э
-```
+
 
 void bloque2 є: :э ¿:
 
-```
+
 if є: 10 > 0 :э ¿:
 
     print є: "Bloque 2" :э
-```
 
 :?
 
 void bloque3 є: :э ¿:
 
-```
 while є: 10 > 0 :э ¿:
 
     print є: "Bloque 3" :э
-```
+
 
 :?
 

@@ -71,9 +71,9 @@ val int expresionMala4 Ͱ є: 10.50.60 + 20 :э»
 
 int suma є: int x, int y :э ¿:
 
-```
+
 return x + y»
-```
+
 
 :?
 
@@ -83,17 +83,16 @@ return x + y»
 
 int resta є: int x int y :э ¿:
 
-```
+
 return x - y»
-```
+
 
 :?
 
 int multiplicar є: int x, int y :э ¿:
 
-```
+
 return x *»
-```
 
 :?
 
@@ -103,25 +102,24 @@ return x *»
 
 if є: a > 0 :э ¿:
 
-```
+
 print є: "A es positivo" :э
-```
+
 
 :?
 
 if є: a > :э ¿:
 
-```
+
 print є: "Error sintactico" :э
-```
+
 
 :?
 
 if є: a > 0 λ :э ¿:
 
-```
+
 print є: "Otro error" :э
-```
 
 :?
 
@@ -131,13 +129,13 @@ print є: "Otro error" :э
 
 while є: b > 0 :э ¿:
 
-```
+
 val int calculo Ͱ є: a + b * є: 10 - 5 :э :э»
 
 val int calculoMalo Ͱ є: a + b @ 50 :э»
 
 b Ͱ b - 1»
-```
+
 
 :?
 
@@ -147,7 +145,7 @@ b Ͱ b - 1»
 
 if є: a > 0 :э ¿:
 
-```
+
 while є: b > 0 :э ¿:
 
     if є: a < b :э ¿:
@@ -160,7 +158,6 @@ while є: b > 0 :э ¿:
     :?
 
 :?
-```
 
 :?
 
@@ -170,7 +167,7 @@ while є: b > 0 :э ¿:
 
 if є: a > 0 :э ¿:
 
-```
+
 while є: b > 0 :э ¿:
 
     if є: a < :э ¿:
@@ -182,7 +179,7 @@ while є: b > 0 :э ¿:
     :?
 
 :?
-```
+
 
 | ============================================================
 | CARACTERES EXTRAÑOS AL FINAL
