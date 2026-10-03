@@ -23,21 +23,21 @@
 
 # Índice
 
-1. [Descripción del problema]
-2. [Objetivos]
-3. [Herramientas y librerías utilizadas]
-4. [Estructura del proyecto]
-5. [Requisitos]
-6. [Gramática del lenguaje]
-7. [Características del lenguaje]
-8. [Análisis léxico]
-9. [Análisis sintáctico]
-10. [Manejo de errores]
-11. [Compilación del proyecto]
-12. [Ejecución del proyecto]
-13. [Archivos de prueba]
-14. [Flujo de ejecución]
-15. [Resultado esperado]
+1. Descripción del problema
+2. Objetivos
+3. Herramientas y librerías utilizadas
+4. Estructura del proyecto
+5. Requisitos
+6. Gramática del lenguaje
+7. Características del lenguaje
+8. Análisis léxico
+9. Análisis sintáctico
+10. Manejo de errores
+11. Compilación del proyecto
+12. Ejecución del proyecto
+13. Archivos de prueba
+14. Flujo de ejecución
+15. Resultado esperado
 
 ---
 
