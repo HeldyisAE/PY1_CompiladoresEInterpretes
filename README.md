@@ -23,21 +23,21 @@
 
 # Índice
 
-1. [Descripción del problema](https://chatgpt.com/c/6ac04eae-874c-83e8-af3f-d1f9cc87fa91#descripci%C3%B3n-del-problema)
-2. [Objetivos](https://chatgpt.com/c/6ac04eae-874c-83e8-af3f-d1f9cc87fa91#objetivos)
-3. [Herramientas y librerías utilizadas](https://chatgpt.com/c/6ac04eae-874c-83e8-af3f-d1f9cc87fa91#herramientas-y-librer%C3%ADas-utilizadas)
-4. [Estructura del proyecto](https://chatgpt.com/c/6ac04eae-874c-83e8-af3f-d1f9cc87fa91#estructura-del-proyecto)
-5. [Requisitos](https://chatgpt.com/c/6ac04eae-874c-83e8-af3f-d1f9cc87fa91#requisitos)
-6. [Gramática del lenguaje](https://chatgpt.com/c/6ac04eae-874c-83e8-af3f-d1f9cc87fa91#gram%C3%A1tica-del-lenguaje)
-7. [Características del lenguaje](https://chatgpt.com/c/6ac04eae-874c-83e8-af3f-d1f9cc87fa91#caracter%C3%ADsticas-del-lenguaje)
-8. [Análisis léxico](https://chatgpt.com/c/6ac04eae-874c-83e8-af3f-d1f9cc87fa91#an%C3%A1lisis-l%C3%A9xico)
-9. [Análisis sintáctico](https://chatgpt.com/c/6ac04eae-874c-83e8-af3f-d1f9cc87fa91#an%C3%A1lisis-sint%C3%A1ctico)
-10. [Manejo de errores](https://chatgpt.com/c/6ac04eae-874c-83e8-af3f-d1f9cc87fa91#manejo-de-errores)
-11. [Compilación del proyecto](https://chatgpt.com/c/6ac04eae-874c-83e8-af3f-d1f9cc87fa91#compilaci%C3%B3n-del-proyecto)
-12. [Ejecución del proyecto](https://chatgpt.com/c/6ac04eae-874c-83e8-af3f-d1f9cc87fa91#ejecuci%C3%B3n-del-proyecto)
-13. [Archivos de prueba](https://chatgpt.com/c/6ac04eae-874c-83e8-af3f-d1f9cc87fa91#archivos-de-prueba)
-14. [Flujo de ejecución](https://chatgpt.com/c/6ac04eae-874c-83e8-af3f-d1f9cc87fa91#flujo-de-ejecuci%C3%B3n)
-15. [Resultado esperado](https://chatgpt.com/c/6ac04eae-874c-83e8-af3f-d1f9cc87fa91#resultado-esperado)
+1. [Descripción del problema]
+2. [Objetivos]
+3. [Herramientas y librerías utilizadas]
+4. [Estructura del proyecto]
+5. [Requisitos]
+6. [Gramática del lenguaje]
+7. [Características del lenguaje]
+8. [Análisis léxico]
+9. [Análisis sintáctico]
+10. [Manejo de errores]
+11. [Compilación del proyecto]
+12. [Ejecución del proyecto]
+13. [Archivos de prueba]
+14. [Flujo de ejecución]
+15. [Resultado esperado]
 
 ---
 
