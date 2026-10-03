@@ -355,38 +355,24 @@ Reconocer correctamente los literales de tipo char.
 
 
 /* Char válido */
-{LITERAL_CHAR} {
-    return symbol(sym.LITERAL_CHAR);
-}
+{LITERAL_CHAR} { return symbol(sym.LITERAL_CHAR);}
 
 /* Char vacío: '' */
-\'\' {
-    errorLexico(
-        "literal char vacío '" + yytext() + "'"
-    );
+\'\' { errorLexico(  "literal char vacío '" + yytext() + "'");
 }
 
 /* Más de un carácter: 'ab' */
-\'{CARACTER_SC}{CARACTER_SC}+\' {
-    errorLexico(
-        "literal char inválido '" + yytext() + "'"
-    );
+\'{CARACTER_SC}{CARACTER_SC}+\' { errorLexico(  "literal char inválido '" + yytext() + "'");
 }
 
 
 /* Char sin cerrar: 'a */
-\'{CARACTER_SC}+ {
-    errorLexico(
-        "literal char incompleto '" + yytext() + "'"
-    );
+\'{CARACTER_SC}+ {  errorLexico(   "literal char incompleto '" + yytext() + "'");
 }
 
 
 /* Comilla simple suelta */
-\' {
-    errorLexico(
-        "literal char incompleto '" + yytext() + "'"
-    );
+\' { errorLexico( "literal char incompleto '" + yytext() + "'" );
 }
 
 
@@ -412,8 +398,7 @@ Garantizar que las cadenas respeten las reglas del lenguaje.
 
 
 /* String válido */
-{LITERAL_STRING} {
-    return symbol(sym.LITERAL_STRING);
+{LITERAL_STRING} { return symbol(sym.LITERAL_STRING);
 }
 
 /* Comilla doble que no abre un string válido */
