@@ -1,4 +1,3 @@
-```bat
 @echo off
 setlocal enabledelayedexpansion
 
@@ -168,4 +167,3 @@ echo.
 echo ============================================================
 
 endlocal
-```
