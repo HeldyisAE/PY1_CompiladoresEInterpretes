@@ -103,16 +103,16 @@ public class Lexer implements java_cup.runtime.Scanner {
   private static final String ZZ_ACTION_PACKED_0 =
     "\3\0\1\1\1\2\1\1\1\3\1\4\1\5\1\6"+
     "\1\7\1\10\1\11\2\12\1\1\1\13\1\1\1\14"+
-    "\1\15\1\1\14\15\1\2\1\16\1\17\2\1\1\20"+
-    "\1\21\1\22\1\23\1\1\1\2\1\24\1\25\1\26"+
-    "\1\27\1\30\1\0\1\31\1\4\1\32\1\33\1\34"+
-    "\1\35\1\36\1\37\1\40\1\41\1\42\1\43\1\44"+
-    "\1\45\1\46\1\40\1\0\7\15\1\47\13\15\1\50"+
-    "\1\51\1\52\1\4\1\53\1\54\1\0\7\15\1\55"+
-    "\1\56\1\57\1\60\5\15\1\61\3\15\1\62\2\63"+
-    "\1\64\1\15\1\65\1\66\1\67\3\15\1\70\2\15"+
-    "\1\71\1\72\2\15\1\73\1\74\1\75\1\15\1\76"+
-    "\2\15\1\77\1\100\1\15\1\101\1\102\2\15\1\103";
+    "\1\15\1\1\14\15\1\16\1\17\1\20\2\1\1\21"+
+    "\1\22\1\23\1\24\1\1\1\25\1\26\1\27\1\30"+
+    "\1\31\1\32\1\0\1\33\1\4\1\34\1\35\1\36"+
+    "\1\37\1\40\1\41\1\42\1\43\1\44\1\45\1\46"+
+    "\1\47\1\50\1\42\1\0\7\15\1\51\13\15\1\52"+
+    "\1\53\1\54\1\4\1\55\1\56\1\0\7\15\1\57"+
+    "\1\60\1\61\1\62\5\15\1\63\3\15\1\64\2\65"+
+    "\1\66\1\15\1\67\1\70\1\71\3\15\1\72\2\15"+
+    "\1\73\1\74\2\15\1\75\1\76\1\77\1\15\1\100"+
+    "\2\15\1\101\1\102\1\15\1\103\1\104\2\15\1\105";
 
   private static int [] zzUnpackAction() {
     int [] result = new int[146];
@@ -395,30 +395,131 @@ public class Lexer implements java_cup.runtime.Scanner {
   private boolean zzEOFDone;
 
   /* user code: */
-    /* Posicion donde empezo un string o comentario multilinea */
+    /*
+    ========================================================
+            VARIABLES Y MÉTODOS AUXILIARES
+    ========================================================
+     */
+
+    /*
+    Guarda la posición donde comenzó un string o comentario
+    multilínea que posteriormente puede generar un error.
+     */
     private int lineaInicio;
     private int columnaInicio;
 
-    /* Errores lexicos acumulados (para reporte final o archivo) */
-    private final java.util.List<String> errores = new java.util.ArrayList<>();
 
+    /*
+    Lista donde se almacenan todos los errores léxicos
+    encontrados durante el análisis.
+     */
+    private final java.util.List<String> errores =
+        new java.util.ArrayList<>();
+
+
+    /*
+    Permite obtener desde otras clases la lista de errores
+    encontrados por el lexer.
+     */
     public java.util.List<String> getErrores() {
         return errores;
     }
 
-    /* Crea el token con linea, columna y lexema */
+
+    /*
+    -------------------------------------------------------
+                    MÉTODO: symbol
+    --------------------------------------------------------
+
+    DESCRIPCIÓN:
+    Crea un objeto Symbol de CUP para representar un token.
+
+    ENTRADAS:
+    tipo: código numérico del token definido en sym.java.
+
+    SALIDA:
+    Un objeto Symbol que contiene:
+    tipo del token
+    línea donde aparece
+    columna donde aparece
+    lexema reconocido
+
+    OBJETIVO:
+    Entregar al parser de CUP la información necesaria sobre
+    cada token reconocido.
+     */
     private Symbol symbol(int tipo) {
-        return new Symbol(tipo, yyline + 1, yycolumn + 1, yytext());
+        return new Symbol(
+            tipo,
+            yyline + 1,
+            yycolumn + 1,
+            yytext()
+        );
     }
 
-    /* Error en la posicion del lexema actual */
+
+    /*
+    --------------------------------------------------------
+                MÉTODO: errorLexico
+    -------------------------------------------------------
+
+    DESCRIPCIÓN:
+    Registra un error léxico utilizando la posición actual
+    del analizador.
+
+    ENTRADA:
+    detalle: descripción del error encontrado.
+    
+    SALIDA:
+    El error se agrega a la lista de errores y se muestra
+    en consola.
+    
+    OBJETIVO:
+    Centralizar el reporte de errores léxicos.
+     */
     private void errorLexico(String detalle) {
-        errorLexico(detalle, yyline + 1, yycolumn + 1);
+        errorLexico(
+            detalle,
+            yyline + 1,
+            yycolumn + 1
+        );
     }
 
-    /* Error en una posicion dada (strings y comentarios que abarcan lineas) */
-    private void errorLexico(String detalle, int linea, int columna) {
-        String msg = "Error léxico en línea " + linea + ", columna " + columna + ": " + detalle;
+
+    /*
+    --------------------------------------------------------
+            MÉTODO: errorLexico CON POSICIÓN
+    --------------------------------------------------------
+    
+    DESCRIPCIÓN:
+    Registra un error léxico indicando explícitamente la línea
+    y columna donde comenzó el elemento incorrecto.
+    
+    ENTRADAS:
+    detalle: descripción del error.
+    linea: número de línea del error.
+    columna: número de columna del error.
+    
+    SALIDA:
+    El mensaje se almacena y se muestra en consola.
+    
+    OBJETIVO:
+    Permitir reportar correctamente errores que abarcan varias
+    líneas, como strings o comentarios sin cerrar.
+     */
+    private void errorLexico(
+        String detalle,
+        int linea,
+        int columna
+    ) {
+        String msg =
+            "Error léxico en línea " +
+            linea +
+            ", columna " +
+            columna +
+            ": " +
+            detalle;
+
         errores.add(msg);
         System.out.println(msg);
     }
@@ -845,13 +946,21 @@ public class Lexer implements java_cup.runtime.Scanner {
             zzDoEOF();
             switch (zzLexicalState) {
             case COMENTARIO_MULTILINEA: {
-              errorLexico("comentario multilínea sin cerrar", lineaInicio, columnaInicio);
+              errorLexico(
+            "comentario multilínea sin cerrar",
+            lineaInicio,
+            columnaInicio
+        );
         yybegin(YYINITIAL);
         return new Symbol(sym.EOF);
             }  // fall though
             case 147: break;
             case STRING_INCOMPLETO: {
-              errorLexico("literal string sin cerrar", lineaInicio, columnaInicio);
+              errorLexico(
+            "literal string sin cerrar",
+            lineaInicio,
+            columnaInicio
+        );
         yybegin(YYINITIAL);
         return new Symbol(sym.EOF);
             }  // fall though
@@ -863,346 +972,380 @@ public class Lexer implements java_cup.runtime.Scanner {
       else {
         switch (zzAction < 0 ? zzAction : ZZ_ACTION[zzAction]) {
           case 1:
-            { errorLexico("carácter no reconocido '" + yytext() + "'");
+            { errorLexico(
+        "carácter no reconocido '" + yytext() + "'"
+    );
             }
           // fall through
-          case 68: break;
+          case 70: break;
           case 2:
             { 
             }
           // fall through
-          case 69: break;
+          case 71: break;
           case 3:
             { lineaInicio = yyline + 1;
     columnaInicio = yycolumn + 1;
     yybegin(STRING_INCOMPLETO);
             }
           // fall through
-          case 70: break;
+          case 72: break;
           case 4:
-            { errorLexico("literal char incompleto '" + yytext() + "'");
+            { errorLexico(
+        "literal char incompleto '" + yytext() + "'"
+    );
             }
           // fall through
-          case 71: break;
+          case 73: break;
           case 5:
             { return symbol(sym.MULTIPLY);
             }
           // fall through
-          case 72: break;
+          case 74: break;
           case 6:
             { return symbol(sym.PLUS);
             }
           // fall through
-          case 73: break;
+          case 75: break;
           case 7:
             { return symbol(sym.COMA);
             }
           // fall through
-          case 74: break;
+          case 76: break;
           case 8:
             { return symbol(sym.MINUS);
             }
           // fall through
-          case 75: break;
+          case 77: break;
           case 9:
             { return symbol(sym.FLOATDIV);
             }
           // fall through
-          case 76: break;
+          case 78: break;
           case 10:
             { return symbol(sym.LITERAL_INT);
             }
           // fall through
-          case 77: break;
+          case 79: break;
           case 11:
             { return symbol(sym.LT);
             }
           // fall through
-          case 78: break;
+          case 80: break;
           case 12:
             { return symbol(sym.GT);
             }
           // fall through
-          case 79: break;
+          case 81: break;
           case 13:
             { return symbol(sym.ID);
             }
           // fall through
-          case 80: break;
+          case 82: break;
           case 14:
+            { /* El comentario se ignora. */
+            }
+          // fall through
+          case 83: break;
+          case 15:
             { lineaInicio = yyline + 1;
     columnaInicio = yycolumn + 1;
     yybegin(COMENTARIO_MULTILINEA);
             }
           // fall through
-          case 81: break;
-          case 15:
+          case 84: break;
+          case 16:
             { return symbol(sym.TERMINATOR);
             }
           // fall through
-          case 82: break;
-          case 16:
+          case 85: break;
+          case 17:
             { return symbol(sym.ASIGN);
             }
           // fall through
-          case 83: break;
-          case 17:
+          case 86: break;
+          case 18:
             { return symbol(sym.NOT);
             }
           // fall through
-          case 84: break;
-          case 18:
+          case 87: break;
+          case 19:
             { return symbol(sym.OR);
             }
           // fall through
-          case 85: break;
-          case 19:
+          case 88: break;
+          case 20:
             { return symbol(sym.AND);
             }
           // fall through
-          case 86: break;
-          case 20:
-            { yybegin(YYINITIAL);
-            }
-          // fall through
-          case 87: break;
-          case 21:
-            { /* se consume el contenido para seguir adelante */
-            }
-          // fall through
-          case 88: break;
-          case 22:
-            { errorLexico("literal string sin cerrar", lineaInicio, columnaInicio);
-        yybegin(YYINITIAL);
-            }
-          // fall through
           case 89: break;
-          case 23:
-            { errorLexico("literal string inválido (caracter no permitido)", lineaInicio, columnaInicio);
-        yybegin(YYINITIAL);
+          case 21:
+            { /* Se ignora el contenido del comentario. */
             }
           // fall through
           case 90: break;
-          case 24:
-            { return symbol(sym.NEQ);
+          case 22:
+            { yybegin(YYINITIAL);
             }
           // fall through
           case 91: break;
-          case 25:
-            { return symbol(sym.LITERAL_STRING);
+          case 23:
+            { /* Se consume el contenido para poder continuar. */
             }
           // fall through
           case 92: break;
-          case 26:
-            { errorLexico("literal char vacío '" + yytext() + "'");
+          case 24:
+            { errorLexico(
+            "literal string sin cerrar",
+            lineaInicio,
+            columnaInicio
+        );
+        yybegin(YYINITIAL);
             }
           // fall through
           case 93: break;
-          case 27:
-            { return symbol(sym.INCREMENT);
+          case 25:
+            { errorLexico(
+            "literal string inválido (carácter no permitido)",
+            lineaInicio,
+            columnaInicio
+        );
+        yybegin(YYINITIAL);
             }
           // fall through
           case 94: break;
-          case 28:
-            { return symbol(sym.DECREMENT);
+          case 26:
+            { return symbol(sym.NEQ);
             }
           // fall through
           case 95: break;
-          case 29:
-            { return symbol(sym.ENTIREDIV);
+          case 27:
+            { return symbol(sym.LITERAL_STRING);
             }
           // fall through
           case 96: break;
-          case 30:
-            { errorLexico("literal float incompleto '" + yytext() + "'");
+          case 28:
+            { errorLexico(
+        "literal char vacío '" + yytext() + "'"
+    );
             }
           // fall through
           case 97: break;
-          case 31:
-            { errorLexico("entero inválido '" + yytext() + "'");
+          case 29:
+            { return symbol(sym.INCREMENT);
             }
           // fall through
           case 98: break;
-          case 32:
-            { errorLexico("identificador inválido '" + yytext() + "'");
+          case 30:
+            { return symbol(sym.DECREMENT);
             }
           // fall through
           case 99: break;
-          case 33:
-            { return symbol(sym.CLBLOCK);
+          case 31:
+            { return symbol(sym.ENTIREDIV);
             }
           // fall through
           case 100: break;
-          case 34:
-            { return symbol(sym.CLBRACKET);
+          case 32:
+            { errorLexico(
+        "literal float incompleto '" + yytext() + "'"
+    );
             }
           // fall through
           case 101: break;
-          case 35:
-            { return symbol(sym.PARENCL);
+          case 33:
+            { errorLexico(
+        "entero inválido '" + yytext() + "'"
+    );
             }
           // fall through
           case 102: break;
-          case 36:
-            { return symbol(sym.LTE);
+          case 34:
+            { errorLexico(
+        "identificador inválido '" + yytext() + "'"
+    );
             }
           // fall through
           case 103: break;
-          case 37:
-            { return symbol(sym.EQUAL);
+          case 35:
+            { return symbol(sym.CLBLOCK);
             }
           // fall through
           case 104: break;
-          case 38:
-            { return symbol(sym.GTE);
+          case 36:
+            { return symbol(sym.CLBRACKET);
             }
           // fall through
           case 105: break;
-          case 39:
-            { return symbol(sym.IF);
+          case 37:
+            { return symbol(sym.PARENCL);
             }
           // fall through
           case 106: break;
-          case 40:
-            { return symbol(sym.OPBLOCK);
+          case 38:
+            { return symbol(sym.LTE);
             }
           // fall through
           case 107: break;
-          case 41:
-            { return symbol(sym.OPBRACKET);
+          case 39:
+            { return symbol(sym.EQUAL);
             }
           // fall through
           case 108: break;
-          case 42:
-            { return symbol(sym.PARENOP);
+          case 40:
+            { return symbol(sym.GTE);
             }
           // fall through
           case 109: break;
-          case 43:
-            { return symbol(sym.LITERAL_CHAR);
+          case 41:
+            { return symbol(sym.IF);
             }
           // fall through
           case 110: break;
-          case 44:
-            { return symbol(sym.LITERAL_FLOAT);
+          case 42:
+            { return symbol(sym.OPBLOCK);
             }
           // fall through
           case 111: break;
-          case 45:
-            { return symbol(sym.FOR);
+          case 43:
+            { return symbol(sym.OPBRACKET);
             }
           // fall through
           case 112: break;
-          case 46:
-            { return symbol(sym.INT);
+          case 44:
+            { return symbol(sym.PARENOP);
             }
           // fall through
           case 113: break;
-          case 47:
-            { return symbol(sym.MOD);
+          case 45:
+            { return symbol(sym.LITERAL_CHAR);
             }
           // fall through
           case 114: break;
-          case 48:
-            { return symbol(sym.POT);
+          case 46:
+            { return symbol(sym.LITERAL_FLOAT);
             }
           // fall through
           case 115: break;
-          case 49:
-            { return symbol(sym.VAL);
+          case 47:
+            { return symbol(sym.FOR);
             }
           // fall through
           case 116: break;
-          case 50:
-            { errorLexico("literal char inválido '" + yytext() + "'");
+          case 48:
+            { return symbol(sym.INT);
             }
           // fall through
           case 117: break;
-          case 51:
-            { errorLexico("literal float inválido '" + yytext() + "'");
+          case 49:
+            { return symbol(sym.MOD);
             }
           // fall through
           case 118: break;
-          case 52:
-            { return symbol(sym.BOOL);
+          case 50:
+            { return symbol(sym.POT);
             }
           // fall through
           case 119: break;
-          case 53:
-            { return symbol(sym.CHAR);
+          case 51:
+            { return symbol(sym.VAL);
             }
           // fall through
           case 120: break;
-          case 54:
-            { return symbol(sym.ELIF);
+          case 52:
+            { errorLexico(
+        "literal char inválido '" + yytext() + "'"
+    );
             }
           // fall through
           case 121: break;
-          case 55:
-            { return symbol(sym.ELSE);
+          case 53:
+            { errorLexico(
+        "literal float inválido '" + yytext() + "'"
+    );
             }
           // fall through
           case 122: break;
-          case 56:
-            { return symbol(sym.READ);
+          case 54:
+            { return symbol(sym.BOOL);
             }
           // fall through
           case 123: break;
-          case 57:
-            { return symbol(sym.TRUE);
+          case 55:
+            { return symbol(sym.CHAR);
             }
           // fall through
           case 124: break;
-          case 58:
-            { return symbol(sym.VOID);
+          case 56:
+            { return symbol(sym.ELIF);
             }
           // fall through
           case 125: break;
-          case 59:
-            { return symbol(sym.BREAK);
+          case 57:
+            { return symbol(sym.ELSE);
             }
           // fall through
           case 126: break;
-          case 60:
-            { return symbol(sym.FALSE);
+          case 58:
+            { return symbol(sym.READ);
             }
           // fall through
           case 127: break;
-          case 61:
-            { return symbol(sym.FLOAT);
+          case 59:
+            { return symbol(sym.TRUE);
             }
           // fall through
           case 128: break;
-          case 62:
-            { return symbol(sym.PRINT);
+          case 60:
+            { return symbol(sym.VOID);
             }
           // fall through
           case 129: break;
-          case 63:
-            { return symbol(sym.WHILE);
+          case 61:
+            { return symbol(sym.BREAK);
             }
           // fall through
           case 130: break;
-          case 64:
-            { return symbol(sym.WRITE);
+          case 62:
+            { return symbol(sym.FALSE);
             }
           // fall through
           case 131: break;
-          case 65:
-            { return symbol(sym.RETURN);
+          case 63:
+            { return symbol(sym.FLOAT);
             }
           // fall through
           case 132: break;
-          case 66:
-            { return symbol(sym.STRING);
+          case 64:
+            { return symbol(sym.PRINT);
             }
           // fall through
           case 133: break;
-          case 67:
-            { return symbol(sym.PRINCIPAL);
+          case 65:
+            { return symbol(sym.WHILE);
             }
           // fall through
           case 134: break;
+          case 66:
+            { return symbol(sym.WRITE);
+            }
+          // fall through
+          case 135: break;
+          case 67:
+            { return symbol(sym.RETURN);
+            }
+          // fall through
+          case 136: break;
+          case 68:
+            { return symbol(sym.STRING);
+            }
+          // fall through
+          case 137: break;
+          case 69:
+            { return symbol(sym.PRINCIPAL);
+            }
+          // fall through
+          case 138: break;
           default:
             zzScanError(ZZ_NO_MATCH);
         }
