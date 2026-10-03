@@ -6,6 +6,7 @@
 
 **Semestre:** II, 2026
 **Profesor:** [Allan Rodriguez Davila](https://tecdigital.tec.ac.cr/dotlrn/community-member?user_id=451189)
+
 **Proyecto:** #1 — Análisis Léxico y Sintáctico
 **Fecha de entrega:** 3 de octubre de 2026
 
