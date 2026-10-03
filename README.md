@@ -38,7 +38,6 @@
 13. [Archivos de prueba](https://chatgpt.com/c/6ac04eae-874c-83e8-af3f-d1f9cc87fa91#archivos-de-prueba)
 14. [Flujo de ejecución](https://chatgpt.com/c/6ac04eae-874c-83e8-af3f-d1f9cc87fa91#flujo-de-ejecuci%C3%B3n)
 15. [Resultado esperado](https://chatgpt.com/c/6ac04eae-874c-83e8-af3f-d1f9cc87fa91#resultado-esperado)
-16. [Video de demostración](https://chatgpt.com/c/6ac04eae-874c-83e8-af3f-d1f9cc87fa91#video-de-demostraci%C3%B3n)
 
 ---
 
@@ -1113,15 +1112,6 @@ contiene el resultado correspondiente al análisis léxico.
 | `prueba_sintactica.cmm` | Prueba del análisis sintáctico               |
 | `tokens.txt`            | Archivo generado con los tokens                |
 
----
-
-# Video de demostración
-
-En el siguiente video se muestra el funcionamiento del proyecto, incluyendo la compilación, ejecución, análisis léxico, análisis sintáctico y manejo de errores.
-
-**Enlace al video:**
-
-> **[PEGAR AQUÍ]**
 
 ---
 
