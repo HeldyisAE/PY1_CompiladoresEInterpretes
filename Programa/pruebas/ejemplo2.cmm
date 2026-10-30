@@ -1,0 +1,57 @@
+
+val char gch  Ͱ '&'»
+
+float _mi_  є: int _dif_, char _otra_ :э ¿:  |sintactico  :э 
+	val int _otra_»
+	val string _str_ Ͱ "Hola $~&|:?$& :э  mundo"»
+	while є: Σ є:false:э  :э
+	¿: 
+		while є: є:1:э λ Σ є: є:ʃ:12:ʅ >= ʃ:34+35:ʅ:э  :э :э |semantico, ver manejo de parentesis y combinacion
+		¿: 
+			_var_  Ͱ _var_ - 1» |semantico
+		 :?
+
+
+		if  є: ʃ:_var_:ʅ==ʃ:0:ʅ :э 
+		 ¿: 
+			write є: "entra al if" :э »
+		 :? 
+		if є: true :э 
+		 ¿: 
+            val int x»
+            for є: val int x  Ͱ 9 » ʃ:_var_:ʅ>ʃ:0:ʅ » a+b :э
+            ¿:
+                write є: _var_ :э »
+            :?
+            for є: x  Ͱ 9 » ʃ:_var_:ʅ>ʃ:0:ʅ » a+b :э
+            ¿:
+                write є: _var_ :э »
+            :?
+
+		 :? 
+		else
+		 ¿:  	
+				write є: "!|" :э »
+				_otra_  Ͱ -10.5 * -1.9»
+				write є: "un case" :э »
+			
+		 :? 
+	 :?
+	return 1» |semantico
+  :? 
+
+ bool _miOtraFun_  є:  :э   ¿: 
+	return -5.6» |semantico
+  :? 
+ void principal є:  :э  ¿: | semantico tipo void
+	_arr_ʃ:67+_i_:ʅ  Ͱ -0.01 + 1010 * "sd"»  | semantico
+	val bool _b1_» |semantico
+	val string _s1_» |semantico
+	read є: _s1_ :э » |semantico
+	read є: gch :э » 
+	write є: _b1_ :э » |semantico
+	write є: true :э » |semantico
+	write є: -6//7 :э »
+	return»  |sintactico
+	return 1+_f_ є:  :э »
+ :? 

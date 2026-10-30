@@ -221,14 +221,14 @@ del analizador léxico.
 LETRA  = [a-zA-Z]
 DIGITO   = [0-9]
 NOCERODIGITO  = [1-9]
-IDENTIFICADOR = {LETRA}( {LETRA}|{DIGITO}| \_({LETRA}|{DIGITO}) )*
+IDENTIFICADOR = \_?{LETRA}( {LETRA}|{DIGITO}| \_({LETRA}|{DIGITO}) )*\_?
 ENTERO =  0| {NOCERODIGITO}{DIGITO}*
 /*
  * Define la parte decimal de un número flotante.
  */
 FRACCION = 0|  {DIGITO}*{NOCERODIGITO}
 FLOTANTE ={ENTERO}\.{FRACCION}
-SIMBOLO_SC = "@"|"#"|"$"|"%"|"^"|"&"|  "\*"|"("|")"|"-"|"\_"|"="|"+"|  "["|"]"|"{"|"}"|";"|":"|  "<"|">"|","|"."|"/"|"?"|"\\"|"\`"|"\~"|"!"|"|"
+SIMBOLO_SC = [^a-zA-Z0-9 \'\"\r\n]
 SIMBOLO = {SIMBOLO_SC}|"'"
 CARACTER = {LETRA}|{DIGITO}|{SIMBOLO}|" "
 CARACTER_SC = {LETRA}|{DIGITO}|{SIMBOLO_SC}|" "
@@ -322,12 +322,6 @@ Evitar que identificadores inválidos lleguen al parser.
 }
 
 
-/* Empieza con guion bajo: _counter, __variable, _1 */
-\_+({LETRA}|{DIGITO})({LETRA}|{DIGITO}|\_)* {
-    errorLexico(
-        "identificador inválido '" + yytext() + "'"
-    );
-}
 
 
 /*

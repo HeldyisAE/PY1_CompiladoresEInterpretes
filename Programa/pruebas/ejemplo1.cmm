@@ -1,0 +1,75 @@
+
+val char _x22_ Ͱ 'b'»
+val int _x50_ʃ:67:ʅ» 
+val float gf Ͱ -0.000001» |sintactico
+val int gi Ͱ 1» |sintactico
+
+ float func1 є: char x22,char x22 :э  ¿: |semantico borrar parametro
+
+	val float x Ͱ -0.01» |error sintactico
+	val char _x22_ Ͱ 'a'» ¡ semantico x22 !
+	val char _miChar_ Ͱ '!' »  |error sintactico
+	val char _miChar2_ Ͱ '!'» |sintactico-semantico
+	val int _x30_ Ͱ 1» |sintactico
+	val bool _x40_ Ͱ false»
+	val float _x50_ʃ:1000:ʅ  Ͱ ¿:4,5,4,5,4,5:?»  |semantico
+	val int _x50_ʃ:67:ʅ  Ͱ ¿:4.4,5.5,4.4,5.5,4.4,5.5:?» |semantico
+	val int x  Ͱ 10010 + -100.1»
+	val float x  Ͱ -5//6 + 9//16» |semantico
+	val string _x50_ Ͱ "Hola a todos los $ʃ¿Ͱє: que estʃ:a:ʅ haciendo un compilador nuevo¿:n"»
+	if є: є:ʃ:22:ʅ<ʃ:45:ʅ:э λ є:ʃ:var:ʅ>ʃ:5//6:ʅ:э :э  ¿:  |sintactio, no uso paren var, semantico x22, var
+		val int y»
+		x22 Ͱ 10»
+		val char ch33 Ͱ 'a'»
+	 :?
+elif є: є:true:э λ є:false:э θ є:true:э :э ¿:| sintactico-penaliza, doble error validar paren
+		val int y» |no error duplicado en if-else
+	 :?
+	else ¿: 
+		val int y» |no error duplicado en if-else
+		val string str2 Ͱ "sdff"»
+	 :? 
+	
+	whileє: є:ʃ:1*id:ʅ==ʃ:2/fє::э:ʅ:э  λ  є:ʃ:var:ʅ<=ʃ:f1є:1,'c',"d",f1є:x:э:э:ʅ:э θ Σ є:false:э:э |semantico-sintactico
+	¿: write є: _i_ :э » :?  |semantico i
+	write є: "Hola mundo" :э »
+	read є: _x22_ :э »
+	read є: _x22_:э » |sintactico
+	return -5.6»|cambio en retorno genera semantico
+ :?  
+
+ bool _func2_  є: bool _b1_, int _i1_ :э   ¿: 
+	val int x» |sintactico
+	return» |generar error con -5.6 y con i1
+  :?  
+
+string _func3_  є:  :э   ¿:  |semantico string
+	val string _b1_»
+	return _b1_» 
+  :? 
+
+void principal є:  :э  ¿: 
+¡
+Comentario 1
+!
+	val char miChar Ͱ '!'»
+	val char miChar2 Ͱ '!'» |sintactico
+	val string str1 Ͱ "Mi string 1"»
+	val float fl1»
+	val float fl1 Ͱ 56.6 / 6/8» |semantico fl1
+val int x Ͱ 5»
+x--
+val int in1 Ͱ x - -14 + x mod 7 / 15»
+in1++
+val float fl2 Ͱ 3.7  pot  fl1+ є: 45.6  mod  76 :э » |semantico literal 76
+	
+|comentario 2
+	arr  Ͱ 10 - arrʃ:67*fє::э:ʅ * func1  є: hola, true, "hola mundo", 4.5, 'a' :э » |semantico func1, retorno func1
+	arrʃ:67*fє::э:ʅ  Ͱ 1.1»
+	fl1  Ͱ 4.5 mod miChar pot -0.005» |semantico miChar
+	miFunc є: miFunc є:  :э ,'a' :э » |semantico miFunc, hola
+	val bool bl0  Ͱ ʃ:6.7:ʅ != ʃ:8//9:ʅ » |ok
+	bl0  Ͱ Σє:ʃ:true:ʅ != ʃ:ʃ:1+1:ʅ==ʃ:2*2:ʅ:ʅ:э» |OKx2
+	val bool bl1  Ͱ є:ʃ:in1:ʅ > ʃ:fl1:ʅ :э θ Σ є: є:ʃ:func2 є: 3,in1 :э:ʅ >= ʃ:56:ʅ :э :э » |semantico in1 > Ͱ fl1, func2
+	return   bl1» |semantico
+ :? 
