@@ -26,7 +26,7 @@ import java_cup.runtime.Symbol;
 
 /*
  * Descripcion:
- * Coordino todo el analisis lexico y sintactico del programa.
+ * Coordino el analisis lexico, sintactico y semantico (tabla de simbolos).
  *
  * Entrada:
  * Recibe el archivo .cmm que se desea analizar.
@@ -38,7 +38,7 @@ import java_cup.runtime.Symbol;
  * El archivo debe seguir las reglas del lenguaje.
  *
  * Objetivo:
- * Ejecutar las dos fases del analizador en un solo programa.
+ * Ejecutar las tres fases del analizador en un solo programa.
  */
 
 public class Main {
@@ -61,7 +61,8 @@ public class Main {
      */
     private static final int ANCHO = 76;
 
-    private static final Pattern PATRON_ERROR = Pattern.compile(  "Error léxico en línea (\\d+), columna (\\d+): (.*)");
+    /* Acepta "Error léxico ..." y "Error semántico ..." */
+    private static final Pattern PATRON_ERROR = Pattern.compile(  "Error \\S+ en línea (\\d+), columna (\\d+): (.*)");
 
     /* Nombre de token -> cómo se escribe en el lenguaje. */
     private static final Map<String, String> VISIBLE = new HashMap<>();
@@ -176,19 +177,19 @@ public class Main {
 
     /*
      * Descripcion:
-     * Intento habilitar el uso de colores ANSI en Windows.
+     * Aplico un color ANSI a un texto.
      *
      * Entrada:
-     * La configuracion actual de la consola.
+     * El codigo de color y el texto.
      *
      * Salida:
-     * La consola queda preparada para mostrar colores.
+     * El texto con color, o sin color si la consola no lo permite.
      *
      * Restricciones:
-     * Solo se aplica cuando el sistema es Windows.
+     * Depende de que la consola soporte colores.
      *
      * Objetivo:
-     * Permitir una mejor visualizacion de los mensajes.
+     * Resaltar la informacion importante.
      */
     private static String col(String codigo, String texto) {
 
@@ -603,7 +604,7 @@ public class Main {
 
         /* ----------------- ENCABEZADO ----------------- */
 
-        banner("ANALIZADOR LÉXICO Y SINTÁCTICO ");
+        banner("ANALIZADOR LÉXICO, SINTÁCTICO Y SEMÁNTICO");
 
         System.out.println();
 
@@ -663,6 +664,33 @@ public class Main {
             estado(false, "El archivo contiene errores sintácticos.");
         }
 
+        /* ----------------- FASE 3: SEMÁNTICO ----------------- */
+
+        seccion("FASE 3 · ANÁLISIS SEMÁNTICO");
+
+        /* La tabla la llenó el parser con las acciones semánticas de la gramática. */
+        TablaSimbolos tabla = analizador.tabla;
+
+        File reporte = tabla.guardarReporte(archivoFuente);
+
+        contador("Ámbitos", tabla.getAmbitos().size());
+
+        contador("Símbolos declarados", tabla.cantidadSimbolos());
+
+        List<String> erroresSemanticos = tabla.getErrores();
+
+        contador("Errores semánticos", erroresSemanticos.size());
+
+        if (erroresSemanticos.isEmpty()) {
+
+            estado(true, "Análisis semántico correcto.");
+
+        } else {
+
+            mostrarTablaLexica(erroresSemanticos);
+            estado(false, "El archivo contiene errores semánticos.");
+        }
+
         /* ----------------- RESULTADO FINAL ----------------- */
 
         seccion("RESULTADO FINAL");
@@ -673,7 +701,9 @@ public class Main {
 
         contador("Errores sintácticos", analizador.errores.size());
 
-        int erroresTotales = erroresLexicos.size() + analizador.errores.size();
+        contador("Errores semánticos", erroresSemanticos.size());
+
+        int erroresTotales = erroresLexicos.size() + analizador.errores.size() + erroresSemanticos.size();
 
         System.out.println("  " + "─".repeat(24) + " : " + "─".repeat(5));
 
@@ -688,15 +718,330 @@ public class Main {
         System.out.println(String.format("  %-24s : ", "Tiempo de ejecución") + col("1;36", String.format("%5s", tiempo)));
         System.out.println();
 
-        if (erroresLexicos.isEmpty() && analizador.errores.isEmpty()) {
+        if (erroresTotales == 0) {
 
-            caja(true, "  ARCHIVO CORRECTO", "No se encontraron errores léxicos ni sintácticos.");
+            caja(true, "  ARCHIVO CORRECTO", "No se encontraron errores léxicos, sintácticos ni semánticos.");
 
         } else {
             caja(false, "  ARCHIVO CON ERRORES", "Corrige los errores indicados y vuelve a ejecutar.");
         }
 
+        /* ----------------- TABLA DE SÍMBOLOS ----------------- */
+
         System.out.println();
+
+        cuadroReporte(reporte);
+
+        System.out.println();
+
+        if (preguntarSiNo("¿Desea ver la tabla de símbolos? (s/n): ")) {
+
+            seccion("TABLA DE SÍMBOLOS");
+
+            mostrarTablaSimbolos(tabla);
+
+        } else {
+
+            System.out.println();
+            System.out.println(col("90", "  Puede revisarla después en la ruta indicada."));
+        }
+
+        System.out.println();
+    }
+
+    /*
+     * ========================================================
+     * TABLA DE SÍMBOLOS EN CONSOLA
+     * ========================================================
+     */
+
+    /*
+     * Descripcion:
+     * Pregunto al usuario si o no desde la consola.
+     *
+     * Entrada:
+     * El texto de la pregunta.
+     *
+     * Salida:
+     * Verdadero si responde s/si, falso si responde n/no.
+     *
+     * Restricciones:
+     * Si no hay consola para leer (entrada cerrada), se toma como no.
+     *
+     * Objetivo:
+     * Dejar que el usuario decida si ver la tabla.
+     */
+    private static boolean preguntarSiNo(String pregunta) {
+
+        java.util.Scanner lector = new java.util.Scanner(System.in, StandardCharsets.UTF_8);
+
+        while (true) {
+
+            System.out.print(col("1;33", "  " + pregunta));
+            System.out.flush();
+
+            if (!lector.hasNextLine()) {
+                System.out.println();
+                return false;
+            }
+
+            String r = lector.nextLine().trim().toLowerCase();
+
+            if (r.equals("s") || r.equals("si") || r.equals("sí")) {
+                return true;
+            }
+
+            if (r.equals("n") || r.equals("no")) {
+                return false;
+            }
+
+            System.out.println(col("31", "  Respuesta no válida. Escriba s o n."));
+        }
+    }
+
+    /*
+     * Descripcion:
+     * Muestro en un cuadro verde dónde quedó guardada la tabla.
+     *
+     * Entrada:
+     * El archivo .txt generado.
+     *
+     * Salida:
+     * Un cuadro con la carpeta y el nombre del archivo.
+     *
+     * Restricciones:
+     * Si la ruta es más ancha que el cuadro, se corta en varias líneas.
+     *
+     * Objetivo:
+     * Que la ubicación del reporte se lea con claridad.
+     */
+    private static void cuadroReporte(File reporte) {
+
+        String verde = "1;32";
+        String titulo = " TABLA DE SÍMBOLOS GENERADA ";
+
+        File carpeta = reporte.getParentFile();
+        File proyecto = carpeta == null ? null : carpeta.getParentFile();
+
+        String carpetaCorta = (proyecto == null ? "" : proyecto.getName() + File.separator)
+                + (carpeta == null ? "" : carpeta.getName());
+
+        System.out.println(col(verde, "┌─" + titulo
+                + "─".repeat(Math.max(1, ANCHO - 3 - titulo.length())) + "┐"));
+
+        filaCuadro("", "", verde);
+
+        filaCuadro("✔ La tabla de símbolos se guardó correctamente.",
+                col(verde, "✔ La tabla de símbolos se guardó correctamente."), verde);
+
+        filaCuadro("", "", verde);
+
+        datoCuadro("Archivo", reporte.getName(), "1;37", verde);
+        datoCuadro("Carpeta", carpetaCorta, "36", verde);
+        datoCuadro("Ruta", reporte.getAbsolutePath(), "90", verde);
+
+        filaCuadro("", "", verde);
+
+        System.out.println(col(verde, "└" + "─".repeat(ANCHO - 2) + "┘"));
+    }
+
+    /* Una fila del cuadro: el texto plano se usa para calcular el relleno */
+    private static void filaCuadro(String plano, String coloreado, String colorBorde) {
+
+        int relleno = Math.max(0, ANCHO - 4 - plano.length());
+
+        System.out.println(col(colorBorde, "│") + " " + coloreado
+                + " ".repeat(relleno) + " " + col(colorBorde, "│"));
+    }
+
+    /*
+     * Etiqueta : valor dentro del cuadro. Si el valor es una ruta larga,
+     * se corta justo después de una barra para que cada carpeta quede entera.
+     */
+    private static void datoCuadro(String etiqueta, String valor, String color, String colorBorde) {
+
+        String prefijo = String.format("%-8s : ", etiqueta);
+
+        int ancho = ANCHO - 4 - prefijo.length();
+
+        List<String> partes = new ArrayList<>();
+
+        String resto = valor;
+
+        while (resto.length() > ancho) {
+
+            int corte = Math.max(resto.lastIndexOf(File.separatorChar, ancho - 1),
+                                 resto.lastIndexOf('/', ancho - 1));
+
+            corte = corte > 0 ? corte + 1 : ancho;   /* sin barra: se corta en el ancho */
+
+            partes.add(resto.substring(0, corte));
+
+            resto = resto.substring(corte);
+        }
+
+        partes.add(resto);
+
+        for (int i = 0; i < partes.size(); i++) {
+
+            String p = i == 0 ? prefijo : " ".repeat(prefijo.length());
+
+            filaCuadro(p + partes.get(i), (i == 0 ? col("1", p) : p) + col(color, partes.get(i)), colorBorde);
+        }
+    }
+
+    /* Anchos de las columnas de la tabla en consola */
+    private static final int[] COLUMNAS = {14, 13, 7, 5, 10, 5};
+
+    /*
+     * Descripcion:
+     * Muestro la tabla de símbolos en consola, con colores:
+     * primero el árbol de ámbitos y luego una tabla por ámbito.
+     *
+     * Entrada:
+     * La tabla de símbolos construida por el parser.
+     *
+     * Salida:
+     * La tabla impresa en la consola.
+     *
+     * Restricciones:
+     * Debe caber en el ancho de la consola (76 caracteres).
+     *
+     * Objetivo:
+     * Que la tabla se entienda de un vistazo.
+     */
+    private static void mostrarTablaSimbolos(TablaSimbolos tabla) {
+
+        /* ---- Árbol de ámbitos ---- */
+
+        System.out.println(col("1", "  Árbol de ámbitos"));
+        System.out.println();
+
+        for (String l : tabla.arbolDeAmbitos().split("\n")) {
+            System.out.println(col("36", l));
+        }
+
+        System.out.println();
+
+        /* ---- Leyenda de colores ---- */
+
+        System.out.println("  " + col("1", "Categorías: ")
+                + col("32", "variable") + "  "
+                + col("33", "arreglo") + "  "
+                + col("35", "parámetro") + "  "
+                + col("34;1", "función") + "  "
+                + col("36;1", "procedimiento"));
+
+        System.out.println(col("90", "  Dirección: global+n = zona estática · pila+n = registro de activación"));
+
+        System.out.println();
+
+        /* ---- Una tabla por ámbito ---- */
+
+        for (Ambito a : tabla.getAmbitos()) {
+
+            System.out.println(col("1;36", "  ▌ " + a.ruta()));
+
+            System.out.println(col("90", "    nivel " + a.nivel
+                    + (a.nivel == 0 ? " (global)" : " (local)")
+                    + " · padre: " + (a.anterior == null ? "—" : a.anterior.nombre)
+                    + " · tablas hijas: " + a.nombresHijas()));
+
+            if (a.cantidad() == 0) {
+                System.out.println(col("90", "    (sin declaraciones)"));
+                System.out.println();
+                continue;
+            }
+
+            System.out.println(col("90", "  " + borde('┌', '┬', '┐')));
+
+            filaTabla(new String[]{"NOMBRE", "CATEGORÍA", "TIPO", "BYTES", "DIRECCIÓN", "LÍNEA"},
+                      new String[]{"1", "1", "1", "1", "1", "1"});
+
+            System.out.println(col("90", "  " + borde('├', '┼', '┤')));
+
+            List<String> detalles = new ArrayList<>();
+
+            for (Simbolo s : a.simbolos()) {
+
+                filaTabla(new String[]{
+                                corto(s.nombre, COLUMNAS[0]),
+                                s.categoria,
+                                s.tipo,
+                                s.esFuncion() ? "—" : (s.bytes > 0 ? String.valueOf(s.bytes) : "?"),
+                                s.direccion(),
+                                String.valueOf(s.linea)},
+                          new String[]{"1", colorCategoria(s.categoria), "0", "0", "0", "0"});
+
+                /* Información que no cabe en la tabla */
+                if (s.esFuncion()) {
+                    detalles.add(col("1", s.nombre) + " " + s.firma()
+                            + col("90", " → retorna ") + s.tipo
+                            + col("90", " · " + s.parametros.size() + " parámetro(s) por valor · registro de " + s.bytes + " B"));
+                } else {
+                    if ("arreglo".equals(s.categoria)) {
+                        detalles.add(col("1", s.nombre) + col("90", " dimensión ") + s.textoDimensionCorta()
+                                + col("90", " (" + (s.elementos < 0 ? "?" : String.valueOf(s.elementos)) + " elementos)"));
+                    }
+                    if (s.valorInicial != null) {
+                        detalles.add(col("1", s.nombre) + col("90", " = ") + s.valorInicial);
+                    }
+                }
+            }
+
+            System.out.println(col("90", "  " + borde('└', '┴', '┘')));
+
+            for (String d : detalles) {
+                System.out.println(col("90", "    ↳ ") + d);
+            }
+
+            System.out.println();
+        }
+    }
+
+    /* Línea de borde de la tabla: ┌───┬───┐ */
+    private static String borde(char izq, char medio, char der) {
+
+        StringBuilder sb = new StringBuilder().append(izq);
+
+        for (int i = 0; i < COLUMNAS.length; i++) {
+            sb.append("─".repeat(COLUMNAS[i] + 2));
+            sb.append(i < COLUMNAS.length - 1 ? medio : der);
+        }
+        return sb.toString();
+    }
+
+    /* Fila de la tabla: cada celda se rellena y luego se colorea */
+    private static void filaTabla(String[] celdas, String[] colores) {
+
+        StringBuilder sb = new StringBuilder("  " + col("90", "│"));
+
+        for (int i = 0; i < COLUMNAS.length; i++) {
+
+            String texto = String.format("%-" + COLUMNAS[i] + "s", celdas[i]);
+
+            sb.append(" ")
+              .append("0".equals(colores[i]) ? texto : col(colores[i], texto))
+              .append(" ")
+              .append(col("90", "│"));
+        }
+
+        System.out.println(sb);
+    }
+
+    private static String colorCategoria(String categoria) {
+        switch (categoria) {
+            case "variable":      return "32";
+            case "arreglo":       return "33";
+            case "parámetro":     return "35";
+            case "función":       return "34;1";
+            case "procedimiento": return "36;1";
+            default:              return "0";
+        }
+    }
+
+    private static String corto(String texto, int max) {
+        return texto.length() <= max ? texto : texto.substring(0, max - 1) + "…";
     }
 
     /*
@@ -774,10 +1119,10 @@ public class Main {
 
     /*
      * Descripcion:
-     * Muestro los errores encontrados durante el analisis lexico.
+     * Muestro una tabla de errores (léxicos o semánticos).
      *
      * Entrada:
-     * La lista de errores generados por el lexer.
+     * La lista de errores con el formato "Error ... en línea L, columna C: detalle".
      *
      * Salida:
      * Una tabla con la informacion de cada error.
@@ -786,7 +1131,7 @@ public class Main {
      * Los errores deben tener el formato esperado.
      *
      * Objetivo:
-     * Facilitar la identificacion de los errores lexicos.
+     * Facilitar la identificacion de los errores.
      */
     private static void mostrarTablaLexica(List<String> errores) {
 
@@ -1107,56 +1452,14 @@ public class Main {
      * Controlar los errores sin mostrar mensajes directamente.
      */
     private static class ParserConErrores extends parser {
-        /*
-         * Descripcion:
-         * Guarda los errores sintacticos encontrados.
-         *
-         * Entrada:
-         * Los errores generados durante el analisis.
-         *
-         * Salida:
-         * Una lista con los errores encontrados.
-         *
-         * Restricciones:
-         * Los errores deben ser del tipo ErrorSintactico.
-         *
-         * Objetivo:
-         * Mantener organizados los errores del parser.
-         */
+
+        /* Errores sintacticos encontrados. */
         private final List<ErrorSintactico> errores = new ArrayList<>();
-        /*
-         * Descripcion:
-         * Indica si el analisis fue interrumpido por un error grave.
-         *
-         * Entrada:
-         * El resultado del analisis sintactico.
-         *
-         * Salida:
-         * Un valor verdadero o falso.
-         *
-         * Restricciones:
-         * Solo cambia cuando ocurre un error fatal.
-         *
-         * Objetivo:
-         * Saber si el parser pudo continuar.
-         */
+
+        /* Indica si el analisis fue interrumpido por un error grave. */
         private boolean abortado = false;
-        /*
-         * Descripcion:
-         * Guarda el ultimo token valido encontrado.
-         *
-         * Entrada:
-         * Los tokens recibidos por el parser.
-         *
-         * Salida:
-         * El ultimo token real procesado.
-         *
-         * Restricciones:
-         * No guarda el token EOF.
-         *
-         * Objetivo:
-         * Ayudar a ubicar errores que ocurren al final del archivo.
-         */
+
+        /* Ultimo token real (no EOF), para ubicar errores al final del archivo. */
         private Symbol ultimoReal = null;
 
         /*
@@ -1262,7 +1565,6 @@ public class Main {
                     e.linea = t.left;
 
                     e.columna = t.right;
-
 
                 } else if (e.fin && ultimoReal != null) {
 
@@ -1408,7 +1710,7 @@ public class Main {
                 }
             }
         } catch (Exception e) {
-            
+
             return "DESCONOCIDO";
         }
         return "DESCONOCIDO";

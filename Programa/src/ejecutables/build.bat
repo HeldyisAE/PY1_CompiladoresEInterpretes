@@ -283,7 +283,7 @@ REM Descripcion:
 REM Compilo los archivos Java necesarios para ejecutar el proyecto.
 REM
 REM Entrada:
-REM Main.java, Lexer.java, parser.java y sym.java.
+REM Main.java, TablaSimbolos.java, Lexer.java, parser.java y sym.java.
 REM
 REM Salida:
 REM Se generan los archivos .class dentro de bin.
@@ -301,6 +301,7 @@ javac ^
     -cp "%RUNTIME%;%BIN%" ^
     -d "%BIN%" ^
     "%SRC%\Main.java" ^
+    "%SRC%\TablaSimbolos.java" ^
     "%BIN%\Lexer.java" ^
     "%BIN%\parser.java" ^
     "%BIN%\sym.java"

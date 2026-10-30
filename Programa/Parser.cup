@@ -1,4 +1,53 @@
 import java_cup.runtime.*;
+import java.util.ArrayList;
+
+/* ============================================================
+                 CÓDIGO DEL PARSER: TABLA DE SÍMBOLOS
+   (si ya tienes un bloque "parser code", agrega la línea dentro)
+   ============================================================ */
+
+parser code {:
+    public TablaSimbolos tabla = new TablaSimbolos();
+
+    /* TS: guardo los tokens leídos para recuperar el texto del valor inicial y del tamaño de los arreglos */
+    private final ArrayList<Symbol> leidos = new ArrayList<Symbol>();
+
+    @Override
+    public Symbol scan() throws Exception {
+        Symbol s = super.scan();
+        leidos.add(s);
+        return s;
+    }
+
+    /* Texto de los tokens que están entre dos tokens (por posición). */
+    public String textoEntre(int l1, int c1, int l2, int c2) {
+        int fin = -1;
+        for (int i = leidos.size() - 1; i >= 0; i--) {
+            Symbol t = leidos.get(i);
+            if (t.left == l2 && t.right == c2) { fin = i; break; }
+        }
+        int ini = -1;
+        for (int i = fin - 1; i >= 0; i--) {
+            Symbol t = leidos.get(i);
+            if (t.left == l1 && t.right == c1) { ini = i; break; }
+        }
+        if (ini < 0 || fin < 0) return null;
+        StringBuilder sb = new StringBuilder();
+        for (int i = ini + 1; i < fin; i++) {
+            String v = String.valueOf(leidos.get(i).value);
+            if (sb.length() > 0 && !v.equals(",")) sb.append(" ");
+            sb.append(v);
+        }
+        return sb.toString();
+    }
+
+    /* Texto desde un token hasta antes del token de anticipación. */
+    public String textoDesde(int l1, int c1) {
+        if (leidos.isEmpty()) return null;
+        Symbol ultimo = leidos.get(leidos.size() - 1);
+        return textoEntre(l1, c1, ultimo.left, ultimo.right);
+    }
+:};
 
 /* ============================================================
                         TERMINALES
@@ -9,44 +58,38 @@ terminal INCREMENT, PLUS, DECREMENT, MINUS, MULTIPLY;
 terminal ENTIREDIV, FLOATDIV, MOD, POT;
 
 /* Operadores relacionales */
-
 terminal LTE, GTE, EQUAL, NEQ, LT, GT;
 
 /* Operadores lógicos */
 terminal AND, OR, NOT;
 
 /* Delimitadores */
-
 terminal OPBLOCK, CLBLOCK;
 terminal PARENOP, PARENCL;
 terminal OPBRACKET, CLBRACKET;
 terminal TERMINATOR, ASIGN, COMA;
 
 /* Tipos y palabras reservadas */
-
 terminal VAL;
 terminal PRINCIPAL;
 terminal INT, FLOAT, BOOL, CHAR, STRING, VOID;
 terminal TRUE, FALSE;
 
 /* Estructuras de control */
-
 terminal IF, ELIF, ELSE;
 terminal WHILE, FOR;
 terminal RETURN, BREAK;
 
 /* Entrada y salida */
-
-terminal PRINT, READ,  WRITE;
+terminal PRINT, READ, WRITE;
 
 /* Literales e identificadores */
-
 terminal LITERAL_INT;
 terminal LITERAL_FLOAT;
 terminal LITERAL_STRING;
 terminal LITERAL_CHAR;
-terminal ID;
-non terminal expresion_mod;
+terminal String ID;                         /* TS: el ID lleva su lexema */
+
 
 /* ============================================================
                          NO TERMINALES
@@ -55,7 +98,7 @@ non terminal expresion_mod;
 non terminal programa;
 non terminal lista_globales;
 non terminal unidades_programa;
-non terminal tipo;
+non terminal String tipo;                   /* TS */
 
 /* Valores */
 non terminal valor_numerico;
@@ -67,7 +110,7 @@ non terminal caracter_literal;
 non terminal condicion_control;
 
 /* Identificadores */
-non terminal identificador;
+non terminal String identificador;          /* TS */
 
 /* Delimitadores */
 non terminal abrir_bloque;
@@ -113,15 +156,16 @@ non terminal creacion_arreglo;
 non terminal arreglo_con_tamano;
 non terminal arreglo_con_tamano_valores;
 non terminal arreglo_sin_tamano_valores;
-non terminal lista_arreglo;
-non terminal inicio_lista_arreglo;
-non terminal continuacion_lista_arreglo;
+non terminal Integer lista_arreglo;                 /* TS: cantidad de valores */
+non terminal Integer inicio_lista_arreglo;
+non terminal Integer continuacion_lista_arreglo;
 non terminal modificacion_arreglo;
 
 /* Operaciones aritméticas */
 non terminal operador_suma;
 non terminal operador_multiplicacion;
 non terminal expresion_aritmetica;
+non terminal expresion_mod;
 non terminal expresion_suma;
 non terminal expresion_multiplicacion;
 non terminal expresion_unaria;
@@ -137,6 +181,7 @@ non terminal operacion_relacional;
 
 /* Expresiones lógicas */
 non terminal condicion_basica;
+non terminal operando_logico;
 non terminal condiciones_and;
 non terminal condiciones_or;
 non terminal condiciones_logicas;
@@ -171,16 +216,18 @@ non terminal bloque;
 non terminal break;
 non terminal return;
 
-/* Parámetros y funciones */
-non terminal parametro;
-non terminal lista_parametros;
-non terminal parametros;
+/* Parámetros */
+non terminal Simbolo parametro;             /* TS */
+non terminal ArrayList lista_parametros;    /* TS */
+non terminal ArrayList parametros;          /* TS */
 
 /* Funciones */
+non terminal encabezado_funcion;            /* TS */
+non terminal encabezado_void;               /* TS */
 non terminal funcion_no_void;
 non terminal funcion_void;
 non terminal principal;
-non terminal operando_logico;
+
 
 /* ============================================================
                     SÍMBOLO INICIAL
@@ -194,71 +241,82 @@ start with programa;
 
 bool ::= TRUE | FALSE ;
 
-tipo ::= INT | FLOAT | BOOL | CHAR | STRING ;
+tipo ::= INT     {: RESULT = "int";    :}
+       | FLOAT   {: RESULT = "float";  :}
+       | BOOL    {: RESULT = "bool";   :}
+       | CHAR    {: RESULT = "char";   :}
+       | STRING  {: RESULT = "string"; :}
+       ;
 
-valor_numerico ::= entero | flotante  ;
+valor_numerico ::= entero | flotante ;
 
-entero ::=  LITERAL_INT ;
+entero ::= LITERAL_INT ;
 
-flotante ::=  LITERAL_FLOAT ;
+flotante ::= LITERAL_FLOAT ;
 
-cadena_texto ::=  LITERAL_STRING ;
+cadena_texto ::= LITERAL_STRING ;
 
-caracter_literal ::=  LITERAL_CHAR ;
+caracter_literal ::= LITERAL_CHAR ;
 
 
 /* ============================================================
                  IDENTIFICADORES
    ============================================================ */
 
-identificador ::= ID ;
+identificador ::= ID:id  {: RESULT = id; :} ;
 
 /* ============================================================
-   DELIMITADORES Y OPERADORES
+                DELIMITADORES Y OPERADORES
    ============================================================ */
 
-abrir_bloque ::= OPBLOCK ;
+/* TS: ¿: abre un ámbito nuevo y :? lo cierra */
+abrir_bloque  ::= OPBLOCK  {: parser.tabla.abrirAmbito();  :} ;
 
-cerrar_bloque ::=  CLBLOCK ;
+cerrar_bloque ::= CLBLOCK  {: parser.tabla.cerrarAmbito(); :} ;
 
-abrir_corcheteCuadrados ::=  OPBRACKET;
+abrir_corcheteCuadrados ::= OPBRACKET ;
 
-cerrar_corcheteCuadrados ::= CLBRACKET;
+cerrar_corcheteCuadrados ::= CLBRACKET ;
 
-coma ::=  COMA ;
+coma ::= COMA ;
 
 fin_sentencia ::= TERMINATOR ;
 
-asignacion ::=  ASIGN ;
+asignacion ::= ASIGN ;
 
 incremento ::= INCREMENT ;
 
-decremento ::= DECREMENT  ;
+decremento ::= DECREMENT ;
 
 
 /* ============================================================
                 PALABRAS RESERVADAS
    ============================================================ */
 
-palabraVal ::= VAL;
+palabraVal ::= VAL ;
 
 palabraBreak ::= BREAK ;
 
 palabraReturn ::= RETURN ;
 
-palabraPrint ::=  PRINT ;
+palabraPrint ::= PRINT ;
 
-Principal ::= PRINCIPAL ;
+/* TS: cada palabra le pone nombre al ámbito de su bloque */
+/* TS: principal se registra como procedimiento sin parámetros */
+Principal   ::= PRINCIPAL:p  {: parser.tabla.declararFuncion("principal", "void", null, pleft, pright); :} ;
 
-palabraIf ::= IF ;
+palabraIf   ::= IF         {: parser.tabla.siguienteAmbito("if");    :} ;
 
-palabraElif ::=  ELIF;
+palabraElif ::= ELIF       {: parser.tabla.siguienteAmbito("elif");  :} ;
 
-palabraElse ::= ELSE ;
+palabraElse ::= ELSE       {: parser.tabla.siguienteAmbito("else");  :} ;
 
-palabraWhile ::= WHILE ;
+palabraWhile ::= WHILE     {: parser.tabla.siguienteAmbito("while"); :} ;
 
-palabraFor ::= FOR ;
+/* TS: el for abre su ámbito desde el inicio, porque la variable de
+   control (val int x Ͱ 9) se declara antes del ¿: */
+palabraFor  ::= FOR        {: parser.tabla.abrirAmbito("for");
+                               parser.tabla.siguienteAmbito("cuerpo for"); :} ;
 
 operadorPotencia ::= POT ;
 
@@ -272,21 +330,32 @@ escribir ::= WRITE ;
    ============================================================ */
 
 def_variable ::=
-      palabraVal INT identificador fin_sentencia
-    | palabraVal FLOAT identificador fin_sentencia
-    | palabraVal BOOL identificador fin_sentencia
-    | palabraVal CHAR identificador fin_sentencia
-    | palabraVal STRING identificador fin_sentencia
-    | palabraVal INT identificador asignacion expresion fin_sentencia
-    | palabraVal FLOAT identificador asignacion expresion fin_sentencia
-    | palabraVal BOOL identificador asignacion expresion fin_sentencia
-    | palabraVal CHAR identificador asignacion expresion fin_sentencia
-    | palabraVal STRING identificador asignacion expresion fin_sentencia
+      palabraVal INT    identificador:id fin_sentencia
+      {: parser.tabla.declararVariable(id, "int", null, idleft, idright); :}
+    | palabraVal FLOAT  identificador:id fin_sentencia
+      {: parser.tabla.declararVariable(id, "float", null, idleft, idright); :}
+    | palabraVal BOOL   identificador:id fin_sentencia
+      {: parser.tabla.declararVariable(id, "bool", null, idleft, idright); :}
+    | palabraVal CHAR   identificador:id fin_sentencia
+      {: parser.tabla.declararVariable(id, "char", null, idleft, idright); :}
+    | palabraVal STRING identificador:id fin_sentencia
+      {: parser.tabla.declararVariable(id, "string", null, idleft, idright); :}
+    | palabraVal INT    identificador:id asignacion:a expresion fin_sentencia:f
+      {: parser.tabla.declararVariable(id, "int", parser.textoEntre(aleft, aright, fleft, fright), idleft, idright); :}
+    | palabraVal FLOAT  identificador:id asignacion:a expresion fin_sentencia:f
+      {: parser.tabla.declararVariable(id, "float", parser.textoEntre(aleft, aright, fleft, fright), idleft, idright); :}
+    | palabraVal BOOL   identificador:id asignacion:a expresion fin_sentencia:f
+      {: parser.tabla.declararVariable(id, "bool", parser.textoEntre(aleft, aright, fleft, fright), idleft, idright); :}
+    | palabraVal CHAR   identificador:id asignacion:a expresion fin_sentencia:f
+      {: parser.tabla.declararVariable(id, "char", parser.textoEntre(aleft, aright, fleft, fright), idleft, idright); :}
+    | palabraVal STRING identificador:id asignacion:a expresion fin_sentencia:f
+      {: parser.tabla.declararVariable(id, "string", parser.textoEntre(aleft, aright, fleft, fright), idleft, idright); :}
     ;
 
-asignacion_variable ::= identificador asignacion expresion fin_sentencia ;
+asignacion_variable ::= identificador:id asignacion expresion fin_sentencia
+                        {: parser.tabla.usar(id, idleft, idright); :} ;
 
-lista_globales ::=   /* vacío */
+lista_globales ::= /* vacío */
     | def_variable lista_globales
     | creacion_arreglo lista_globales
     | error fin_sentencia lista_globales
@@ -297,24 +366,22 @@ lista_globales ::=   /* vacío */
                      ENTRADA Y SALIDA
    ============================================================ */
 
-/* ============================================================ */
-/* ENTRADA Y SALIDA                                              */
-/* ============================================================ */
-
-lectura ::=  leer identificador fin_sentencia 
-            | leer acceso_arreglo fin_sentencia 
-            |leer PARENOP identificador PARENCL fin_sentencia 
-            | leer PARENOP acceso_arreglo PARENCL fin_sentencia ;
+lectura ::= leer identificador:id fin_sentencia                  {: parser.tabla.usar(id, idleft, idright); :}
+          | leer acceso_arreglo fin_sentencia
+          | leer PARENOP identificador:id PARENCL fin_sentencia  {: parser.tabla.usar(id, idleft, idright); :}
+          | leer PARENOP acceso_arreglo PARENCL fin_sentencia
+          ;
 
 escritura ::= escribir valor_escritura fin_sentencia
             | escribir PARENOP expresion PARENCL fin_sentencia ;
 
-impresion ::= palabraPrint PARENOP lista_valores PARENCL fin_sentencia;
+impresion ::= palabraPrint PARENOP lista_valores PARENCL fin_sentencia ;
 
-lista_valores ::=  valor_escritura 
-                  | valor_escritura coma lista_valores ;
+lista_valores ::= valor_escritura | valor_escritura coma lista_valores ;
 
-valor_escritura ::= entero | flotante | bool | cadena_texto | caracter_literal | identificador | acceso_arreglo ;
+valor_escritura ::= entero | flotante | bool | cadena_texto | caracter_literal
+                  | identificador:id  {: parser.tabla.usar(id, idleft, idright); :}
+                  | acceso_arreglo ;
 
 /* ============================================================
                  ARREGLOS
@@ -322,178 +389,191 @@ valor_escritura ::= entero | flotante | bool | cadena_texto | caracter_literal |
 
 indice ::= expresion_aritmetica ;
 
-acceso_arreglo ::= identificador abrir_corcheteCuadrados indice cerrar_corcheteCuadrados ;
+acceso_arreglo ::= identificador:id abrir_corcheteCuadrados indice cerrar_corcheteCuadrados
+                   {: parser.tabla.usarArreglo(id, idleft, idright); :} ;
 
-creacion_arreglo ::= arreglo_con_tamano
-                     | arreglo_con_tamano_valores| arreglo_sin_tamano_valores ;
+creacion_arreglo ::= arreglo_con_tamano | arreglo_con_tamano_valores | arreglo_sin_tamano_valores ;
 
-arreglo_con_tamano ::= palabraVal INT identificador abrir_corcheteCuadrados indice cerrar_corcheteCuadrados  fin_sentencia
-                     | palabraVal FLOAT identificador  abrir_corcheteCuadrados indice cerrar_corcheteCuadrados  fin_sentencia ;
+/* TS: las llaves de la lista de valores usan OPBLOCK/CLBLOCK directo,
+   para que no abran un ámbito nuevo */
+arreglo_con_tamano ::=
+      palabraVal INT   identificador:id abrir_corcheteCuadrados:a indice cerrar_corcheteCuadrados:c fin_sentencia
+      {: parser.tabla.declararArreglo(id, "int", parser.textoEntre(aleft, aright, cleft, cright), 0, null, idleft, idright); :}
+    | palabraVal FLOAT identificador:id abrir_corcheteCuadrados:a indice cerrar_corcheteCuadrados:c fin_sentencia
+      {: parser.tabla.declararArreglo(id, "float", parser.textoEntre(aleft, aright, cleft, cright), 0, null, idleft, idright); :}
+    ;
 
-arreglo_con_tamano_valores ::=   palabraVal INT identificador abrir_corcheteCuadrados indice cerrar_corcheteCuadrados asignacion abrir_bloque lista_arreglo cerrar_bloque fin_sentencia
-    | palabraVal FLOAT identificador  abrir_corcheteCuadrados indice cerrar_corcheteCuadrados  asignacion abrir_bloque lista_arreglo cerrar_bloque  fin_sentencia ;
+arreglo_con_tamano_valores ::=
+      palabraVal INT   identificador:id abrir_corcheteCuadrados:a indice cerrar_corcheteCuadrados:c asignacion OPBLOCK:b lista_arreglo:n CLBLOCK:e fin_sentencia
+      {: parser.tabla.declararArreglo(id, "int", parser.textoEntre(aleft, aright, cleft, cright), n, "¿: " + parser.textoEntre(bleft, bright, eleft, eright) + " :?", idleft, idright); :}
+    | palabraVal FLOAT identificador:id abrir_corcheteCuadrados:a indice cerrar_corcheteCuadrados:c asignacion OPBLOCK:b lista_arreglo:n CLBLOCK:e fin_sentencia
+      {: parser.tabla.declararArreglo(id, "float", parser.textoEntre(aleft, aright, cleft, cright), n, "¿: " + parser.textoEntre(bleft, bright, eleft, eright) + " :?", idleft, idright); :}
+    ;
 
-arreglo_sin_tamano_valores ::=  palabraVal INT identificador  abrir_corcheteCuadrados cerrar_corcheteCuadrados  asignacion abrir_bloque lista_arreglo cerrar_bloque  fin_sentencia
-    | palabraVal FLOAT identificador  abrir_corcheteCuadrados cerrar_corcheteCuadrados asignacion abrir_bloque lista_arreglo cerrar_bloque  fin_sentencia ;
+arreglo_sin_tamano_valores ::=
+      palabraVal INT   identificador:id abrir_corcheteCuadrados cerrar_corcheteCuadrados asignacion OPBLOCK:b lista_arreglo:n CLBLOCK:e fin_sentencia
+      {: parser.tabla.declararArreglo(id, "int", null, n, "¿: " + parser.textoEntre(bleft, bright, eleft, eright) + " :?", idleft, idright); :}
+    | palabraVal FLOAT identificador:id abrir_corcheteCuadrados cerrar_corcheteCuadrados asignacion OPBLOCK:b lista_arreglo:n CLBLOCK:e fin_sentencia
+      {: parser.tabla.declararArreglo(id, "float", null, n, "¿: " + parser.textoEntre(bleft, bright, eleft, eright) + " :?", idleft, idright); :}
+    ;
 
-lista_arreglo ::= inicio_lista_arreglo ;
 
-inicio_lista_arreglo ::= expresion_aritmetica continuacion_lista_arreglo ;
+lista_arreglo ::= inicio_lista_arreglo:n  {: RESULT = n; :} ;
 
-continuacion_lista_arreglo ::=  coma expresion_aritmetica continuacion_lista_arreglo  | /* vacío */ ;
+inicio_lista_arreglo ::= expresion_aritmetica continuacion_lista_arreglo:n  {: RESULT = n + 1; :} ;
+
+continuacion_lista_arreglo ::= coma expresion_aritmetica continuacion_lista_arreglo:n  {: RESULT = n + 1; :}
+                             | /* vacío */  {: RESULT = 0; :} ;
 
 modificacion_arreglo ::= acceso_arreglo asignacion expresion fin_sentencia ;
 
 
 /* ============================================================
                 OPERACIONES ARITMÉTICAS
+   Precedencia (mayor a menor): pot, + -, * / //, mod
    ============================================================ */
 
 operador_suma ::= PLUS | MINUS ;
 
-operador_multiplicacion ::= MULTIPLY| FLOATDIV| ENTIREDIV ;                                   
+operador_multiplicacion ::= MULTIPLY | FLOATDIV | ENTIREDIV ;
 
-expresion_aritmetica ::=  expresion_mod ;                                                    
+expresion_aritmetica ::= expresion_mod ;
 
-expresion_mod ::= expresion_mod MOD expresion_multiplicacion 
-                  | expresion_multiplicacion ;   
+expresion_mod ::= expresion_mod MOD expresion_multiplicacion | expresion_multiplicacion ;
 
-expresion_multiplicacion ::= expresion_multiplicacion operador_multiplicacion expresion_suma 
-                        | expresion_suma ;   
+expresion_multiplicacion ::= expresion_multiplicacion operador_multiplicacion expresion_suma | expresion_suma ;
 
-expresion_suma ::= expresion_suma operador_suma expresion_unaria
-                | expresion_unaria ;        
+expresion_suma ::= expresion_suma operador_suma expresion_unaria | expresion_unaria ;
 
-expresion_unaria ::=  MINUS valor_numerico 
-                  | expresion_potencia ;
+expresion_unaria ::= MINUS valor_numerico | expresion_potencia ;
 
-expresion_potencia ::= valor_aritmetico
-                   | valor_aritmetico operadorPotencia exponente ;
+expresion_potencia ::= valor_aritmetico | valor_aritmetico operadorPotencia exponente ;
 
-exponente ::= valor_aritmetico 
-            | MINUS valor_numerico ;
+exponente ::= valor_aritmetico | MINUS valor_numerico ;
 
-valor_aritmetico ::= valor_numerico 
-                  | identificador 
-                  | acceso_arreglo 
-                  | llamada_funcion
-                  | cadena_texto 
-                  | caracter_literal
-                  | PARENOP expresion_aritmetica PARENCL ;
+valor_aritmetico ::= valor_numerico
+                   | identificador:id  {: parser.tabla.usar(id, idleft, idright); :}
+                   | acceso_arreglo
+                   | llamada_funcion
+                   | cadena_texto
+                   | caracter_literal
+                   | PARENOP expresion_aritmetica PARENCL ;
 
-operacion_incremento ::= identificador incremento 
-                        | identificador decremento ;
+operacion_incremento ::= identificador:id incremento  {: parser.tabla.usar(id, idleft, idright); :}
+                       | identificador:id decremento  {: parser.tabla.usar(id, idleft, idright); :} ;
+
 
 /* ============================================================
-   OPERACIONES RELACIONALES
+                OPERACIONES RELACIONALES
    ============================================================ */
 
+operadorRelacional ::= LT | GT | LTE | GTE | EQUAL | NEQ ;
 
-operadorRelacional ::=  LT | GT | LTE | GTE | EQUAL | NEQ ;
-
-operando_relacional ::=  valor_aritmetico
-                      |  bool
-                      |  abrir_corcheteCuadrados expresion cerrar_corcheteCuadrados ;
+operando_relacional ::= valor_aritmetico
+                      | bool
+                      | abrir_corcheteCuadrados expresion cerrar_corcheteCuadrados ;
 
 operacion_relacional ::= operando_relacional operadorRelacional operando_relacional ;
+
 
 /* ============================================================
                  EXPRESIONES LÓGICAS
    ============================================================ */
 
-condicion_basica ::=   PARENOP operacion_relacional PARENCL
-                   |   PARENOP bool PARENCL
-                   |   PARENOP condicion_basica PARENCL       
-                   |   condiciones_logicas                     
-                   |   negacion ;                            
+condicion_basica ::= PARENOP operacion_relacional PARENCL
+                   | PARENOP bool PARENCL
+                   | PARENOP condicion_basica PARENCL
+                   | condiciones_logicas
+                   | negacion ;
 
 operando_logico ::= condicion_basica
                   | PARENOP expresion_aritmetica PARENCL ;
 
-condiciones_and ::=  operando_logico AND operando_logico
-                  |  condiciones_and AND operando_logico ;
+condiciones_and ::= operando_logico AND operando_logico
+                  | condiciones_and AND operando_logico ;
 
-condiciones_or ::=  operando_logico OR operando_logico
-                 |  condiciones_and OR operando_logico
-                 |  operando_logico OR condiciones_and
-                 |  condiciones_and OR condiciones_and
-                 |  condiciones_or OR operando_logico
-                 |  condiciones_or OR condiciones_and ;
+condiciones_or ::= operando_logico OR operando_logico
+                 | condiciones_and OR operando_logico
+                 | operando_logico OR condiciones_and
+                 | condiciones_and OR condiciones_and
+                 | condiciones_or OR operando_logico
+                 | condiciones_or OR condiciones_and ;
 
-negacion ::=  NOT condicion_basica ;
+condiciones_logicas ::= PARENOP condiciones_and PARENCL | PARENOP condiciones_or PARENCL ;
 
-expresion_logica ::=   condiciones_and | condiciones_or | negacion  ;
+negacion ::= NOT condicion_basica ;
 
-condicion_control ::=   operacion_relacional  
-                     | condiciones_and 
-                     | condiciones_or 
-                     | negacion 
-                     | bool 
-                     | PARENOP operacion_relacional PARENCL 
-                     | PARENOP bool PARENCL ;
+expresion_logica ::= condiciones_and | condiciones_or | negacion ;
+
+condicion_control ::= operacion_relacional | condiciones_and | condiciones_or | negacion | bool
+                    | PARENOP operacion_relacional PARENCL | PARENOP bool PARENCL ;
+
 
 /* ============================================================
                 EXPRESIONES Y FUNCIONES
    ============================================================ */
 
-expresion ::= expresion_aritmetica 
-            | operacion_relacional 
-            | expresion_logica 
-            | bool ;
+expresion ::= expresion_aritmetica | operacion_relacional | expresion_logica | bool ;
 
-lista_expresiones ::=   /* vacío */
-                   | expresiones ;
+lista_expresiones ::= /* vacío */ | expresiones ;
 
-expresiones ::= expresion 
-            | expresion coma expresiones ;
+expresiones ::= expresion | expresion coma expresiones ;
 
-llamada_funcion ::= identificador PARENOP  lista_expresiones  PARENCL ;
+llamada_funcion ::= identificador:id PARENOP lista_expresiones PARENCL
+                    {: parser.tabla.usarFuncion(id, idleft, idright); :} ;
 
 
 /* ============================================================
-   ESTRUCTURAS DE CONTROL
+                ESTRUCTURAS DE CONTROL
    ============================================================ */
 
-if ::=  palabraIf PARENOP condicion_control PARENCL  abrir_bloque bloque cerrar_bloque demas_if
-    | palabraIf negacion  abrir_bloque bloque cerrar_bloque demas_if
-    | palabraIf error abrir_bloque bloque cerrar_bloque demas_if ;
+if ::= palabraIf PARENOP condicion_control PARENCL abrir_bloque bloque cerrar_bloque demas_if
+     | palabraIf negacion abrir_bloque bloque cerrar_bloque demas_if
+     | palabraIf error abrir_bloque bloque cerrar_bloque demas_if ;
 
-demas_if ::=  cadena_elif fin_if 
-         | fin_if ;
+demas_if ::= cadena_elif fin_if | fin_if ;
 
-fin_if ::= else 
-         | /* vacío */ ;
+fin_if ::= else | /* vacío */ ;
 
-elif ::=  palabraElif PARENOP condicion_control PARENCL abrir_bloque bloque cerrar_bloque
-    | palabraElif error abrir_bloque bloque cerrar_bloque ;
+elif ::= palabraElif PARENOP condicion_control PARENCL abrir_bloque bloque cerrar_bloque
+       | palabraElif error abrir_bloque bloque cerrar_bloque ;
 
-cadena_elif ::=   elif | elif cadena_elif ;
+cadena_elif ::= elif | elif cadena_elif ;
 
-else ::=  palabraElse abrir_bloque bloque cerrar_bloque  
-         | palabraElse error abrir_bloque bloque cerrar_bloque ;
+else ::= palabraElse abrir_bloque bloque cerrar_bloque
+       | palabraElse error abrir_bloque bloque cerrar_bloque ;
 
-while ::=  palabraWhile PARENOP condicion_control PARENCL  abrir_bloque bloque cerrar_bloque
-    | palabraWhile error abrir_bloque bloque cerrar_bloque ;
+while ::= palabraWhile PARENOP condicion_control PARENCL abrir_bloque bloque cerrar_bloque
+        | palabraWhile error abrir_bloque bloque cerrar_bloque ;
 
-for ::=  palabraFor PARENOP  inicio_for fin_sentencia  condicion_for fin_sentencia  incremento_for PARENCL  abrir_bloque bloque cerrar_bloque
-    | palabraFor error  abrir_bloque bloque cerrar_bloque ;
+/* TS: al terminar el for se cierra el ámbito que abrió palabraFor */
+for ::= palabraFor PARENOP inicio_for fin_sentencia condicion_for fin_sentencia incremento_for PARENCL abrir_bloque bloque cerrar_bloque
+        {: parser.tabla.cerrarAmbito(); :}
+      | palabraFor error abrir_bloque bloque cerrar_bloque
+        {: parser.tabla.cerrarAmbito(); :}
+      ;
 
-inicio_for ::=  /* vacío */
-             |  identificador asignacion expresion
-             |  palabraVal tipo identificador asignacion expresion ;
+inicio_for ::= /* vacío */
+             | identificador:id asignacion expresion
+               {: parser.tabla.usar(id, idleft, idright); :}
+             | palabraVal tipo:t identificador:id asignacion:a expresion
+               {: parser.tabla.declararVariable(id, t, parser.textoDesde(aleft, aright), idleft, idright); :}
+             ;
 
-condicion_for ::=   /* vacío */   operacion_relacional 
-                  | expresion_logica 
-                  | bool 
-                  | PARENOP operacion_relacional PARENCL 
-                  | PARENOP bool PARENCL ;
+condicion_for ::= /* vacío */   operacion_relacional
+                | expresion_logica
+                | bool
+                | PARENOP operacion_relacional PARENCL
+                | PARENOP bool PARENCL ;
 
-incremento_for ::=  /* vacío */
-                 |  operacion_incremento
-                 |  expresion_aritmetica
-                 |  identificador asignacion expresion ;
+incremento_for ::= /* vacío */
+                 | operacion_incremento
+                 | expresion_aritmetica
+                 | identificador:id asignacion expresion
+                   {: parser.tabla.usar(id, idleft, idright); :}
+                 ;
 
-estructura_control ::=   if | while | for ;
+estructura_control ::= if | while | for ;
 
 
 /* ============================================================
@@ -502,11 +582,9 @@ estructura_control ::=   if | while | for ;
 
 break ::= palabraBreak ;
 
-return ::= palabraReturn fin_sentencia 
-            | palabraReturn expresion fin_sentencia ;
+return ::= palabraReturn fin_sentencia | palabraReturn expresion fin_sentencia ;
 
-instruccion ::= sentencia_simple
-            | estructura_control ;
+instruccion ::= sentencia_simple | estructura_control ;
 
 sentencia_simple ::=
       asignacion_variable
@@ -516,57 +594,68 @@ sentencia_simple ::=
     | lectura
     | escritura
     | impresion
-    | operacion_incremento 
+    | operacion_incremento
     | llamada_funcion fin_sentencia
     | break fin_sentencia
     | return
     | error fin_sentencia
     ;
 
-lista_instrucciones ::= instruccion 
-                     | instruccion lista_instrucciones ;
+lista_instrucciones ::= instruccion | instruccion lista_instrucciones ;
 
-bloque ::=  /* vacío */ 
-            | lista_instrucciones ;
+bloque ::= /* vacío */ | lista_instrucciones ;
 
 
 /* ============================================================
-   PARÁMETROS
+                       PARÁMETROS
    ============================================================ */
 
-parametro ::= tipo identificador ;
+parametro ::= tipo:t identificador:id
+              {: RESULT = new Simbolo(id, t, Simbolo.PARAMETRO, idleft, idright); :} ;
 
-lista_parametros ::=  /* vacío */
-                  | parametros ;
+lista_parametros ::= /* vacío */      {: RESULT = new ArrayList(); :}
+                   | parametros:l     {: RESULT = l; :} ;
 
-parametros ::=  parametro
-               | parametro coma parametros ;
+parametros ::= parametro:p
+               {: ArrayList l = new ArrayList(); l.add(p); RESULT = l; :}
+             | parametro:p coma parametros:l
+               {: l.add(0, p); RESULT = l; :} ;
 
 
 /* ============================================================
-   FUNCIONES
+                        FUNCIONES
    ============================================================ */
 
+/* TS: el encabezado se reduce ANTES del cuerpo, así la función ya existe
+   (permite recursión) y sus parámetros entran al ámbito del cuerpo */
+encabezado_funcion ::= tipo:t identificador:id PARENOP lista_parametros:p PARENCL
+                       {: parser.tabla.declararFuncion(id, t, p, idleft, idright); :} ;
 
-funcion_no_void ::=  tipo identificador  PARENOP lista_parametros PARENCL  abrir_bloque bloque cerrar_bloque
-    | tipo error   abrir_bloque bloque cerrar_bloque  ;
+encabezado_void ::= VOID identificador:id PARENOP lista_parametros:p PARENCL
+                    {: parser.tabla.declararFuncion(id, "void", p, idleft, idright); :} ;
 
-funcion_void ::= VOID identificador PARENOP lista_parametros PARENCL  abrir_bloque bloque cerrar_bloque ;
+funcion_no_void ::= encabezado_funcion abrir_bloque bloque cerrar_bloque
+                  | tipo error abrir_bloque bloque cerrar_bloque ;
+
+funcion_void ::= encabezado_void abrir_bloque bloque cerrar_bloque ;
+
 
 /* ============================================================
-                 PRINCIPAL
+                        PRINCIPAL
    ============================================================ */
 
-principal ::= VOID PRINCIPAL PARENOP PARENCL  abrir_bloque bloque cerrar_bloque ;
+principal ::= VOID Principal PARENOP PARENCL abrir_bloque bloque cerrar_bloque ;
+
 
 /* ============================================================
-   UNIDADES DEL PROGRAMA
+                  UNIDADES DEL PROGRAMA
    ============================================================ */
 
-unidades_programa ::=  principal | funcion_no_void unidades_programa | funcion_void unidades_programa  ;
+unidades_programa ::= principal | funcion_no_void unidades_programa | funcion_void unidades_programa ;
+
 
 /* ============================================================
-                     PROGRAMA
+                        PROGRAMA
    ============================================================ */
 
-programa ::=  lista_globales unidades_programa  ;
+programa ::= lista_globales unidades_programa ;
